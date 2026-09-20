@@ -1,0 +1,45 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { cn } from '@/lib/cn';
+
+type Variant = 'primary' | 'secondary' | 'ghost';
+type Size = 'sm' | 'md' | 'lg';
+
+interface Props extends Omit<HTMLAttributes<'a'>, 'type'> {
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  variant?: Variant;
+  size?: Size;
+  class?: string;
+}
+
+const { href, type, variant = 'primary', size = 'md', class: className, ...rest } = Astro.props;
+const Tag = href ? 'a' : 'button';
+
+const base =
+  'inline-flex items-center justify-center gap-2 rounded-full font-medium tracking-tight whitespace-nowrap select-none ' +
+  'transition-[background-color,color,border-color,transform,opacity] duration-300 ease-out-expo active:scale-[0.98]';
+
+const variants: Record<Variant, string> = {
+  // Solid off-white on near-black is the premium dark default. No gradient, no glow.
+  primary: 'bg-fg text-bg hover:bg-white',
+  secondary:
+    'bg-bg-raised text-fg border border-line hairline hover:border-line-strong hover:bg-bg-overlay',
+  ghost: 'text-fg-muted hover:text-fg',
+};
+
+const sizes: Record<Size, string> = {
+  sm: 'h-9 px-4 text-sm',
+  md: 'h-11 px-5 text-[0.9375rem]',
+  lg: 'h-12 px-6 text-base',
+};
+---
+
+<Tag
+  href={href}
+  type={href ? undefined : (type ?? 'button')}
+  class={cn(base, variants[variant], sizes[size], className)}
+  {...rest}
+>
+  <slot />
+</Tag>

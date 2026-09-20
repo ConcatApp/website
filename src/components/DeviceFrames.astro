@@ -1,0 +1,48 @@
+---
+/**
+ * Desktop window + phone frames, CSS chrome only. Content comes through the `desktop` and `phone`
+ * slots (an <Image>, a video, or a placeholder). Below md only the phone shows; from md up the
+ * window fills the width with the phone overlapping at the lower right. Each frame carries its own
+ * parallax amount so they separate slightly on scroll.
+ */
+import type { HTMLAttributes } from 'astro/types';
+import { cn } from '@/lib/cn';
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string;
+}
+
+const { class: className, ...rest } = Astro.props;
+---
+
+<div class={cn('relative w-full max-w-5xl md:pb-14', className)} {...rest}>
+  <div
+    class="hairline hidden overflow-hidden rounded-xl border border-line-strong bg-bg-raised shadow-raised md:block"
+    data-parallax="0.05"
+  >
+    <div class="relative flex h-10 items-center border-b border-line px-4">
+      <div class="flex gap-2" aria-hidden="true">
+        <span class="size-2.5 rounded-full border border-line-strong bg-bg-overlay"></span>
+        <span class="size-2.5 rounded-full border border-line-strong bg-bg-overlay"></span>
+        <span class="size-2.5 rounded-full border border-line-strong bg-bg-overlay"></span>
+      </div>
+      <span class="pointer-events-none absolute inset-x-0 text-center text-xs text-fg-subtle">
+        Concat
+      </span>
+    </div>
+    <div class="bg-bg [&>img]:block [&>img]:h-auto [&>img]:w-full">
+      <slot name="desktop" />
+    </div>
+  </div>
+
+  <div
+    class="mx-auto w-[240px] md:absolute md:right-8 md:-bottom-2 md:mx-0 md:w-[200px]"
+    data-parallax="0.12"
+  >
+    <div class="hairline aspect-[9/19.5] rounded-[2.5rem] border border-line-strong bg-bg-raised p-2 shadow-raised">
+      <div class="grid h-full w-full place-items-center overflow-hidden rounded-[2rem] bg-bg-overlay text-sm text-fg-subtle [&>img]:h-full [&>img]:w-full [&>img]:object-cover">
+        <slot name="phone" />
+      </div>
+    </div>
+  </div>
+</div>

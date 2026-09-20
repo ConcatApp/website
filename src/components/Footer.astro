@@ -1,0 +1,31 @@
+---
+import Container from '@/components/Container.astro';
+import { DISCORD_URL, RELEASES_URL, REPO_URL } from '@/lib/releases';
+
+const year = new Date().getFullYear();
+const links = [
+  { href: REPO_URL, label: 'GitHub' },
+  { href: RELEASES_URL, label: 'Releases' },
+  { href: `${REPO_URL}/blob/main/ROADMAP.MD`, label: 'Roadmap' },
+  { href: DISCORD_URL, label: 'Discord' },
+  { href: `${REPO_URL}/blob/main/LICENSE`, label: 'AGPL-3.0' },
+];
+---
+
+<footer class="border-t border-line">
+  <Container class="flex flex-col gap-6 py-10 text-sm text-fg-subtle md:flex-row md:items-center md:justify-between">
+    <p>&copy; {year} Concat. Free and open source.</p>
+    <nav class="flex flex-wrap gap-x-6 gap-y-2">
+      {links.map((link) => (
+        <a
+          href={link.href}
+          class="transition-colors duration-300 hover:text-fg"
+          target="_blank"
+          rel="noopener"
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+  </Container>
+</footer>

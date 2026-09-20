@@ -1,0 +1,119 @@
+---
+import Base from '@/layouts/Base.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Container from '@/components/Container.astro';
+import Section from '@/components/Section.astro';
+import DownloadButton from '@/components/DownloadButton.astro';
+import Downloader from '@/components/Downloader.astro';
+import { AudioWaveform, Captions, LayoutTemplate, Layers, Mic, Type } from '@lucide/astro';
+import { CHECKSUMS_URL, RELEASES_URL, getManifest, getPlatforms } from '@/lib/releases';
+
+const { manifest } = await getManifest();
+const platforms = getPlatforms(manifest);
+
+const features = [
+  {
+    icon: Layers,
+    title: 'Multi-track editing',
+    body: 'Several timelines per project. Split, trim, merge, transitions and speed control.',
+  },
+  {
+    icon: Captions,
+    title: 'Auto-captions, offline',
+    body: 'Transcribed on your machine. Nothing is uploaded.',
+  },
+  { icon: Mic, title: 'Text-to-speech', body: 'Free, local voices. No credits, no cloud.' },
+  { icon: AudioWaveform, title: 'Voice filters', body: 'Clean up a recording or play with it.' },
+  {
+    icon: Type,
+    title: 'Titles and styled text',
+    body: 'Type, style and animate text on any track.',
+  },
+  { icon: LayoutTemplate, title: 'Templates', body: 'Build an edit once and reuse it.' },
+];
+
+const principles = [
+  { title: 'No watermarks', body: 'Exports are yours, at full quality.' },
+  { title: 'No account', body: 'Install it and start cutting.' },
+  { title: '100% local', body: 'A native Rust engine. Nothing leaves your machine.' },
+];
+---
+
+<Base title="Concat">
+  <Header />
+
+  <main>
+    <section class="relative pt-40 pb-24 md:pt-52 md:pb-32">
+      <Container class="flex flex-col items-center text-center">
+        <h1 class="text-display max-w-4xl" data-reveal>
+          The free, open-source CapCut replacement.
+        </h1>
+        <p class="text-lead mt-6 max-w-xl text-fg-muted" data-reveal>
+          Concat runs entirely on your machine. No watermarks, no account, no subscription. The same
+          app on desktop and mobile.
+        </p>
+        <div class="mt-10" data-reveal>
+          <DownloadButton platforms={platforms} version={manifest.version} />
+        </div>
+        <!--
+          Product visuals are parked for now. When they come back, DeviceFrames.astro takes the
+          cropped editor screenshot (src/assets/editor-dark.png) in its `desktop` slot and a mobile
+          screenshot in its `phone` slot; see git history for the previous markup.
+        -->
+      </Container>
+    </section>
+
+    <Section id="features" title="Everything you use CapCut for." class="border-t border-line">
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        {features.map(({ icon: Icon, title, body }) => (
+          <article class="hairline rounded-xl border border-line bg-bg-raised p-7">
+            <Icon class="size-5 text-fg-muted" aria-hidden="true" />
+            <h3 class="mt-6 text-lg">{title}</h3>
+            <p class="mt-2 text-[0.9375rem] leading-relaxed text-fg-muted">{body}</p>
+          </article>
+        ))}
+      </div>
+
+      <dl class="mt-16 grid gap-10 border-t border-line pt-12 md:grid-cols-3" data-reveal="stagger">
+        {principles.map((p) => (
+          <div>
+            <dt class="text-lg">{p.title}</dt>
+            <dd class="mt-2 text-[0.9375rem] leading-relaxed text-fg-muted">{p.body}</dd>
+          </div>
+        ))}
+      </dl>
+    </Section>
+
+    <Section
+      id="download"
+      title="Runs everywhere."
+      lead={`macOS, Windows, Linux, Android and iOS. Builds are published on GitHub Releases. Current version ${manifest.version}.`}
+      class="border-t border-line"
+    >
+      <div data-reveal>
+        <Downloader platforms={platforms} />
+      </div>
+
+      <p class="mt-8 text-sm text-fg-subtle" data-reveal>
+        <a
+          href={RELEASES_URL}
+          class="underline underline-offset-4 transition-colors duration-300 hover:text-fg"
+          target="_blank"
+          rel="noopener"
+        >
+          All releases
+        </a>
+        <span class="mx-2">/</span>
+        <a
+          href={CHECKSUMS_URL}
+          class="underline underline-offset-4 transition-colors duration-300 hover:text-fg"
+        >
+          SHA256SUMS
+        </a>
+      </p>
+    </Section>
+  </main>
+
+  <Footer />
+</Base>

@@ -1,0 +1,285 @@
+{
+  "schema": 2,
+  "product": "Concat",
+  "version": "0.2.3",
+  "tag": "v0.2.3",
+  "models_release": "models-v1",
+  "binaries": {
+    "macos": {
+      "arm64": {
+        "dmg": {
+          "file": "Concat-0.2.3-macos-arm64.dmg",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.3/Concat-0.2.3-macos-arm64.dmg",
+          "bytes": 47685757,
+          "sha256": "f63e897d21f0486e15fd3dcbc7961e9eb7413295167db40128b64c6ea185d488"
+        }
+      },
+      "x86_64": {
+        "dmg": {
+          "file": "Concat-0.2.3-macos-x86_64.dmg",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.3/Concat-0.2.3-macos-x86_64.dmg",
+          "bytes": 68735099,
+          "sha256": "022c4ffe7cdc1317ef4e831fab42a25f785addc8b3c65866a7db0c1e71bf6bf7"
+        }
+      }
+    },
+    "linux": {
+      "x86_64": {
+        "deb": {
+          "file": "Concat-0.2.3-linux-x86_64.deb",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.3/Concat-0.2.3-linux-x86_64.deb",
+          "bytes": 132184524,
+          "sha256": "01d2fb58521038a426429f1543ab2ec2359aa428a9dfd1b8948ce97b7d79c6c3"
+        },
+        "rpm": {
+          "file": "Concat-0.2.3-linux-x86_64.rpm",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.3/Concat-0.2.3-linux-x86_64.rpm",
+          "bytes": 131411918,
+          "sha256": "82a11eb7630a4d83d3008e9f3574d9dc59800e8621807950e080141af5b9e3cd"
+        },
+        "appimage": {
+          "file": "Concat-0.2.3-linux-x86_64.AppImage",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.3/Concat-0.2.3-linux-x86_64.AppImage",
+          "bytes": 118295032,
+          "sha256": "2019e3bda03c5d44d23fb2b3e051e8d3db6b5fd5616e0c2dc17c9bdec6b247d8"
+        }
+      },
+      "aarch64": {
+        "deb": {
+          "file": "Concat-0.2.3-linux-aarch64.deb",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.3/Concat-0.2.3-linux-aarch64.deb",
+          "bytes": 121205468,
+          "sha256": "3bd3f6bcfb165141b50b1ca2d3ab1b070f7e5a0e9f86a3c9ec121c4b5085a220"
+        },
+        "rpm": {
+          "file": "Concat-0.2.3-linux-aarch64.rpm",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.3/Concat-0.2.3-linux-aarch64.rpm",
+          "bytes": 120175851,
+          "sha256": "2f4eac5f3ab79130c4825a4fe4ec3843179774c908fb744cb32a6ff87749d87a"
+        },
+        "appimage": {
+          "file": "Concat-0.2.3-linux-aarch64.AppImage",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.3/Concat-0.2.3-linux-aarch64.AppImage",
+          "bytes": 106244616,
+          "sha256": "694ed43f41fc38748a0687c431d47fc8db61a3c8ee153113cb11ded4e1e4a2a9"
+        }
+      }
+    },
+    "windows": {
+      "x86_64": {
+        "setup": {
+          "file": "Concat-0.2.3-windows-x86_64-setup.exe",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.3/Concat-0.2.3-windows-x86_64-setup.exe",
+          "bytes": 80631235,
+          "sha256": "5b0b8ff24160a43cd3a515227333a48e81e4c2a375f64cd1617aef4ddfa80228"
+        },
+        "msi": {
+          "file": "Concat-0.2.3-windows-x86_64.msi",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.3/Concat-0.2.3-windows-x86_64.msi",
+          "bytes": 97148928,
+          "sha256": "ebc382a31e906ca0bf44c72d1beac988c8a8cca8d8fdef1002eb0013e50f6d5c"
+        }
+      },
+      "aarch64": {
+        "setup": {
+          "file": "Concat-0.2.3-windows-aarch64-setup.exe",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.3/Concat-0.2.3-windows-aarch64-setup.exe",
+          "bytes": 61616422,
+          "sha256": "3f2aa15433d2892f4e94bb99941ff6a47a4237c6089a7c42bba7db30d643690d"
+        },
+        "msi": {
+          "file": "Concat-0.2.3-windows-aarch64.msi",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.3/Concat-0.2.3-windows-aarch64.msi",
+          "bytes": 72069120,
+          "sha256": "68a4d5a5ff4a095aa4e7013575dc0bd6ceb95115786e649e1710d7e0667db62a"
+        }
+      }
+    },
+    "android": {
+      "arm64": {
+        "apk": {
+          "file": "Concat-0.2.3-android-arm64.apk",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.3/Concat-0.2.3-android-arm64.apk",
+          "bytes": 53212200,
+          "sha256": "3a9637fbcb977718466c86ad9eed373b7ad79b1a8d2a9915924ec005b918ccbf"
+        }
+      }
+    },
+    "ios": {
+      "arm64": {
+        "ipa": {
+          "file": "Concat-0.2.3-ios-arm64.ipa",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.3/Concat-0.2.3-ios-arm64.ipa",
+          "bytes": 51229508,
+          "sha256": "add49b261d9390e3f7e5c3d1ec564793c8351982d47e6f50f3eb2dde4867a9dc"
+        }
+      }
+    }
+  },
+  "models": {
+    "cutout-person": {
+      "family": "cutout",
+      "file": "rvm-mobilenetv3.onnx",
+      "bytes": 14975696,
+      "sha256": "88d4531297118f595bf2fd60f6f566aec2e559393802d1f436c380f0cbbd2828",
+      "licence": "GPL-3.0",
+      "url": "https://github.com/jub0t/Concat/releases/download/models-v1/rvm-mobilenetv3.onnx",
+      "upstream": "https://github.com/PeterL1n/RobustVideoMatting/releases/download/v1.0.0/rvm_mobilenetv3_fp32.onnx",
+      "sources": [
+        "https://github.com/jub0t/Concat/releases/download/models-v1/rvm-mobilenetv3.onnx",
+        "https://github.com/PeterL1n/RobustVideoMatting/releases/download/v1.0.0/rvm_mobilenetv3_fp32.onnx"
+      ]
+    },
+    "cutout-object": {
+      "family": "cutout",
+      "file": "isnet-general-use.onnx",
+      "bytes": 178648008,
+      "sha256": "",
+      "licence": "Apache-2.0",
+      "url": "https://github.com/jub0t/Concat/releases/download/models-v1/isnet-general-use.onnx",
+      "upstream": "https://github.com/danielgatis/rembg/releases/download/v0.0.0/isnet-general-use.onnx",
+      "sources": [
+        "https://github.com/jub0t/Concat/releases/download/models-v1/isnet-general-use.onnx",
+        "https://github.com/danielgatis/rembg/releases/download/v0.0.0/isnet-general-use.onnx"
+      ]
+    },
+    "cutout-brush-encoder": {
+      "family": "cutout",
+      "file": "slimsam-77-encoder.onnx",
+      "bytes": 23276014,
+      "sha256": "",
+      "licence": "Apache-2.0",
+      "url": "https://github.com/jub0t/Concat/releases/download/models-v1/slimsam-77-encoder.onnx",
+      "upstream": "https://huggingface.co/Xenova/slimsam-77-uniform/resolve/main/onnx/vision_encoder.onnx",
+      "sources": [
+        "https://github.com/jub0t/Concat/releases/download/models-v1/slimsam-77-encoder.onnx",
+        "https://huggingface.co/Xenova/slimsam-77-uniform/resolve/main/onnx/vision_encoder.onnx",
+        "https://hf-mirror.com/Xenova/slimsam-77-uniform/resolve/main/onnx/vision_encoder.onnx"
+      ]
+    },
+    "cutout-brush-decoder": {
+      "family": "cutout",
+      "file": "slimsam-77-decoder.onnx",
+      "bytes": 16557892,
+      "sha256": "",
+      "licence": "Apache-2.0",
+      "url": "https://github.com/jub0t/Concat/releases/download/models-v1/slimsam-77-decoder.onnx",
+      "upstream": "https://huggingface.co/Xenova/slimsam-77-uniform/resolve/main/onnx/prompt_encoder_mask_decoder.onnx",
+      "sources": [
+        "https://github.com/jub0t/Concat/releases/download/models-v1/slimsam-77-decoder.onnx",
+        "https://huggingface.co/Xenova/slimsam-77-uniform/resolve/main/onnx/prompt_encoder_mask_decoder.onnx",
+        "https://hf-mirror.com/Xenova/slimsam-77-uniform/resolve/main/onnx/prompt_encoder_mask_decoder.onnx"
+      ]
+    },
+    "kokoro-int8-multi-lang-v1_0": {
+      "family": "tts",
+      "file": "kokoro-int8-multi-lang-v1_0.tar.bz2",
+      "bytes": 131839838,
+      "sha256": "",
+      "licence": "Apache-2.0",
+      "url": "https://github.com/jub0t/Concat/releases/download/models-v1/kokoro-int8-multi-lang-v1_0.tar.bz2",
+      "upstream": "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-int8-multi-lang-v1_0.tar.bz2",
+      "sources": [
+        "https://github.com/jub0t/Concat/releases/download/models-v1/kokoro-int8-multi-lang-v1_0.tar.bz2",
+        "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-int8-multi-lang-v1_0.tar.bz2"
+      ]
+    },
+    "kokoro-multi-lang-v1_0": {
+      "family": "tts",
+      "file": "kokoro-multi-lang-v1_0.tar.bz2",
+      "bytes": 349418188,
+      "sha256": "",
+      "licence": "Apache-2.0",
+      "url": "https://github.com/jub0t/Concat/releases/download/models-v1/kokoro-multi-lang-v1_0.tar.bz2",
+      "upstream": "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-multi-lang-v1_0.tar.bz2",
+      "sources": [
+        "https://github.com/jub0t/Concat/releases/download/models-v1/kokoro-multi-lang-v1_0.tar.bz2",
+        "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-multi-lang-v1_0.tar.bz2"
+      ]
+    },
+    "whisper-tiny.en": {
+      "family": "whisper",
+      "file": "ggml-tiny.en.bin",
+      "bytes": 77700000,
+      "sha256": "",
+      "licence": "MIT",
+      "url": "https://github.com/jub0t/Concat/releases/download/models-v1/ggml-tiny.en.bin",
+      "upstream": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.en.bin",
+      "sources": [
+        "https://github.com/jub0t/Concat/releases/download/models-v1/ggml-tiny.en.bin",
+        "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.en.bin",
+        "https://hf-mirror.com/ggerganov/whisper.cpp/resolve/main/ggml-tiny.en.bin"
+      ]
+    },
+    "whisper-tiny": {
+      "family": "whisper",
+      "file": "ggml-tiny.bin",
+      "bytes": 77700000,
+      "sha256": "",
+      "licence": "MIT",
+      "url": "https://github.com/jub0t/Concat/releases/download/models-v1/ggml-tiny.bin",
+      "upstream": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.bin",
+      "sources": [
+        "https://github.com/jub0t/Concat/releases/download/models-v1/ggml-tiny.bin",
+        "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.bin",
+        "https://hf-mirror.com/ggerganov/whisper.cpp/resolve/main/ggml-tiny.bin"
+      ]
+    },
+    "whisper-base.en": {
+      "family": "whisper",
+      "file": "ggml-base.en.bin",
+      "bytes": 147400000,
+      "sha256": "",
+      "licence": "MIT",
+      "url": "https://github.com/jub0t/Concat/releases/download/models-v1/ggml-base.en.bin",
+      "upstream": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin",
+      "sources": [
+        "https://github.com/jub0t/Concat/releases/download/models-v1/ggml-base.en.bin",
+        "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin",
+        "https://hf-mirror.com/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin"
+      ]
+    },
+    "whisper-base": {
+      "family": "whisper",
+      "file": "ggml-base.bin",
+      "bytes": 147500000,
+      "sha256": "",
+      "licence": "MIT",
+      "url": "https://github.com/jub0t/Concat/releases/download/models-v1/ggml-base.bin",
+      "upstream": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin",
+      "sources": [
+        "https://github.com/jub0t/Concat/releases/download/models-v1/ggml-base.bin",
+        "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin",
+        "https://hf-mirror.com/ggerganov/whisper.cpp/resolve/main/ggml-base.bin"
+      ]
+    },
+    "whisper-small.en": {
+      "family": "whisper",
+      "file": "ggml-small.en.bin",
+      "bytes": 487600000,
+      "sha256": "",
+      "licence": "MIT",
+      "url": "https://github.com/jub0t/Concat/releases/download/models-v1/ggml-small.en.bin",
+      "upstream": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.en.bin",
+      "sources": [
+        "https://github.com/jub0t/Concat/releases/download/models-v1/ggml-small.en.bin",
+        "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.en.bin",
+        "https://hf-mirror.com/ggerganov/whisper.cpp/resolve/main/ggml-small.en.bin"
+      ]
+    },
+    "whisper-small": {
+      "family": "whisper",
+      "file": "ggml-small.bin",
+      "bytes": 487600000,
+      "sha256": "",
+      "licence": "MIT",
+      "url": "https://github.com/jub0t/Concat/releases/download/models-v1/ggml-small.bin",
+      "upstream": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.bin",
+      "sources": [
+        "https://github.com/jub0t/Concat/releases/download/models-v1/ggml-small.bin",
+        "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.bin",
+        "https://hf-mirror.com/ggerganov/whisper.cpp/resolve/main/ggml-small.bin"
+      ]
+    }
+  }
+}

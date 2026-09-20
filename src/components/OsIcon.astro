@@ -1,0 +1,31 @@
+---
+/**
+ * Monochrome platform marks as inline SVG (build-time only, no client JS).
+ * Apple, Tux and the Android robot come from simple-icons. Simple Icons has no Windows mark
+ * (removed at Microsoft's request), so the four-pane logo is drawn by hand.
+ * iOS reuses the Apple logo, which is how Apple itself labels iPhone downloads.
+ */
+import { siAndroid, siApple, siLinux } from 'simple-icons';
+import type { PlatformId } from '@/lib/releases';
+
+interface Props {
+  platform: PlatformId;
+  class?: string;
+}
+
+const { platform, class: className } = Astro.props;
+
+const WINDOWS = 'M3 3h8.5v8.5H3zM12.5 3H21v8.5h-8.5zM3 12.5h8.5V21H3zM12.5 12.5H21V21h-8.5z';
+
+const paths: Record<PlatformId, string> = {
+  windows: WINDOWS,
+  macos: siApple.path,
+  ios: siApple.path,
+  linux: siLinux.path,
+  android: siAndroid.path,
+};
+---
+
+<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class={className}>
+  <path d={paths[platform]}></path>
+</svg>

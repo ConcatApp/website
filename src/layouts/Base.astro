@@ -1,0 +1,64 @@
+---
+import '@/styles/global.css';
+import 'lenis/dist/lenis.css';
+import { Font } from 'astro:assets';
+import { ClientRouter } from 'astro:transitions';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Path or absolute URL to a 1200x630 social image. */
+  image?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = 'The free, open-source CapCut replacement. Runs entirely on your machine. No watermarks, no account, no subscription.',
+  image,
+  noindex = false,
+} = Astro.props;
+
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
+const ogImage = image ? (Astro.site ? new URL(image, Astro.site).toString() : image) : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Concat" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <meta name="theme-color" content="#0f0f11" />
+
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="generator" content={Astro.generator} />
+
+    <Font cssVariable="--font-hanken" preload />
+    <ClientRouter />
+
+    <!-- Marks JS availability before first paint so reveal targets can start hidden. -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+  <body class="bg-bg text-fg font-sans">
+    <slot />
+    <div class="grain-overlay" aria-hidden="true"></div>
+    <script>
+      import '@/scripts/scroll';
+    </script>
+  </body>
+</html>

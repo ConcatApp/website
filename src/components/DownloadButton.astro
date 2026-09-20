@@ -1,0 +1,88 @@
+---
+/**
+ * Hero call to action. The server renders a safe default (Windows x64); a small script relabels
+ * and repoints it to the visitor's platform and, where detectable, architecture using the JSON
+ * map below. Every link is a GitHub Releases asset.
+ */
+import Button from '@/components/Button.astro';
+import { Download } from '@lucide/astro';
+import { formatBytes, type PlatformModel } from '@/lib/releases';
+
+interface Props {
+  platforms: PlatformModel[];
+  version: string;
+}
+
+const { platforms, version } = Astro.props;
+
+type Entry = { url: string; size: string };
+const map = Object.fromEntries(
+  platforms.map((p) => [
+    p.id,
+    {
+      name: p.name,
+      defaultArch: p.arches[0]!.id,
+      arches: Object.fromEntries(
+        p.arches.map((a) => {
+          const f = a.formats[0]!;
+          return [a.id, { url: f.binary.url, size: formatBytes(f.binary.bytes) } satisfies Entry];
+        }),
+      ),
+    },
+  ]),
+);
+const initial = map.windows ?? Object.values(map)[0];
+const initialFile = initial ? initial.arches[initial.defaultArch] : undefined;
+---
+
+<div class="flex flex-col items-center gap-4">
+  <div class="flex flex-wrap items-center justify-center gap-3">
+    <Button href={initialFile?.url ?? '#download'} size="lg" data-download-primary>
+      <Download class="size-4" aria-hidden="true" />
+      <span data-download-label>Download{initial ? ` for ${initial.name}` : ''}</span>
+    </Button>
+    <Button href="#download" variant="secondary" size="lg">
+      All platforms
+    </Button>
+  </div>
+  <p class="text-sm text-fg-subtle">
+    Version {version}
+    <span data-download-size>{initialFile ? `, ${initialFile.size}` : ''}</span>. Free and open
+    source under AGPL-3.0.
+  </p>
+</div>
+
+<script type="application/json" id="concat-downloads" set:html={JSON.stringify(map)}></script>
+<script>
+  import { detectArch, detectPlatform } from '@/scripts/platform';
+
+  type Entry = { url: string; size: string };
+  type Platform = { name: string; defaultArch: string; arches: Record<string, Entry> };
+
+  async function apply() {
+    const data = document.getElementById('concat-downloads');
+    const button = document.querySelector<HTMLAnchorElement>('[data-download-primary]');
+    if (!data || !button) return;
+
+    const map = JSON.parse(data.textContent || '{}') as Record<string, Platform>;
+    const os = detectPlatform();
+    const platform = map[os];
+    if (!platform) return;
+
+    const label = button.querySelector('[data-download-label]');
+    const size = document.querySelector('[data-download-size]');
+    const point = (arch: string) => {
+      const file = platform.arches[arch] ?? platform.arches[platform.defaultArch];
+      if (!file) return;
+      button.href = file.url;
+      if (label) label.textContent = `Download for ${platform.name}`;
+      if (size) size.textContent = `, ${file.size}`;
+    };
+
+    point(platform.defaultArch);
+    const arch = await detectArch(os);
+    if (arch) point(arch);
+  }
+
+  document.addEventListener('astro:page-load', () => void apply());
+</script>

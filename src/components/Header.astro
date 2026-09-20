@@ -1,0 +1,44 @@
+---
+import { siGithub } from 'simple-icons';
+import Container from '@/components/Container.astro';
+import Button from '@/components/Button.astro';
+import { REPO_URL } from '@/lib/releases';
+
+const links = [
+  { href: '#features', label: 'Features' },
+  { href: '#download', label: 'Download' },
+];
+---
+
+<header class="fixed inset-x-0 top-0 z-40">
+  <Container as="nav" class="flex h-16 items-center justify-between">
+    <a href="/" class="text-[0.9375rem] font-semibold tracking-tight">
+      Concat
+    </a>
+
+    <div class="hidden items-center gap-8 text-sm text-fg-muted md:flex">
+      {links.map((link) => (
+        <a href={link.href} class="transition-colors duration-300 hover:text-fg">
+          {link.label}
+        </a>
+      ))}
+    </div>
+
+    <div class="flex items-center gap-4">
+      <a
+        href={REPO_URL}
+        target="_blank"
+        rel="noopener"
+        aria-label="Concat on GitHub"
+        class="text-fg-muted transition-colors duration-300 hover:text-fg"
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="size-5">
+          <path d={siGithub.path}></path>
+        </svg>
+      </a>
+      <Button href="#download" size="sm">
+        Download
+      </Button>
+    </div>
+  </Container>
+</header>

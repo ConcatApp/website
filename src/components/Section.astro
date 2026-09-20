@@ -1,0 +1,25 @@
+---
+import { cn } from '@/lib/cn';
+import Container from '@/components/Container.astro';
+
+interface Props {
+  id?: string;
+  title?: string;
+  lead?: string;
+  class?: string;
+}
+
+const { id, title, lead, class: className } = Astro.props;
+---
+
+<section id={id} class={cn('section-y', className)}>
+  <Container>
+    {(title || lead) && (
+      <header class="mb-14 max-w-2xl" data-reveal>
+        {title && <h2 class="text-display-sm">{title}</h2>}
+        {lead && <p class="text-lead mt-4 text-fg-muted">{lead}</p>}
+      </header>
+    )}
+    <slot />
+  </Container>
+</section>

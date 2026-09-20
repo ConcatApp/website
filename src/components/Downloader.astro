@@ -1,0 +1,209 @@
+---
+/**
+ * Two-step download picker fed by the release manifest.
+ *   1. Operating system, as a row of cards with the platform mark
+ *   2. Architecture, when the platform ships more than one (x64 / ARM64, Apple Silicon / Intel)
+ *   3. The matching files: primary format first, alternatives beside it, filename + sha256 below
+ * Both steps are pre-selected from what the browser reveals about the machine; a click overrides.
+ * Everything is rendered server-side; the script only toggles which panels are visible.
+ */
+import Button from '@/components/Button.astro';
+import OsIcon from '@/components/OsIcon.astro';
+import { Download } from '@lucide/astro';
+import { formatBytes, type PlatformModel } from '@/lib/releases';
+
+interface Props {
+  platforms: PlatformModel[];
+}
+
+const { platforms } = Astro.props;
+---
+
+<div data-downloader class="hairline rounded-2xl border border-line bg-bg-raised p-6 md:p-10">
+  <div>
+    <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+      <p class="text-sm text-fg-muted">Operating system</p>
+      <p class="text-xs text-fg-subtle" data-detected hidden></p>
+    </div>
+    <div
+      role="radiogroup"
+      aria-label="Operating system"
+      class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
+    >
+      {platforms.map((p) => (
+        <button
+          type="button"
+          role="radio"
+          aria-checked="false"
+          data-os={p.id}
+          class="group flex cursor-pointer flex-col items-start gap-5 rounded-xl border border-line bg-bg p-5 text-left transition-[border-color,background-color] duration-300 ease-out-expo hover:border-line-strong aria-checked:hairline aria-checked:border-fg/25 aria-checked:bg-bg-overlay"
+        >
+          <OsIcon
+            platform={p.id}
+            class="size-7 text-fg-muted transition-colors duration-300 group-hover:text-fg group-aria-checked:text-fg"
+          />
+          <span class="flex flex-col gap-1">
+            <span class="text-[0.9375rem] font-medium text-fg">{p.name}</span>
+            <span class="text-xs leading-snug text-fg-subtle">{p.summary}</span>
+          </span>
+        </button>
+      ))}
+    </div>
+  </div>
+
+  {platforms
+    .filter((p) => p.arches.length > 1)
+    .map((p) => (
+      <div data-arch-panel={p.id} hidden class="mt-8 border-t border-line pt-8">
+        <p class="text-sm text-fg-muted">{p.archPrompt}</p>
+        <div
+          role="radiogroup"
+          aria-label={`${p.name} ${p.archPrompt.toLowerCase()}`}
+          class="mt-3 flex flex-wrap gap-2"
+        >
+          {p.arches.map((a) => (
+            <button
+              type="button"
+              role="radio"
+              aria-checked="false"
+              data-os={p.id}
+              data-arch={a.id}
+              data-arch-label={a.label}
+              class="chip"
+            >
+              {a.label}
+              {a.hint && <span class="chip-hint">{a.hint}</span>}
+            </button>
+          ))}
+        </div>
+      </div>
+    ))}
+
+  {platforms.flatMap((p) =>
+    p.arches.map((a) => (
+      <div data-file-panel={`${p.id}:${a.id}`} hidden class="mt-8 border-t border-line pt-8">
+        <div class="flex flex-wrap gap-3">
+          {a.formats.map((f, i) => (
+            <Button href={f.binary.url} variant={i === 0 ? 'primary' : 'secondary'}>
+              <Download class="size-4" aria-hidden="true" />
+              {f.label}
+              <span class={i === 0 ? 'text-bg/60' : 'text-fg-subtle'}>
+                {formatBytes(f.binary.bytes)}
+              </span>
+            </Button>
+          ))}
+        </div>
+
+        <dl class="mt-6 space-y-3 text-xs">
+          {a.formats.map((f) => (
+            <div class="grid gap-1 lg:grid-cols-[auto_1fr] lg:gap-x-6">
+              <dt class="font-mono text-fg-muted">{f.binary.file}</dt>
+              <dd class="font-mono break-all text-fg-subtle">sha256 {f.binary.sha256}</dd>
+            </div>
+          ))}
+        </dl>
+
+        {p.note && (
+          <p class="mt-6 max-w-2xl text-sm leading-relaxed text-fg-muted">
+            {p.note}
+            {p.command && (
+              <code class="mt-2 block w-fit rounded-md border border-line bg-bg px-3 py-2 font-mono text-xs text-fg select-all">
+                {p.command}
+              </code>
+            )}
+          </p>
+        )}
+      </div>
+    )),
+  )}
+</div>
+
+<script>
+  import { animate } from 'motion';
+  import { detectArch, detectPlatform } from '@/scripts/platform';
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function setup(root: HTMLElement) {
+    const osButtons = Array.from(
+      root.querySelectorAll<HTMLButtonElement>('[data-os]:not([data-arch])'),
+    );
+    const archButtons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-arch]'));
+    const archPanels = Array.from(root.querySelectorAll<HTMLElement>('[data-arch-panel]'));
+    const filePanels = Array.from(root.querySelectorAll<HTMLElement>('[data-file-panel]'));
+    const detectedNote = root.querySelector<HTMLElement>('[data-detected]');
+    const remembered: Record<string, string> = {};
+    let touched = false;
+
+    function reveal(panel: HTMLElement) {
+      if (!panel.hidden) return;
+      panel.hidden = false;
+      if (reducedMotion.matches) return;
+      animate(panel, { opacity: [0, 1], y: [10, 0] }, { duration: 0.5, ease: [0.16, 1, 0.3, 1] });
+    }
+
+    function select(os: string, arch?: string) {
+      const archesForOs = archButtons.filter((b) => b.dataset.os === os);
+      const firstArch = filePanels
+        .find((p) => p.dataset.filePanel?.startsWith(`${os}:`))
+        ?.dataset.filePanel?.split(':')[1];
+      const archId = arch ?? remembered[os] ?? firstArch;
+      if (!archId) return;
+      remembered[os] = archId;
+
+      for (const b of osButtons) b.setAttribute('aria-checked', String(b.dataset.os === os));
+      for (const b of archesForOs) {
+        b.setAttribute('aria-checked', String(b.dataset.arch === archId));
+      }
+      for (const p of archPanels) {
+        if (p.dataset.archPanel === os) reveal(p);
+        else p.hidden = true;
+      }
+      for (const p of filePanels) {
+        if (p.dataset.filePanel === `${os}:${archId}`) reveal(p);
+        else p.hidden = true;
+      }
+      root.dataset.platform = os;
+      root.dataset.arch = archId;
+    }
+
+    for (const b of osButtons) {
+      b.addEventListener('click', () => {
+        touched = true;
+        select(b.dataset.os!);
+      });
+    }
+    for (const b of archButtons) {
+      b.addEventListener('click', () => {
+        touched = true;
+        select(b.dataset.os!, b.dataset.arch);
+      });
+    }
+
+    // Detection: OS synchronously, architecture asynchronously (Client Hints return a promise).
+    // A click made in the meantime is never overridden.
+    const os = detectPlatform();
+    const known = osButtons.some((b) => b.dataset.os === os);
+    select(known ? os : osButtons[0]!.dataset.os!);
+
+    if (known) {
+      void detectArch(os).then((arch) => {
+        if (touched) return;
+        const osName = osButtons.find((b) => b.dataset.os === os)?.innerText.split('\n')[0];
+        const archButton = arch
+          ? archButtons.find((b) => b.dataset.os === os && b.dataset.arch === arch)
+          : undefined;
+        if (archButton) select(os, arch);
+        if (detectedNote && osName) {
+          const parts = [osName, archButton?.dataset.archLabel].filter(Boolean);
+          detectedNote.textContent = `Detected ${parts.join(', ')}`;
+          detectedNote.hidden = false;
+        }
+      });
+    }
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    for (const root of document.querySelectorAll<HTMLElement>('[data-downloader]')) setup(root);
+  });
+</script>
