@@ -1,0 +1,26 @@
+---
+import Base from '@/layouts/Base.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Container from '@/components/Container.astro';
+import Button from '@/components/Button.astro';
+---
+
+<Base title="Page not found" noindex>
+  <Header />
+
+  <main class="flex min-h-dvh flex-col justify-center">
+    <Container class="flex flex-col items-start gap-6 py-32">
+      <p class="text-sm text-fg-subtle">404</p>
+      <h1 class="text-display-sm">There is nothing at this address.</h1>
+      <p class="text-lead max-w-md text-fg-muted">
+        The page may have moved, or the link was mistyped.
+      </p>
+      <Button href="/" variant="secondary">
+        Back to Concat
+      </Button>
+    </Container>
+  </main>
+
+  <Footer />
+</Base>

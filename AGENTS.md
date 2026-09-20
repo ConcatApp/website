@@ -59,3 +59,10 @@ Theme is dark only. Premium and restrained. Inspiration: spline.design, diffusio
 - Class merging via `cn()`. Run `npm run format` before committing.
 - Keep `docs/RESOURCES.md` updated when adopting a new tool or reference.
 - Commits are authored by the repo owner only. Never add Co-Authored-By or any AI attribution trailers.
+
+## Deploy
+
+Cloudflare Workers via Workers Builds (GitHub-connected). Build command `npm run build`, deploy command
+`npx wrangler deploy`. `wrangler.jsonc` serves `dist/` as static assets under the Worker name `concat-website`;
+that name must match the Worker in the Cloudflare dashboard. No Astro adapter is used and none should be
+added: the site is fully static. `npm run deploy` does the same from a machine that is logged in to Wrangler.

@@ -1,0 +1,13 @@
+// Cloudflare Workers deployment: the built site in dist/ is served as static assets.
+// No Worker script and no Astro adapter are needed for a static Astro build.
+// The name must match the Worker configured in Cloudflare (Workers Builds expects "concat-website").
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "concat-website",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+  },
+}

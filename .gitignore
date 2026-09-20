@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # local screenshots from scripts/screenshot.mjs
 .screenshots/
+
+# wrangler local state
+.wrangler/

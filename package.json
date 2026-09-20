@@ -14,7 +14,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "assets:prepare": "node scripts/prepare-assets.mjs",
-    "shots": "node scripts/screenshot.mjs"
+    "shots": "node scripts/screenshot.mjs",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "@lucide/astro": "^1.47.0",
@@ -37,6 +38,7 @@
     "prettier-plugin-tailwindcss": "^0.8.1",
     "puppeteer-core": "^25.11.0",
     "simple-icons": "^16.32.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.135.0"
   }
 }
