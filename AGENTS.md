@@ -63,6 +63,6 @@ Theme is dark only. Premium and restrained. Inspiration: spline.design, diffusio
 ## Deploy
 
 Cloudflare Workers via Workers Builds (GitHub-connected). Build command `npm run build`, deploy command
-`npx wrangler deploy`. `wrangler.jsonc` serves `dist/` as static assets under the Worker name `concat-website`;
+`npx wrangler deploy`. `wrangler.jsonc` serves `dist/` as static assets under the Worker name `concatenate` (live at concatenate.jub0t.workers.dev);
 that name must match the Worker in the Cloudflare dashboard. No Astro adapter is used and none should be
 added: the site is fully static. `npm run deploy` does the same from a machine that is logged in to Wrangler.

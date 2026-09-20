@@ -38,7 +38,7 @@ Design rules and product facts live in `CLAUDE.md`.
 ## Deploy
 
 Cloudflare Workers, static assets only. Workers Builds runs `npm run build` then `npx wrangler deploy`;
-`wrangler.jsonc` points at `dist/` and names the Worker `concat-website`. From a logged-in machine:
+`wrangler.jsonc` points at `dist/` and names the Worker `concatenate`. From a logged-in machine:
 
 ```sh
 npm run deploy
