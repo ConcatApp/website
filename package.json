@@ -15,7 +15,8 @@
     "format:check": "prettier --check .",
     "assets:prepare": "node scripts/prepare-assets.mjs",
     "shots": "node scripts/screenshot.mjs",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && wrangler deploy",
+    "deploy:pages": "npm run build && wrangler pages deploy dist --project-name concatenate --branch main"
   },
   "dependencies": {
     "@lucide/astro": "^1.47.0",

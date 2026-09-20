@@ -1,0 +1,55 @@
+# Publishes the static build to the Cloudflare Pages project "concatenate" (concatenate.pages.dev)
+# on every push to main. The Pages project was created by direct upload, so this workflow is what
+# keeps it in sync with the repository.
+#
+# Required repository secret: CLOUDFLARE_API_TOKEN (Account > Cloudflare Pages > Edit).
+# Until it exists the deploy step is skipped with a notice; the build still runs.
+
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Check for Cloudflare credentials
+        id: creds
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::notice::CLOUDFLARE_API_TOKEN is not set, skipping the Pages deploy. Add it under Settings > Secrets and variables > Actions."
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy to Cloudflare Pages
+        if: steps.creds.outputs.present == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # Account ID is not a secret; it appears in every dashboard URL.
+          accountId: 62247a4e07f9eacfaffe8e8bab573a72
+          command: pages deploy dist --project-name concatenate --branch main --commit-dirty=true

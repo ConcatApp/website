@@ -62,7 +62,13 @@ Theme is dark only. Premium and restrained. Inspiration: spline.design, diffusio
 
 ## Deploy
 
-Cloudflare Workers via Workers Builds (GitHub-connected). Build command `npm run build`, deploy command
-`npx wrangler deploy`. `wrangler.jsonc` serves `dist/` as static assets under the Worker name `concatenate` (live at concatenate.jub0t.workers.dev);
-that name must match the Worker in the Cloudflare dashboard. No Astro adapter is used and none should be
-added: the site is fully static. `npm run deploy` does the same from a machine that is logged in to Wrangler.
+Two Cloudflare targets are fed from this repo; the site is fully static and uses no Astro adapter.
+
+- **Workers** (concatenate.jub0t.workers.dev): Workers Builds is connected to GitHub and runs
+  `npm run build` then `npx wrangler deploy`. `wrangler.jsonc` serves `dist/` as static assets under the
+  Worker name `concatenate`. `npm run deploy` does the same from a logged-in machine.
+- **Pages** (concatenate.pages.dev): a direct-upload project, so Git pushes do not reach it on their own.
+  `.github/workflows/deploy-pages.yml` publishes `dist/` on every push to main once the repository secret
+  `CLOUDFLARE_API_TOKEN` exists (Account > Cloudflare Pages > Edit). `npm run deploy:pages` does it locally.
+  `wrangler pages deploy` warns that `wrangler.jsonc` lacks `pages_build_output_dir`; that is expected, the
+  file is the Workers config and the warning is harmless.

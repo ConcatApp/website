@@ -37,9 +37,9 @@ Design rules and product facts live in `CLAUDE.md`.
 
 ## Deploy
 
-Cloudflare Workers, static assets only. Workers Builds runs `npm run build` then `npx wrangler deploy`;
-`wrangler.jsonc` points at `dist/` and names the Worker `concatenate`. From a logged-in machine:
+Static site, no adapter. Two Cloudflare targets:
 
-```sh
-npm run deploy
-```
+- **Workers**, concatenate.jub0t.workers.dev: Workers Builds runs `npm run build` and `npx wrangler deploy`
+  using `wrangler.jsonc`. Locally: `npm run deploy`.
+- **Pages**, concatenate.pages.dev: `.github/workflows/deploy-pages.yml` publishes on push to main once the
+  `CLOUDFLARE_API_TOKEN` secret is set. Locally: `npm run deploy:pages`.
