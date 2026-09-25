@@ -43,3 +43,7 @@ Static site, no adapter. Two Cloudflare targets:
   using `wrangler.jsonc`. Locally: `npm run deploy`.
 - **Pages**, concatenate.pages.dev: `.github/workflows/deploy-pages.yml` publishes on push to main once the
   `CLOUDFLARE_API_TOKEN` secret is set. Locally: `npm run deploy:pages`.
+
+### Roadmap
+
+Please refer to [ROADMAP.MD](./ROADMAP.MD) to see what's planned for the future.
