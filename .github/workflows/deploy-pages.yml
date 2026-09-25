@@ -3,7 +3,8 @@
 # keeps it in sync with the repository.
 #
 # Required repository secret: CLOUDFLARE_API_TOKEN (Account > Cloudflare Pages > Edit).
-# Until it exists the deploy step is skipped with a notice; the build still runs.
+# The run fails until it exists. It used to skip the deploy with a notice and pass, which left
+# concatenate.pages.dev on a stale build while every run showed green.
 
 name: Deploy to Cloudflare Pages
 
@@ -22,6 +23,15 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: Require the Cloudflare API token
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN is not set, so concatenate.pages.dev cannot be updated. Add it under Settings > Secrets and variables > Actions (create it at Cloudflare: Account > Cloudflare Pages > Edit), then re-run this workflow."
+            exit 1
+          fi
+
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
@@ -33,23 +43,27 @@ jobs:
 
       - run: npm run build
 
-      - name: Check for Cloudflare credentials
-        id: creds
-        env:
-          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: |
-          if [ -z "$TOKEN" ]; then
-            echo "::notice::CLOUDFLARE_API_TOKEN is not set, skipping the Pages deploy. Add it under Settings > Secrets and variables > Actions."
-            echo "present=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "present=true" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Deploy to Cloudflare Pages
-        if: steps.creds.outputs.present == 'true'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           # Account ID is not a secret; it appears in every dashboard URL.
           accountId: 62247a4e07f9eacfaffe8e8bab573a72
           command: pages deploy dist --project-name concatenate --branch main --commit-dirty=true
+
+      # Pages serves index.html byte for byte, so production must hash the same as what was just
+      # built. This catches a deploy that landed on a preview branch instead of production.
+      - name: Verify concatenate.pages.dev serves this build
+        run: |
+          want=$(sha256sum dist/index.html | cut -d' ' -f1)
+          for attempt in $(seq 1 12); do
+            got=$(curl -fsS -H 'Cache-Control: no-cache' https://concatenate.pages.dev/ | sha256sum | cut -d' ' -f1 || true)
+            if [ "$got" = "$want" ]; then
+              echo "Production serves this build (sha256 $want)."
+              exit 0
+            fi
+            echo "Attempt $attempt: production serves $got, expected $want. Retrying in 10s."
+            sleep 10
+          done
+          echo "::error::concatenate.pages.dev did not pick up this build within two minutes. Check that the project's production branch is main and that the deploy above was not a preview."
+          exit 1

@@ -68,7 +68,8 @@ Two Cloudflare targets are fed from this repo; the site is fully static and uses
   `npm run build` then `npx wrangler deploy`. `wrangler.jsonc` serves `dist/` as static assets under the
   Worker name `concatenate`. `npm run deploy` does the same from a logged-in machine.
 - **Pages** (concatenate.pages.dev): a direct-upload project, so Git pushes do not reach it on their own.
-  `.github/workflows/deploy-pages.yml` publishes `dist/` on every push to main once the repository secret
-  `CLOUDFLARE_API_TOKEN` exists (Account > Cloudflare Pages > Edit). `npm run deploy:pages` does it locally.
+  `.github/workflows/deploy-pages.yml` publishes `dist/` on every push to main and then checks that
+  production serves the new build. The run fails until the repository secret `CLOUDFLARE_API_TOKEN`
+  exists (Account > Cloudflare Pages > Edit). `npm run deploy:pages` does it locally.
   `wrangler pages deploy` warns that `wrangler.jsonc` lacks `pages_build_output_dir`; that is expected, the
   file is the Workers config and the warning is harmless.
