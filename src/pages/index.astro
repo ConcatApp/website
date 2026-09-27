@@ -7,9 +7,18 @@ import Section from '@/components/Section.astro';
 import DownloadButton from '@/components/DownloadButton.astro';
 import Downloader from '@/components/Downloader.astro';
 import Button from '@/components/Button.astro';
-import { AudioWaveform, Captions, LayoutTemplate, Layers, Mic, Type } from '@lucide/astro';
-import { CHECKSUMS_URL, RELEASES_URL, REPO_URL, getManifest, getPlatforms } from '@/lib/releases';
+import { AudioWaveform, Captions, LayoutTemplate, Layers, Mail, Mic, Type } from '@lucide/astro';
+import { siDiscord } from 'simple-icons';
+import {
+  CHECKSUMS_URL,
+  DISCORD_URL,
+  RELEASES_URL,
+  REPO_URL,
+  getManifest,
+  getPlatforms,
+} from '@/lib/releases';
 import { SPONSOR_TIERS } from '@/lib/sponsor';
+import { CONTACT_EMAIL } from '@/lib/contact';
 import { cn } from '@/lib/cn';
 
 const { manifest } = await getManifest();
@@ -140,21 +149,13 @@ const principles = [
                 </span>
               )}
             </div>
-            {tier.href ? (
-              <Button
-                href={tier.href}
-                variant={tier.recommended ? 'primary' : 'secondary'}
-                class="mt-8 w-full"
-                target="_blank"
-                rel="noopener"
-              >
-                Sponsor ${tier.amount}
-              </Button>
-            ) : (
-              <Button variant="secondary" class="mt-8 w-full" disabled>
-                Coming soon
-              </Button>
-            )}
+            <Button
+              href="#contact"
+              variant={tier.recommended ? 'primary' : 'secondary'}
+              class="mt-8 w-full"
+            >
+              Get in touch
+            </Button>
           </article>
         ))}
       </div>
@@ -171,6 +172,51 @@ const principles = [
         </a>{' '}
         for you or your company: name, description, logo and a link.
       </p>
+    </Section>
+
+    <Section
+      id="contact"
+      title="Contact."
+      lead="Sponsoring starts with a message. Say which tier you have in mind and how you or your company should appear on the repository."
+      class="border-t border-line"
+    >
+      <div class="grid gap-4 md:grid-cols-2" data-reveal="stagger">
+        <article class="hairline rounded-xl border border-line bg-bg-raised p-7">
+          <svg
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+            class="size-5 text-accent"
+          >
+            <path d={siDiscord.path}></path>
+          </svg>
+          <h3 class="mt-6 text-lg">Discord</h3>
+          <p class="mt-2 text-[0.9375rem] leading-relaxed text-fg-muted">
+            Join the Concat server and send a message.
+          </p>
+          <Button
+            href={DISCORD_URL}
+            variant="secondary"
+            class="mt-6"
+            target="_blank"
+            rel="noopener"
+          >
+            Join the server
+          </Button>
+        </article>
+        {CONTACT_EMAIL && (
+          <article class="hairline rounded-xl border border-line bg-bg-raised p-7">
+            <Mail class="size-5 text-accent" aria-hidden="true" />
+            <h3 class="mt-6 text-lg">Email</h3>
+            <p class="mt-2 text-[0.9375rem] leading-relaxed text-fg-muted">
+              For anything longer, or if you are not on Discord.
+            </p>
+            <Button href={`mailto:${CONTACT_EMAIL}`} variant="secondary" class="mt-6">
+              {CONTACT_EMAIL}
+            </Button>
+          </article>
+        )}
+      </div>
     </Section>
   </main>
 

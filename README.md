@@ -25,7 +25,8 @@ src/
   scripts/scroll.ts           Lenis + GSAP ScrollTrigger + Motion reveals
   scripts/platform.ts         client OS detection
   lib/releases.ts             GitHub release manifest -> platforms / architectures / files
-  lib/sponsor.ts              sponsor tiers and their payment links
+  lib/sponsor.ts              sponsor tiers
+  lib/contact.ts              public contact channels
   data/release-manifest.json  offline fallback snapshot of the manifest
   components/                 Button, Section, Container, Header, Footer, DeviceFrames,
                               DownloadButton, Downloader

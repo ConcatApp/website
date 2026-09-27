@@ -13,9 +13,11 @@ Astro 7, Tailwind v4, static output. The app repo is checked out locally at `../
   it at build time and falls back to `src/data/release-manifest.json`. Refresh that snapshot occasionally.
 - The app icon is lime `#c6f432`; on the site it appears only as the favicon. The site accent is blue (see
   Design rules). Community: Discord, AGPL-3.0 license.
-- Sponsorship: three tiers ($25, $100, $250) in `src/lib/sponsor.ts`, each a Payoneer payment link. $25 is the
-  recommended tier. A tier without a link renders as "Coming soon". Every sponsor, person or company, gets a
-  place on the GitHub repo with name, description, logo and a link; that is the only perk, the same for all tiers.
+- Sponsorship: three tiers ($25, $100, $250) in `src/lib/sponsor.ts`, $25 recommended. Sponsoring starts with a
+  message: every tier button leads to the Contact section (Discord, plus email once `CONTACT_EMAIL` in
+  `src/lib/contact.ts` is set). No payment links on the page; the old Payoneer links are in git history (e7da0d9).
+  Every sponsor, person or company, gets a place on the GitHub repo with name, description, logo and a link; that
+  is the only perk, the same for all tiers.
 
 ## Commands
 
@@ -32,7 +34,8 @@ Astro 7, Tailwind v4, static output. The app repo is checked out locally at `../
 - `src/scripts/scroll.ts` Lenis + GSAP ScrollTrigger + Motion reveals, view-transition aware
 - `src/scripts/platform.ts` client OS detection shared by the hero button and the picker
 - `src/lib/releases.ts` manifest fetch, platform/arch/format model, URLs (repo, releases, Discord)
-- `src/lib/sponsor.ts` sponsor tiers and their payment links
+- `src/lib/sponsor.ts` sponsor tiers
+- `src/lib/contact.ts` public contact channels (the email shown in the Contact section)
 - `src/components/` Astro-only: Button, Section, Container, Header, Footer, DeviceFrames,
   DownloadButton (OS-detected hero CTA), Downloader (OS then architecture then files picker)
 - `src/assets/` editor screenshot (cropped), phone preview, logos. `public/` favicons.
