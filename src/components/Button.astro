@@ -8,21 +8,32 @@ type Size = 'sm' | 'md' | 'lg';
 interface Props extends Omit<HTMLAttributes<'a'>, 'type'> {
   href?: string;
   type?: 'button' | 'submit' | 'reset';
+  /** Buttons only; anchors ignore it. */
+  disabled?: boolean;
   variant?: Variant;
   size?: Size;
   class?: string;
 }
 
-const { href, type, variant = 'primary', size = 'md', class: className, ...rest } = Astro.props;
+const {
+  href,
+  type,
+  disabled,
+  variant = 'primary',
+  size = 'md',
+  class: className,
+  ...rest
+} = Astro.props;
 const Tag = href ? 'a' : 'button';
 
 const base =
   'inline-flex items-center justify-center gap-2 rounded-full font-medium tracking-tight whitespace-nowrap select-none ' +
-  'transition-[background-color,color,border-color,transform,opacity] duration-300 ease-out-expo active:scale-[0.98]';
+  'transition-[background-color,color,border-color,transform,opacity] duration-300 ease-out-expo active:scale-[0.98] ' +
+  'disabled:pointer-events-none disabled:opacity-50';
 
 const variants: Record<Variant, string> = {
-  // Solid off-white on near-black is the premium dark default. No gradient, no glow.
-  primary: 'bg-fg text-bg hover:bg-white',
+  // Solid blue with white text is the one place the accent fills a surface. No gradient, no glow.
+  primary: 'bg-accent text-accent-fg hover:bg-accent-hover',
   secondary:
     'bg-bg-raised text-fg border border-line hairline hover:border-line-strong hover:bg-bg-overlay',
   ghost: 'text-fg-muted hover:text-fg',
@@ -38,6 +49,7 @@ const sizes: Record<Size, string> = {
 <Tag
   href={href}
   type={href ? undefined : (type ?? 'button')}
+  disabled={href ? undefined : disabled}
   class={cn(base, variants[variant], sizes[size], className)}
   {...rest}
 >

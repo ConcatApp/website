@@ -2,9 +2,10 @@
 
 Concat: the free, open-source CapCut replacement. Native Rust engine, 100% local, distributed via GitHub Releases.
 
-Curated from research on 2026-09-20. Direction: dark, premium, restrained. No cheap gradients,
-no purple glow, no template feel. Inspiration named by the team: [spline.design](https://spline.design/)
-and [diffusion.studio](https://diffusion.studio/).
+Curated from research on 2026-09-20; direction revised on 2026-09-27. Direction: light, premium,
+restrained, one blue accent. No cheap gradients, no purple, no template feel. The first dark version took its
+cues from [spline.design](https://spline.design/) and [diffusion.studio](https://diffusion.studio/); the light
+version takes them from linear.app, vercel.com, resend.com and stripe.com.
 
 ## 1. Installed stack
 
@@ -23,22 +24,20 @@ and [diffusion.studio](https://diffusion.studio/).
 Wiring lives in `src/scripts/scroll.ts` (Lenis + GSAP ticker sync, Motion reveals, view-transition
 lifecycle) and `src/layouts/Base.astro`.
 
-## 2. Inspiration (dark, premium)
+## 2. Inspiration (light, premium)
 
-Galleries, filter to dark:
+Galleries, filter to light or minimal:
 
 - Godly: https://godly.website/
-- landing.love, dark mode + animation: https://www.landing.love/style/dark-mode/
-- Saaspo, dark mode SaaS: https://saaspo.com/style/dark-mode
-- Dark Mode Design: https://www.darkmodedesign.com/
-- a1.gallery, dark landing: https://www.a1.gallery/websites/dark-landing
-- One Page Love, dark: https://onepagelove.com/dark-schemed-landing-pages
+- landing.love: https://www.landing.love/
+- Saaspo, SaaS landing pages: https://saaspo.com/
+- One Page Love: https://onepagelove.com/
 - Refero (UX flows and real product screens): https://refero.design/
 - Landingfolio, mobile app category: https://www.landingfolio.com/inspiration/landing-page/mobile-app
 - AppLaunchFlow, 12 mobile app landing pages 2026: https://www.applaunchflow.com/blog/mobile-app-landing-page-examples-2026
 
-Reference sites worth studying directly (type, spacing, restraint): linear.app, vercel.com, raycast.com,
-arc.net, resend.com, family.co, cursor.com, spline.design, diffusion.studio. Open-source desktop apps with
+Reference sites worth studying directly (type, spacing, restraint, all light or with a light mode): linear.app,
+vercel.com, stripe.com, resend.com, raycast.com, cal.com, cursor.com, apple.com. Open-source desktop apps with
 strong download pages: obsidian.md, zed.dev, blender.org/download, signal.org/download.
 
 ## 3. Typography
@@ -115,11 +114,13 @@ must never show store badges. What we use instead:
 
 ## 8. Design rules we are following
 
-- Backgrounds near-black (oklch 13%), never #000. Text off-white, never #fff for body.
-- Depth from hairlines and one-pixel top highlights, not glows or gradients.
-- One accent color (brand lime `#c6f432`), used sparingly. Type and spacing carry the brand.
+- Page background a cool off-white (oklch 98.5%), cards pure white, text a cool near-black (oklch 18%), never #000.
+- Depth from 1px lines, a 1px contact shadow (`hairline`) and one soft cool drop shadow (`shadow-raised`), not glows
+  or gradients.
+- One accent color, blue (oklch 54% 0.21 262, about #2063e6): primary buttons, focus, icons, selected states and
+  one highlighted word. The app icon stays lime and appears only as the favicon. Type and spacing carry the brand.
+- Every text token clears WCAG AA (4.5:1) on white and on the page background. Check before changing one.
 - Big, tight-tracked headline; generous section rhythm; max ~76rem content width.
 - Motion is short, eased (expo-out), and mostly one-shot reveals. Respect `prefers-reduced-motion`.
 - No numbered section labels, no em dashes, no availability eyebrows. They read as generated.
-- References: Anti-slop frontend framework https://moelkholy1995.medium.com/beyond-make-it-beautiful-the-anti-slop-framework-for-ai-frontend-craftsmanship-c99bbee6c994,
-  premium dark UI with Tailwind v4 https://www.toilatung.com/en/blog/bi-quyet-thiet-ke-premium-dark-ui-bang-tailwind-css-va-claude
+- References: Anti-slop frontend framework https://moelkholy1995.medium.com/beyond-make-it-beautiful-the-anti-slop-framework-for-ai-frontend-craftsmanship-c99bbee6c994

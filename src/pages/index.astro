@@ -6,8 +6,11 @@ import Container from '@/components/Container.astro';
 import Section from '@/components/Section.astro';
 import DownloadButton from '@/components/DownloadButton.astro';
 import Downloader from '@/components/Downloader.astro';
+import Button from '@/components/Button.astro';
 import { AudioWaveform, Captions, LayoutTemplate, Layers, Mic, Type } from '@lucide/astro';
-import { CHECKSUMS_URL, RELEASES_URL, getManifest, getPlatforms } from '@/lib/releases';
+import { CHECKSUMS_URL, RELEASES_URL, REPO_URL, getManifest, getPlatforms } from '@/lib/releases';
+import { SPONSOR_TIERS } from '@/lib/sponsor';
+import { cn } from '@/lib/cn';
 
 const { manifest } = await getManifest();
 const platforms = getPlatforms(manifest);
@@ -46,8 +49,9 @@ const principles = [
   <main>
     <section class="relative pt-40 pb-24 md:pt-52 md:pb-32">
       <Container class="flex flex-col items-center text-center">
-        <h1 class="text-display max-w-4xl" data-reveal>
-          The free, open-source CapCut replacement.
+        <h1 class="text-display max-w-5xl" data-reveal>
+          The free, <span class="text-accent whitespace-nowrap">open-source</span> CapCut
+          replacement.
         </h1>
         <p class="text-lead mt-6 max-w-xl text-fg-muted" data-reveal>
           Concat runs entirely on your machine. No watermarks, no account, no subscription. The same
@@ -68,7 +72,7 @@ const principles = [
       <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
         {features.map(({ icon: Icon, title, body }) => (
           <article class="hairline rounded-xl border border-line bg-bg-raised p-7">
-            <Icon class="size-5 text-fg-muted" aria-hidden="true" />
+            <Icon class="size-5 text-accent" aria-hidden="true" />
             <h3 class="mt-6 text-lg">{title}</h3>
             <p class="mt-2 text-[0.9375rem] leading-relaxed text-fg-muted">{body}</p>
           </article>
@@ -98,7 +102,7 @@ const principles = [
       <p class="mt-8 text-sm text-fg-subtle" data-reveal>
         <a
           href={RELEASES_URL}
-          class="underline underline-offset-4 transition-colors duration-300 hover:text-fg"
+          class="underline underline-offset-4 transition-colors duration-300 hover:text-accent"
           target="_blank"
           rel="noopener"
         >
@@ -107,10 +111,65 @@ const principles = [
         <span class="mx-2">/</span>
         <a
           href={CHECKSUMS_URL}
-          class="underline underline-offset-4 transition-colors duration-300 hover:text-fg"
+          class="underline underline-offset-4 transition-colors duration-300 hover:text-accent"
         >
           SHA256SUMS
         </a>
+      </p>
+    </Section>
+
+    <Section
+      id="sponsor"
+      title="Sponsor Concat."
+      lead="Concat is free and open source, and stays that way. Sponsorship funds continued development, updates, and the store releases on the roadmap."
+      class="border-t border-line"
+    >
+      <div class="grid gap-4 md:grid-cols-3" data-reveal="stagger">
+        {SPONSOR_TIERS.map((tier) => (
+          <article
+            class={cn(
+              'hairline flex flex-col rounded-xl border bg-bg-raised p-7',
+              tier.recommended ? 'border-accent' : 'border-line',
+            )}
+          >
+            <div class="flex items-center justify-between gap-4">
+              <p class="text-4xl font-medium tracking-tight">${tier.amount}</p>
+              {tier.recommended && (
+                <span class="rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-accent">
+                  Recommended
+                </span>
+              )}
+            </div>
+            {tier.href ? (
+              <Button
+                href={tier.href}
+                variant={tier.recommended ? 'primary' : 'secondary'}
+                class="mt-8 w-full"
+                target="_blank"
+                rel="noopener"
+              >
+                Sponsor ${tier.amount}
+              </Button>
+            ) : (
+              <Button variant="secondary" class="mt-8 w-full" disabled>
+                Coming soon
+              </Button>
+            )}
+          </article>
+        ))}
+      </div>
+
+      <p class="mt-8 max-w-2xl text-[0.9375rem] leading-relaxed text-fg-muted" data-reveal>
+        Every sponsor gets a place on the{' '}
+        <a
+          href={REPO_URL}
+          class="underline underline-offset-4 transition-colors duration-300 hover:text-accent"
+          target="_blank"
+          rel="noopener"
+        >
+          Concat repository
+        </a>{' '}
+        for you or your company: name, description, logo and a link.
       </p>
     </Section>
   </main>

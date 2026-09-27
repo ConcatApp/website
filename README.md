@@ -1,7 +1,7 @@
 # Concat website
 
 Landing page for [Concat](https://github.com/jub0t/Concat), the free and open-source CapCut replacement.
-Dark, premium, static. Downloads come straight from GitHub Releases.
+Light, premium, static. Downloads come straight from GitHub Releases.
 
 **Stack**: Astro 7 · Tailwind CSS 4 · GSAP + ScrollTrigger · Lenis · Motion · Lucide · Hanken Grotesk (self-hosted via Astro Fonts API)
 
@@ -25,6 +25,7 @@ src/
   scripts/scroll.ts           Lenis + GSAP ScrollTrigger + Motion reveals
   scripts/platform.ts         client OS detection
   lib/releases.ts             GitHub release manifest -> platforms / architectures / files
+  lib/sponsor.ts              sponsor tiers and their payment links
   data/release-manifest.json  offline fallback snapshot of the manifest
   components/                 Button, Section, Container, Header, Footer, DeviceFrames,
                               DownloadButton, Downloader

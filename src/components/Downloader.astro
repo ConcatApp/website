@@ -36,11 +36,11 @@ const { platforms } = Astro.props;
           role="radio"
           aria-checked="false"
           data-os={p.id}
-          class="group flex cursor-pointer flex-col items-start gap-5 rounded-xl border border-line bg-bg p-5 text-left transition-[border-color,background-color] duration-300 ease-out-expo hover:border-line-strong aria-checked:hairline aria-checked:border-fg/25 aria-checked:bg-bg-overlay"
+          class="group flex cursor-pointer flex-col items-start gap-5 rounded-xl border border-line bg-bg p-5 text-left transition-[border-color,background-color] duration-300 ease-out-expo hover:border-line-strong aria-checked:border-accent aria-checked:bg-accent-soft"
         >
           <OsIcon
             platform={p.id}
-            class="size-7 text-fg-muted transition-colors duration-300 group-hover:text-fg group-aria-checked:text-fg"
+            class="size-7 text-fg-muted transition-colors duration-300 group-hover:text-fg group-aria-checked:text-accent"
           />
           <span class="flex flex-col gap-1">
             <span class="text-[0.9375rem] font-medium text-fg">{p.name}</span>
@@ -87,7 +87,7 @@ const { platforms } = Astro.props;
             <Button href={f.binary.url} variant={i === 0 ? 'primary' : 'secondary'}>
               <Download class="size-4" aria-hidden="true" />
               {f.label}
-              <span class={i === 0 ? 'text-bg/60' : 'text-fg-subtle'}>
+              <span class={i === 0 ? 'text-accent-fg/70' : 'text-fg-subtle'}>
                 {formatBytes(f.binary.bytes)}
               </span>
             </Button>

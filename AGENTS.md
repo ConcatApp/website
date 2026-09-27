@@ -11,7 +11,11 @@ Astro 7, Tailwind v4, static output. The app repo is checked out locally at `../
 - Distribution is GitHub Releases only. Not on the App Store or Google Play; never show store badges.
 - Each release ships `manifest.json` with per-platform URLs, sizes and sha256. `src/lib/releases.ts` fetches
   it at build time and falls back to `src/data/release-manifest.json`. Refresh that snapshot occasionally.
-- Brand accent is lime `#c6f432` (app icon). Community: Discord, AGPL-3.0 license.
+- The app icon is lime `#c6f432`; on the site it appears only as the favicon. The site accent is blue (see
+  Design rules). Community: Discord, AGPL-3.0 license.
+- Sponsorship: three tiers ($25, $100, $250) in `src/lib/sponsor.ts`, each a Payoneer payment link. $25 is the
+  recommended tier. A tier without a link renders as "Coming soon". Every sponsor, person or company, gets a
+  place on the GitHub repo with name, description, logo and a link; that is the only perk, the same for all tiers.
 
 ## Commands
 
@@ -28,6 +32,7 @@ Astro 7, Tailwind v4, static output. The app repo is checked out locally at `../
 - `src/scripts/scroll.ts` Lenis + GSAP ScrollTrigger + Motion reveals, view-transition aware
 - `src/scripts/platform.ts` client OS detection shared by the hero button and the picker
 - `src/lib/releases.ts` manifest fetch, platform/arch/format model, URLs (repo, releases, Discord)
+- `src/lib/sponsor.ts` sponsor tiers and their payment links
 - `src/components/` Astro-only: Button, Section, Container, Header, Footer, DeviceFrames,
   DownloadButton (OS-detected hero CTA), Downloader (OS then architecture then files picker)
 - `src/assets/` editor screenshot (cropped), phone preview, logos. `public/` favicons.
@@ -37,12 +42,17 @@ Path alias: `@/` maps to `src/`.
 
 ## Design rules
 
-Theme is dark only. Premium and restrained. Inspiration: spline.design, diffusion.studio.
+Theme is light only: cool off-white page, white cards, near-black text, one blue accent. Premium and restrained.
+Inspiration: linear.app, vercel.com, resend.com, stripe.com.
 
 - Use the tokens: `bg-bg`, `bg-bg-raised`, `bg-bg-overlay`, `text-fg`, `text-fg-muted`, `text-fg-subtle`,
-  `border-line`, `border-line-strong`, `text-accent`. Do not introduce ad-hoc hex colors.
-- No gradients as decoration, no glows, no purple. Depth comes from `border-line` + `hairline` + `shadow-raised`.
-- One accent color (brand lime), sparingly: focus, a single highlighted word, live indicators. Never large fills.
+  `border-line`, `border-line-strong`, `bg-accent`/`text-accent`, `bg-accent-soft`, `text-accent-fg`. Do not introduce
+  ad-hoc hex colors. Every text step clears 4.5:1 on white and on the page; keep it that way when changing a token.
+- No gradients as decoration, no glows, no purple, no lime on the page. Depth comes from `border-line` + `hairline`
+  (a 1px contact shadow) + `shadow-raised`.
+- One accent color (blue): primary buttons, focus rings, feature icons, links on hover, selected states
+  (`border-accent` + `bg-accent-soft`) and a single highlighted word in the hero. Never a section background,
+  never a gradient. `bg-accent-soft` is for selected states and the Recommended badge only.
 - Typeface is Hanken Grotesk only (`font-sans`). Headlines use `text-display` / `text-display-sm`, weight 500,
   tight tracking. The `eyebrow` utility is for tiny metadata, not section labels.
 - Never use numbered section labels ("01 — Features") or em dashes in copy. Both read as AI-generated.
@@ -68,7 +78,8 @@ Two Cloudflare targets are fed from this repo; the site is fully static and uses
   `npm run build` then `npx wrangler deploy`. `wrangler.jsonc` serves `dist/` as static assets under the
   Worker name `concatenate`. `npm run deploy` does the same from a logged-in machine.
 - **Pages** (concatenate.pages.dev): a direct-upload project, so Git pushes do not reach it on their own.
-  `.github/workflows/deploy-pages.yml` publishes `dist/` on every push to main once the repository secret
-  `CLOUDFLARE_API_TOKEN` exists (Account > Cloudflare Pages > Edit). `npm run deploy:pages` does it locally.
+  `.github/workflows/deploy-pages.yml` publishes `dist/` on every push to main and then checks that
+  production serves the new build. The run fails until the repository secret `CLOUDFLARE_API_TOKEN`
+  exists (Account > Cloudflare Pages > Edit). `npm run deploy:pages` does it locally.
   `wrangler pages deploy` warns that `wrangler.jsonc` lacks `pages_build_output_dir`; that is expected, the
   file is the Workers config and the warning is harmless.
