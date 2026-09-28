@@ -1,0 +1,24 @@
+---
+/** Cards for every guide except the landing page. Used from src/content/guides/index.mdx. */
+import { getCollection } from 'astro:content';
+
+const guides = (await getCollection('guides'))
+  .filter((g) => g.id !== 'index')
+  .sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
+---
+
+<ul class="not-prose grid gap-4 sm:grid-cols-2">
+  {guides.map((g) => (
+    <li>
+      <a
+        href={`/guides/${g.id}`}
+        class="block h-full rounded-lg border border-line p-5 transition-colors duration-200 hover:border-line-strong"
+      >
+        <p class="font-medium">{g.data.title}</p>
+        {g.data.description && (
+          <p class="mt-1.5 text-sm leading-relaxed text-fg-muted">{g.data.description}</p>
+        )}
+      </a>
+    </li>
+  ))}
+</ul>

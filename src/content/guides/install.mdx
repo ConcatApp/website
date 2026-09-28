@@ -1,0 +1,50 @@
+---
+title: 'Install Concat'
+description: 'Every build is a GitHub Releases asset. The download picker hands you the right one; this page covers what happens after.'
+order: 1
+---
+
+Two ways in:
+
+1. **[The download picker](/#download)** detects your operating system and processor and hands you
+   the right build. Start there.
+2. **[GitHub Releases](https://github.com/jub0t/Concat/releases)** has every build for every
+   platform, with installers, packages and checksums, for when you want to pick.
+
+Concat is in beta: it works, and it still has edges.
+[Say so](https://github.com/jub0t/Concat/issues) when you find one.
+
+## Windows
+
+An installer or an MSI package, for x64 and ARM64 machines. Run it and follow the prompts.
+
+## macOS
+
+A disk image for Apple Silicon and for Intel. The builds are unsigned, so if macOS refuses to open
+the app after you move it to Applications, clear the quarantine flag once:
+
+```sh
+xattr -dr com.apple.quarantine /Applications/Concat.app
+```
+
+## Linux
+
+AppImage, `.deb` and `.rpm` packages for x86_64 and ARM64. The app repository also lists an Arch
+package on its Releases page.
+
+> [!NOTE]
+> An AppImage needs to be marked executable before it runs: `chmod +x Concat-*.AppImage`.
+
+## Android
+
+An APK for phones and tablets. Android asks you to allow installs from this source the first time.
+
+## iOS and iPadOS
+
+An IPA for iPhone and iPad, in beta and still being tested. It is not on the App Store: install it
+by sideloading.
+
+## Checking a download
+
+Every release ships a `SHA256SUMS` file next to the binaries, and the download picker prints the
+checksum of the file it points to. Compare the two if you want to verify what you downloaded.

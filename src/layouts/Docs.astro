@@ -1,0 +1,192 @@
+---
+/**
+ * Long-form page inside the gridline frame: section navigation on the left, the page in the
+ * middle, an "On this page" list on the right from 1280px up. Below 1024px the navigation folds
+ * into a disclosure above the page.
+ */
+import type { MarkdownHeading } from 'astro';
+import { ArrowLeft, ArrowRight, ChevronDown } from '@lucide/astro';
+import Base from '@/layouts/Base.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { cn } from '@/lib/cn';
+import { LABEL, getNav, hrefFor, type Entry, type Kind } from '@/lib/docs';
+
+interface Props {
+  kind: Kind;
+  entry: Entry;
+  headings: MarkdownHeading[];
+}
+
+const { kind, entry, headings } = Astro.props;
+const { groups, flat } = await getNav(kind);
+const current = hrefFor(kind, entry.id);
+const index = flat.findIndex((item) => item.href === current);
+const prev = index > 0 ? flat[index - 1] : undefined;
+const next = index >= 0 && index < flat.length - 1 ? flat[index + 1] : undefined;
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const editUrl = entry.filePath
+  ? `https://github.com/ConcatApp/website/edit/main/${entry.filePath}`
+  : undefined;
+const title = entry.id === 'index' ? LABEL[kind] : `${entry.data.title} · ${LABEL[kind]}`;
+---
+
+<Base title={`${title} · Concat`} description={entry.data.description} type="article">
+  <Header />
+
+  <main class="pt-16">
+    <div class="container-x gridline py-10 lg:py-14">
+      <div class="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-14 xl:grid-cols-[13rem_minmax(0,1fr)_11rem] xl:gap-16">
+        <details class="group mb-8 rounded-lg border border-line lg:hidden">
+          <summary class="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-medium [&::-webkit-details-marker]:hidden">
+            {LABEL[kind]}
+            <ChevronDown
+              class="size-4 text-fg-subtle transition-transform duration-300 ease-out-expo group-open:rotate-180"
+              aria-hidden="true"
+            />
+          </summary>
+          <nav class="border-t border-line px-4 py-3" aria-label={`${LABEL[kind]} pages`}>
+            {groups.map((group) => (
+              <div class="py-2">
+                <p class="text-xs font-medium text-fg-subtle">{group.title}</p>
+                <ul class="mt-1.5 space-y-0.5">
+                  {group.items.map((item) => (
+                    <li>
+                      <a
+                        href={item.href}
+                        class={cn(
+                          'block rounded-md px-2 py-1 text-sm',
+                          item.href === current
+                            ? 'bg-accent-soft font-medium text-accent-ink'
+                            : 'text-fg-muted hover:text-fg',
+                        )}
+                        aria-current={item.href === current ? 'page' : undefined}
+                      >
+                        {item.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
+        </details>
+
+        <nav class="hidden lg:block" aria-label={`${LABEL[kind]} pages`}>
+          <div class="sticky top-24 space-y-6">
+            <p class="text-sm font-medium">{LABEL[kind]}</p>
+            {groups.map((group) => (
+              <div>
+                <p class="text-xs font-medium text-fg-subtle">{group.title}</p>
+                <ul class="mt-2 space-y-0.5">
+                  {group.items.map((item) => (
+                    <li>
+                      <a
+                        href={item.href}
+                        class={cn(
+                          'block rounded-md px-2 py-1 text-sm transition-colors duration-200',
+                          item.href === current
+                            ? 'bg-accent-soft font-medium text-accent-ink'
+                            : 'text-fg-muted hover:text-fg',
+                        )}
+                        aria-current={item.href === current ? 'page' : undefined}
+                      >
+                        {item.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </nav>
+
+        <article class="min-w-0">
+          <p class="text-sm text-fg-subtle">
+            {LABEL[kind]}
+            {entry.id !== 'index' && entry.data.section !== LABEL[kind] && (
+              <>
+                <span class="mx-1.5">/</span>
+                {entry.data.section}
+              </>
+            )}
+          </p>
+          <h1 class="text-display-sm mt-3">{entry.data.title}</h1>
+          {entry.data.description && (
+            <p class="text-lead mt-4 text-fg-muted">{entry.data.description}</p>
+          )}
+
+          <div class="prose mt-10 max-w-none">
+            <slot />
+          </div>
+
+          <nav
+            class="mt-16 grid gap-4 border-t border-line pt-8 sm:grid-cols-2"
+            aria-label="Neighbouring pages"
+          >
+            {prev && (
+              <a
+                href={prev.href}
+                class="group flex flex-col gap-1 rounded-lg border border-line p-4 transition-colors duration-200 hover:border-line-strong"
+              >
+                <span class="flex items-center gap-1 text-xs text-fg-subtle">
+                  <ArrowLeft class="size-3.5" aria-hidden="true" /> Previous
+                </span>
+                <span class="text-sm font-medium">{prev.title}</span>
+              </a>
+            )}
+            {next && (
+              <a
+                href={next.href}
+                class="group flex flex-col gap-1 rounded-lg border border-line p-4 text-right transition-colors duration-200 hover:border-line-strong sm:col-start-2"
+              >
+                <span class="flex items-center justify-end gap-1 text-xs text-fg-subtle">
+                  Next <ArrowRight class="size-3.5" aria-hidden="true" />
+                </span>
+                <span class="text-sm font-medium">{next.title}</span>
+              </a>
+            )}
+          </nav>
+
+          {editUrl && (
+            <p class="mt-8 text-sm text-fg-subtle">
+              <a
+                href={editUrl}
+                class="underline underline-offset-4 transition-colors duration-200 hover:text-accent-ink"
+                target="_blank"
+                rel="noopener"
+              >
+                Edit this page on GitHub
+              </a>
+            </p>
+          )}
+        </article>
+
+        {toc.length > 0 && (
+          <aside class="hidden xl:block">
+            <nav class="sticky top-24" aria-label="On this page">
+              <p class="text-xs font-medium text-fg-subtle">On this page</p>
+              <ul class="mt-2 space-y-1 border-l border-line text-sm">
+                {toc.map((h) => (
+                  <li>
+                    <a
+                      href={`#${h.slug}`}
+                      class={cn(
+                        '-ml-px block border-l border-transparent py-0.5 text-fg-muted transition-colors duration-200 hover:border-line-strong hover:text-fg',
+                        h.depth === 2 ? 'pl-3' : 'pl-6',
+                      )}
+                    >
+                      {h.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </aside>
+        )}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Base>

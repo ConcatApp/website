@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
 /* ------------------------------------------------------------------
    Design tokens (Tailwind v4 CSS-first config)
@@ -229,4 +230,104 @@
   .chip[aria-checked='true'] .chip-hint {
     color: var(--color-fg-muted);
   }
+}
+
+/* ------------------------------------------------------------------
+   Long-form pages (docs and guides). Unlayered on purpose: the typography plugin emits `prose`
+   as a utility, and only unlayered rules outrank it. The tokens map its colors onto ours; inline
+   code is a gray chip, code blocks a bordered gray box.
+   ------------------------------------------------------------------ */
+.prose {
+  --tw-prose-body: var(--color-fg);
+  --tw-prose-headings: var(--color-fg);
+  --tw-prose-lead: var(--color-fg-muted);
+  --tw-prose-links: var(--color-accent-ink);
+  --tw-prose-bold: var(--color-fg);
+  --tw-prose-counters: var(--color-fg-subtle);
+  --tw-prose-bullets: var(--color-fg-subtle);
+  --tw-prose-hr: var(--color-line);
+  --tw-prose-quotes: var(--color-fg-muted);
+  --tw-prose-quote-borders: var(--color-line-strong);
+  --tw-prose-captions: var(--color-fg-subtle);
+  --tw-prose-code: var(--color-fg);
+  --tw-prose-pre-code: var(--color-fg);
+  --tw-prose-pre-bg: var(--color-bg-subtle);
+  --tw-prose-th-borders: var(--color-line-strong);
+  --tw-prose-td-borders: var(--color-line);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+.prose :where(h2):not(:where([class~='not-prose'] *)) {
+  margin-top: 2.5em;
+  padding-top: 1.25em;
+  border-top: 1px solid var(--color-line);
+  font-size: 1.5em;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.prose :where(h3):not(:where([class~='not-prose'] *)) {
+  font-size: 1.125em;
+  font-weight: 500;
+}
+.prose :where(a):not(:where([class~='not-prose'] *)) {
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in oklch, var(--color-accent-ink) 40%, transparent);
+}
+.prose :where(a):not(:where([class~='not-prose'] *)):hover {
+  text-decoration-color: currentColor;
+}
+.prose :where(code):not(:where([class~='not-prose'] *))::before,
+.prose :where(code):not(:where([class~='not-prose'] *))::after {
+  content: none;
+}
+.prose :where(code):not(:where(pre *)):not(:where([class~='not-prose'] *)) {
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-line);
+  background: var(--color-bg-subtle);
+  font-weight: 400;
+  font-size: 0.875em;
+}
+.prose :where(pre):not(:where([class~='not-prose'] *)) {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-subtle) !important;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+.prose :where(table):not(:where([class~='not-prose'] *)) {
+  font-size: 0.875em;
+}
+.prose :where(thead th):not(:where([class~='not-prose'] *)) {
+  font-weight: 500;
+}
+.prose :where(td, th):not(:where([class~='not-prose'] *)) {
+  vertical-align: top;
+}
+
+/* GitHub-style alerts, produced by src/lib/remark-alerts.mjs */
+.alert {
+  margin-block: 1.5em;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-subtle);
+}
+.alert > :last-child {
+  margin-bottom: 0;
+}
+.alert-label {
+  margin: 0 0 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent-ink);
+}
+.alert-warning .alert-label,
+.alert-caution .alert-label,
+.alert-important .alert-label {
+  color: var(--color-fg);
 }

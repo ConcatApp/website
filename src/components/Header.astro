@@ -7,8 +7,9 @@ import { REPO_URL } from '@/lib/releases';
 const links = [
   { href: '/#features', label: 'Features' },
   { href: '/#download', label: 'Download' },
+  { href: '/guides', label: 'Guides' },
+  { href: '/docs', label: 'Docs' },
   { href: '/#sponsor', label: 'Sponsor' },
-  { href: '/#faq', label: 'FAQ' },
   { href: '/#contact', label: 'Contact' },
 ];
 ---
@@ -39,7 +40,7 @@ const links = [
           <path d={siGithub.path}></path>
         </svg>
       </a>
-      <Button href="#download" size="sm">
+      <Button href="/#download" size="sm">
         Download
       </Button>
     </div>

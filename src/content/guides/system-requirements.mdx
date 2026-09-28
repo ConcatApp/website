@@ -1,0 +1,35 @@
+---
+title: 'System requirements'
+description: 'Concat runs everything on your machine, so the hardware sets the ceiling.'
+order: 2
+---
+
+Minimum is what a build runs on at all. Recommended is what makes 1080p editing feel smooth and
+keeps 4K exports and captions from being a wait.
+
+|             | Minimum                                                                | Recommended                                                        |
+| ----------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| **CPU**     | Any 64-bit processor from 2013 or later                                | 6 cores or more                                                    |
+| **GPU**     | None. Without a usable GPU the window and monitor fall back to the CPU | Any GPU with Metal (macOS), DirectX 12 (Windows) or Vulkan (Linux) |
+| **RAM**     | 4 GB                                                                   | 16 GB for 4K timelines and the larger caption models               |
+| **Storage** | 500 MB for the app and the smallest caption model                      | 2 GB for every optional model, plus room for projects and exports  |
+
+## Optional models
+
+Auto-captions, text-to-speech and cutout use models that download from Settings on first use and
+then never need the network again:
+
+| Model                   | Size                                            |
+| ----------------------- | ----------------------------------------------- |
+| Auto-captions (Whisper) | 78 MB to 488 MB, depending on the size you pick |
+| Text-to-speech          | 132 MB or 349 MB                                |
+| Person cutout           | 15 MB                                           |
+| Object cutout           | 179 MB                                          |
+| Cutout brush            | 40 MB                                           |
+
+See [Captions, voices and cutout](/guides/offline-models) for what each one does.
+
+## Platforms
+
+Windows (x64 and ARM64), macOS (Apple Silicon and Intel), Linux (x86_64 and ARM64) and Android
+are supported. iOS and iPadOS builds are in beta. Same app, same project files, in 14 languages.

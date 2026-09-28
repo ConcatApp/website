@@ -1,0 +1,32 @@
+---
+title: 'Control Concat from a script'
+description: 'Anything the window can do to a project, a program can do through the API. Here is where that starts.'
+order: 5
+---
+
+Concat has a JSON-RPC, gRPC and MCP API, plus a CLI, so scripts and AI agents can cut video with
+it too. The [developer docs](/docs) are the reference. This page is the short version for people
+who have never opened them.
+
+## Three ways in
+
+| Transport              | How you reach it                                                                                                                           |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **JSON-RPC 2.0 lines** | `concat-cli api` on stdin, `concat-cli serve` on a TCP or Unix socket, or the window's **Settings › Remote** page while the editor is open |
+| **gRPC** over HTTP/2   | `concat-cli serve --grpc`, in a build with the `grpc` feature                                                                              |
+| **MCP**                | An MCP server exposing the API as tools. See [MCP](/docs/transports/mcp) for what exists today                                             |
+
+All three carry the same methods, payloads and errors.
+
+## Five things to know
+
+1. **Call `version` first.** Its `capabilities` list says what this build serves.
+2. **Projects are folders.** Every method names a project by its folder path, and the folder must
+   be open first.
+3. **Edits are commands.** `edit.apply` carries the window's own edit vocabulary, unchanged.
+4. **Exports are jobs.** `export.run` returns at once; progress comes as events; one export runs at
+   a time.
+5. **Errors have codes.** Branch on `code`; show `message` to a person.
+
+Ready for more? Start with the [quick start](/docs#quick-start), then the
+[API overview](/docs/api/overview).
