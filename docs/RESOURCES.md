@@ -81,9 +81,9 @@ Recommendation: stay Astro-native for the landing page. Add Starwind only if we 
 
 ## 6. Visual assets
 
-- **Product screenshots**: the app repo ships `assets/editor-dark.png` (macOS window, 3164x1920).
-  `npm run assets:prepare` crops the chrome away and extracts the 9:16 preview for the phone frame.
-  Replace `src/assets/phone-preview.png` with a real mobile screenshot when one exists.
+- **Product screenshots**: the app repo ships `assets/editor-light.png` and `assets/editor-dark.png` (macOS
+  windows, about 3000x1900). `npm run assets:prepare` downloads the light one from jsDelivr, crops the window
+  chrome away for the hero and cuts the three feature-row crops. A real mobile screenshot is still missing.
 - **Device mockups**: Rotato (3D animated iPhone/Android renders, 4K) https://rotato.app/,
   Shots.so https://shots.so/, Mockuuups Studio https://mockuuups.studio/,
   Apple Design Resources (official bezels, Figma/Sketch) https://developer.apple.com/design/resources/
