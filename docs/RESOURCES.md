@@ -9,17 +9,20 @@ version takes them from linear.app, vercel.com, resend.com and stripe.com.
 
 ## 1. Installed stack
 
-| Package                                               | Version | Role                                                                          | Docs                                                             |
-| ----------------------------------------------------- | ------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| astro                                                 | 7.3     | Framework, static output, Fonts API, View Transitions                         | https://docs.astro.build                                         |
-| tailwindcss + @tailwindcss/vite                       | 4.3     | Styling, CSS-first tokens in `src/styles/global.css`                          | https://tailwindcss.com/docs/installation/framework-guides/astro |
-| gsap (incl. ScrollTrigger, SplitText, ScrollSmoother) | 3.15    | Scroll-linked and timeline animation. All plugins are free on npm since 2025  | https://gsap.com/docs/v3/Installation/                           |
-| lenis                                                 | 1.3     | Smooth inertial scroll, drives ScrollTrigger                                  | https://github.com/darkroomengineering/lenis                     |
-| motion                                                | 13.4    | `inView` reveals, `animate`, springs. 0.5 kB `inView` on IntersectionObserver | https://motion.dev/docs/inview                                   |
-| @lucide/astro                                         | 1.47    | Official Lucide icons as Astro components (inline SVG, zero runtime)          | https://lucide.dev/guide/astro/                                  |
-| clsx + tailwind-merge                                 |         | `cn()` helper in `src/lib/cn.ts`                                              |                                                                  |
-| prettier + astro + tailwind plugins                   |         | Formatting and class sorting (`npm run format`)                               |                                                                  |
-| @astrojs/check + typescript                           |         | `npm run check`                                                               |                                                                  |
+| Package                                               | Version | Role                                                                                                                   | Docs                                                             |
+| ----------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| astro                                                 | 7.3     | Framework, static output, Fonts API, View Transitions                                                                  | https://docs.astro.build                                         |
+| tailwindcss + @tailwindcss/vite                       | 4.3     | Styling, CSS-first tokens in `src/styles/global.css`                                                                   | https://tailwindcss.com/docs/installation/framework-guides/astro |
+| gsap (incl. ScrollTrigger, SplitText, ScrollSmoother) | 3.15    | Scroll-linked and timeline animation. All plugins are free on npm since 2025                                           | https://gsap.com/docs/v3/Installation/                           |
+| lenis                                                 | 1.3     | Smooth inertial scroll, drives ScrollTrigger                                                                           | https://github.com/darkroomengineering/lenis                     |
+| motion                                                | 13.4    | `inView` reveals, `animate`, springs. 0.5 kB `inView` on IntersectionObserver                                          | https://motion.dev/docs/inview                                   |
+| @lucide/astro                                         | 1.47    | Official Lucide icons as Astro components (inline SVG, zero runtime)                                                   | https://lucide.dev/guide/astro/                                  |
+| @astrojs/mdx + @astrojs/markdown-remark               | 8.0     | MDX for /docs and /guides; the unified processor so remark plugins run (Astro 7 defaults to Sätteri, which takes none) | https://docs.astro.build/en/guides/integrations-guide/mdx/       |
+| @astrojs/sitemap                                      |         | Sitemap from `site` in the config, linked from `public/robots.txt`                                                     | https://docs.astro.build/en/guides/integrations-guide/sitemap/   |
+| @tailwindcss/typography                               |         | `prose` rhythm for long-form pages, colors mapped onto our tokens in global.css                                        | https://github.com/tailwindlabs/tailwindcss-typography           |
+| clsx + tailwind-merge                                 |         | `cn()` helper in `src/lib/cn.ts`                                                                                       |                                                                  |
+| prettier + astro + tailwind plugins                   |         | Formatting and class sorting (`npm run format`)                                                                        |                                                                  |
+| @astrojs/check + typescript                           |         | `npm run check`                                                                                                        |                                                                  |
 
 Wiring lives in `src/scripts/scroll.ts` (Lenis + GSAP ticker sync, Motion reveals, view-transition
 lifecycle) and `src/layouts/Base.astro`.
