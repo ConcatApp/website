@@ -7,7 +7,16 @@ import Section from '@/components/Section.astro';
 import DownloadButton from '@/components/DownloadButton.astro';
 import Downloader from '@/components/Downloader.astro';
 import Button from '@/components/Button.astro';
-import { AudioWaveform, Captions, LayoutTemplate, Layers, Mail, Mic, Type } from '@lucide/astro';
+import {
+  AudioWaveform,
+  Captions,
+  Check,
+  LayoutTemplate,
+  Layers,
+  Mail,
+  Mic,
+  Type,
+} from '@lucide/astro';
 import { siDiscord } from 'simple-icons';
 import {
   CHECKSUMS_URL,
@@ -17,7 +26,7 @@ import {
   getManifest,
   getPlatforms,
 } from '@/lib/releases';
-import { SPONSOR_TIERS } from '@/lib/sponsor';
+import { SPONSOR_TIERS, formatPrice } from '@/lib/sponsor';
 import { CONTACT_EMAIL } from '@/lib/contact';
 import { cn } from '@/lib/cn';
 
@@ -133,7 +142,7 @@ const principles = [
       lead="Concat is free and open source, and stays that way. Sponsorship funds continued development, updates, and the store releases on the roadmap."
       class="border-t border-line"
     >
-      <div class="grid gap-4 md:grid-cols-3" data-reveal="stagger">
+      <div class="grid gap-4 md:grid-cols-2" data-reveal="stagger">
         {SPONSOR_TIERS.map((tier) => (
           <article
             class={cn(
@@ -142,17 +151,29 @@ const principles = [
             )}
           >
             <div class="flex items-center justify-between gap-4">
-              <p class="text-4xl font-medium tracking-tight">${tier.amount}</p>
+              <h3 class="text-lg">{tier.name}</h3>
               {tier.recommended && (
                 <span class="rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-accent">
                   Recommended
                 </span>
               )}
             </div>
+            <p class="mt-4 flex items-baseline gap-1.5">
+              <span class="text-4xl font-medium tracking-tight">{formatPrice(tier.price)}</span>
+              <span class="text-[0.9375rem] text-fg-muted">/ month</span>
+            </p>
+            <ul class="mt-6 mb-8 flex flex-col gap-2 text-[0.9375rem] leading-relaxed text-fg-muted">
+              {tier.benefits.map((benefit) => (
+                <li class="flex gap-3">
+                  <Check class="mt-1 size-4 shrink-0 text-accent" aria-hidden="true" />
+                  <span>{benefit}</span>
+                </li>
+              ))}
+            </ul>
             <Button
               href="#contact"
               variant={tier.recommended ? 'primary' : 'secondary'}
-              class="mt-8 w-full"
+              class="mt-auto w-full"
             >
               Get in touch
             </Button>
@@ -161,7 +182,7 @@ const principles = [
       </div>
 
       <p class="mt-8 max-w-2xl text-[0.9375rem] leading-relaxed text-fg-muted" data-reveal>
-        Every sponsor gets a place on the{' '}
+        Tiers are monthly. For as long as you sponsor, you or your company are listed on the{' '}
         <a
           href={REPO_URL}
           class="underline underline-offset-4 transition-colors duration-300 hover:text-accent"
@@ -170,7 +191,7 @@ const principles = [
         >
           Concat repository
         </a>{' '}
-        for you or your company: name, description, logo and a link.
+        with name, description, logo and a link.
       </p>
     </Section>
 
