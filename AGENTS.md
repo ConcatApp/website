@@ -47,6 +47,8 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../relay` or `CONCAT_REP
   ClientRouter, loads the scroll script
 - `src/layouts/Docs.astro` long-form page frame for /docs and /guides: sidebar, breadcrumb, prose column,
   "On this page", previous/next, edit link
+- `src/layouts/Page.astro` standalone long-form page without a sidebar, the `layout` of MDX pages such as
+  `src/pages/roadmap.mdx` (the roadmap moved here from the app repo on 2026-09-28)
 - `src/content.config.ts` the `docs` and `guides` collections (MDX or Markdown under `src/content/`)
 - `src/pages/docs/[...slug].astro`, `src/pages/guides/[...slug].astro` render the collections
 - `src/lib/docs.ts` sidebar sections, ordering and prev/next for both collections
@@ -61,7 +63,7 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../relay` or `CONCAT_REP
 - `src/lib/sponsor.ts` sponsor tiers
 - `src/lib/contact.ts` public contact channels (the email shown in the Contact section)
 - `src/components/` Astro-only: Button, Section (a gridline section with optional title and lead), Container,
-  Header, Footer, ArrowLink (accent text link with arrow), River (feature row: copy plus screenshot on a gray
+  Header (three hover/click dropdown menus: Product, Learn, Community), Footer, ArrowLink (accent text link with arrow), River (feature row: copy plus screenshot on a gray
   band), DownloadButton (OS-detected hero CTA), Downloader (OS then architecture then files picker),
   GuideList (cards for every guide, used from the guides landing page)
 - `src/assets/` editor screenshot (light, chrome cropped), the three feature crops, logos. `public/` favicons,
@@ -75,7 +77,8 @@ Path alias: `@/` maps to `src/`.
 - `/docs` is the developer reference (API, transports, recipes). It was migrated from the app repository's
   `docs/` folder on 2026-09-28 and that folder is gone, so these pages are the source of truth: a change to a
   method, command, event, error or transport in the app updates the page here. `/guides` is for people using
-  the app; every claim in a guide comes from the app README.
+  the app; every claim in a guide comes from the app README, except model names and sizes, which come from
+  `models/manifest.toml` in the app repo (Chatterbox is nine files, about 1.1 GB; everything installed is about 3.4 GB).
 - Pages are MDX (Markdown works too) in `src/content/docs/` and `src/content/guides/`. Frontmatter: `title`,
   `description` (shown as the lead and used for meta tags), `section` (docs: Start, API, Transports, Recipes;
   guides default to Guides) and `order`. `index.mdx` is the section landing page.

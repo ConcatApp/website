@@ -4,25 +4,42 @@ description: 'The AI features run on local models that download once from Settin
 order: 3
 ---
 
-Nothing uploads. Captions, voices and cutout all run on your machine, on models that download from
-Settings the first time you use them and never need the network again. Your footage never leaves
-your disk.
+Nothing uploads. Captions, voices, cutout and enhance all run on your machine, on models that
+download from Settings the first time a feature needs one and never need the network again. Your
+footage never leaves your disk. Concat ships no model weights inside its installers: a cutout
+network, a voice bank and a caption model together outweigh the editor many times over, and most
+people never ask for all of them.
 
 ## Auto-captions
 
-Local Whisper transcribes the audio. Pick a model size, get styled captions on the timeline. The
-model files run from 78 MB to 488 MB depending on the size you pick; a bigger model is more
-accurate and takes longer, and the larger ones want 16 GB of RAM.
+Local Whisper transcribes the audio and puts styled captions on the timeline. Pick a size: bigger
+is more accurate and slower, and the larger ones want 16 GB of RAM. Each size comes in an
+English-only variant and a multilingual one that detects the language on its own.
+
+| Model | English | Multilingual |
+| ----- | ------- | ------------ |
+| Tiny  | 78 MB   | 78 MB        |
+| Base  | 148 MB  | 148 MB       |
+| Small | 488 MB  | 488 MB       |
 
 ## Text-to-speech and voice cloning
 
-Free local voices, or any voice from a few seconds of a recording. The voice models are 132 MB or
-349 MB.
+Three families of voice, one Speech panel.
 
-## Background removal
+| Model                | What it does                                                                                                                                                                        | Size                        |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| **Kokoro**           | Built-in speakers in several languages. Quick.                                                                                                                                      | 132 MB (int8) or 350 MB     |
+| **Pocket TTS**       | Kyutai's English voice. No speakers of its own: every voice is a few seconds of a recording. Two recordings come with it, and any clip in the bin can be the third.                 | 98 MB                       |
+| **Chatterbox Turbo** | Resemble AI's voice, the closest to a studio read. Every voice is a recording, and it reads `[laugh]`, `[chuckle]` and `[sigh]` as what they say. Slower, and the biggest download. | About 1.1 GB, in nine files |
 
-Cut out people, cut out objects, or paint the mask yourself. Person cutout is 15 MB, object cutout
-179 MB, and the cutout brush 40 MB.
+## Background removal and enhance
+
+| Model         | What it does                                               | Size   |
+| ------------- | ---------------------------------------------------------- | ------ |
+| Person cutout | Cuts a person out of the frame                             | 15 MB  |
+| Object cutout | Cuts an object out of the frame                            | 179 MB |
+| Cutout brush  | Paint the mask yourself                                    | 40 MB  |
+| Enhance       | Restores and upscales a clip's picture, one clip at a time | 5 MB   |
 
 ## Voice cleanup
 
@@ -30,5 +47,5 @@ One switch to denoise, enhance the voice and level the loudness. Plus chipmunk, 
 and friends. These need no download.
 
 > [!TIP]
-> Storage: 500 MB covers the app and the smallest caption model. Reserve 2 GB if you want every
-> optional model installed. See [System requirements](/guides/system-requirements).
+> Storage: 500 MB covers the app and the smallest caption model. Installing every optional model
+> comes to about 3.4 GB. See [System requirements](/guides/system-requirements).

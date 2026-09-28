@@ -7,25 +7,26 @@ order: 2
 Minimum is what a build runs on at all. Recommended is what makes 1080p editing feel smooth and
 keeps 4K exports and captions from being a wait.
 
-|             | Minimum                                                                | Recommended                                                        |
-| ----------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| **CPU**     | Any 64-bit processor from 2013 or later                                | 6 cores or more                                                    |
-| **GPU**     | None. Without a usable GPU the window and monitor fall back to the CPU | Any GPU with Metal (macOS), DirectX 12 (Windows) or Vulkan (Linux) |
-| **RAM**     | 4 GB                                                                   | 16 GB for 4K timelines and the larger caption models               |
-| **Storage** | 500 MB for the app and the smallest caption model                      | 2 GB for every optional model, plus room for projects and exports  |
+|             | Minimum                                                                | Recommended                                                               |
+| ----------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **CPU**     | Any 64-bit processor from 2013 or later                                | 6 cores or more                                                           |
+| **GPU**     | None. Without a usable GPU the window and monitor fall back to the CPU | Any GPU with Metal (macOS), DirectX 12 (Windows) or Vulkan (Linux)        |
+| **RAM**     | 4 GB                                                                   | 16 GB for 4K timelines and the larger caption models                      |
+| **Storage** | 500 MB for the app and the smallest caption model                      | About 3.4 GB for every optional model, plus room for projects and exports |
 
 ## Optional models
 
-Auto-captions, text-to-speech and cutout use models that download from Settings on first use and
-then never need the network again:
+Auto-captions, voices, cutout and enhance use models that download from Settings on first use and
+then never need the network again. Sizes by family:
 
-| Model                   | Size                                            |
-| ----------------------- | ----------------------------------------------- |
-| Auto-captions (Whisper) | 78 MB to 488 MB, depending on the size you pick |
-| Text-to-speech          | 132 MB or 349 MB                                |
-| Person cutout           | 15 MB                                           |
-| Object cutout           | 179 MB                                          |
-| Cutout brush            | 40 MB                                           |
+| Family                     | Models                                               | Size                         |
+| -------------------------- | ---------------------------------------------------- | ---------------------------- |
+| Auto-captions (Whisper)    | Tiny, Base or Small, each in English or multilingual | 78 MB, 148 MB or 488 MB each |
+| Text-to-speech (Kokoro)    | Built-in speakers                                    | 132 MB (int8) or 350 MB      |
+| Voice cloning (Pocket TTS) | A voice from a few seconds of a recording            | 98 MB                        |
+| Voice cloning (Chatterbox) | The studio-grade read, in nine files                 | About 1.1 GB                 |
+| Cutout                     | Person, object, and the brush                        | 15 MB, 179 MB and 40 MB      |
+| Enhance                    | Picture restoration                                  | 5 MB                         |
 
 See [Captions, voices and cutout](/guides/offline-models) for what each one does.
 

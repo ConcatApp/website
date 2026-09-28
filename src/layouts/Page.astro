@@ -1,0 +1,36 @@
+---
+/**
+ * A standalone long-form page inside the gridline frame, with no section sidebar: title, lead,
+ * then the prose column. Used as the `layout` of MDX pages such as src/pages/roadmap.mdx, which
+ * hand it their frontmatter (`title`, `description`).
+ */
+import Base from '@/layouts/Base.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+
+interface Props {
+  frontmatter: { title: string; description?: string };
+}
+
+const { frontmatter } = Astro.props;
+---
+
+<Base title={`${frontmatter.title} · Concat`} description={frontmatter.description} type="article">
+  <Header />
+
+  <main class="pt-16">
+    <div class="container-x gridline py-14 lg:py-20">
+      <article class="mx-auto max-w-3xl">
+        <h1 class="text-display-sm">{frontmatter.title}</h1>
+        {frontmatter.description && (
+          <p class="text-lead mt-4 text-fg-muted">{frontmatter.description}</p>
+        )}
+        <div class="prose mt-10 max-w-none">
+          <slot />
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <Footer />
+</Base>
