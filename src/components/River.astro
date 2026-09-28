@@ -1,0 +1,52 @@
+---
+/**
+ * A feature row: copy in a 2/5 column, a product screenshot in the other 3/5 on a gray band.
+ * `align="end"` puts the copy on the right. Rows stack on narrow screens, copy first.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { cn } from '@/lib/cn';
+
+interface Props {
+  title: string;
+  image: ImageMetadata;
+  alt: string;
+  align?: 'start' | 'end';
+  class?: string;
+  /** Extra classes for the screenshot, e.g. a max width for a portrait crop. */
+  imageClass?: string;
+}
+
+const { title, image, alt, align = 'start', class: className, imageClass } = Astro.props;
+---
+
+<article
+  class={cn(
+    'grid items-center gap-8 border-t border-line py-10 lg:grid-cols-5 lg:gap-16 lg:py-16',
+    className,
+  )}
+  data-reveal
+>
+  <div class={cn('lg:col-span-2', align === 'end' && 'lg:order-2')}>
+    <h3 class="text-2xl font-medium">{title}</h3>
+    <div class="mt-4 text-[0.9375rem] leading-relaxed text-fg-muted">
+      <slot />
+    </div>
+    {Astro.slots.has('link') && (
+      <div class="mt-6">
+        <slot name="link" />
+      </div>
+    )}
+  </div>
+  <div class={cn('lg:col-span-3', align === 'end' && 'lg:order-1')}>
+    <div class="bg-dots flex items-center justify-center rounded-xl bg-bg-subtle p-4 sm:p-8">
+      <Image
+        src={image}
+        alt={alt}
+        widths={[480, 768, 1024, 1400]}
+        sizes="(min-width: 1024px) 700px, 100vw"
+        class={cn('h-auto w-full rounded-md border border-line', imageClass)}
+      />
+    </div>
+  </div>
+</article>

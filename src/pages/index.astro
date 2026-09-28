@@ -1,22 +1,15 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '@/layouts/Base.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
-import Container from '@/components/Container.astro';
 import Section from '@/components/Section.astro';
 import DownloadButton from '@/components/DownloadButton.astro';
 import Downloader from '@/components/Downloader.astro';
 import Button from '@/components/Button.astro';
-import {
-  AudioWaveform,
-  Captions,
-  Check,
-  LayoutTemplate,
-  Layers,
-  Mail,
-  Mic,
-  Type,
-} from '@lucide/astro';
+import River from '@/components/River.astro';
+import ArrowLink from '@/components/ArrowLink.astro';
+import { Check, GitPullRequest, Mail, Milestone, Plus, Terminal } from '@lucide/astro';
 import { siDiscord } from 'simple-icons';
 import {
   CHECKSUMS_URL,
@@ -26,38 +19,94 @@ import {
   getManifest,
   getPlatforms,
 } from '@/lib/releases';
+import { formatCount, getStats } from '@/lib/stats';
 import { SPONSOR_TIERS, formatPrice } from '@/lib/sponsor';
 import { CONTACT_EMAIL } from '@/lib/contact';
 import { cn } from '@/lib/cn';
+import editor from '@/assets/editor-light.png';
+import shotCaptions from '@/assets/feature-captions.png';
+import shotTitles from '@/assets/feature-titles.png';
+import shotTimeline from '@/assets/feature-timeline.png';
 
 const { manifest } = await getManifest();
 const platforms = getPlatforms(manifest);
+const { stats } = await getStats();
 
-const features = [
-  {
-    icon: Layers,
-    title: 'Multi-track editing',
-    body: 'Several timelines per project. Split, trim, merge, transitions and speed control.',
-  },
-  {
-    icon: Captions,
-    title: 'Auto-captions, offline',
-    body: 'Transcribed on your machine. Nothing is uploaded.',
-  },
-  { icon: Mic, title: 'Text-to-speech', body: 'Free, local voices. No credits, no cloud.' },
-  { icon: AudioWaveform, title: 'Voice filters', body: 'Clean up a recording or play with it.' },
-  {
-    icon: Type,
-    title: 'Titles and styled text',
-    body: 'Type, style and animate text on any track.',
-  },
-  { icon: LayoutTemplate, title: 'Templates', body: 'Build an edit once and reuse it.' },
+const numbers = [
+  { value: formatCount(stats.downloads, { plus: true }), label: 'Downloads from GitHub Releases' },
+  { value: formatCount(stats.stars), label: 'Stars on GitHub' },
+  { value: '170+', label: 'Effects, filters, transitions and text animations' },
+  { value: '14', label: 'Languages in the app' },
 ];
 
 const principles = [
-  { title: 'No watermarks', body: 'Exports are yours, at full quality.' },
-  { title: 'No account', body: 'Install it and start cutting.' },
-  { title: '100% local', body: 'A native Rust engine. Nothing leaves your machine.' },
+  {
+    title: 'No watermarks',
+    body: 'Exports are yours, at full quality. There is no paid tier to unlock and never will be.',
+  },
+  {
+    title: 'No account',
+    body: 'Install it, drop in footage, cut. Nothing to sign up for and nothing to renew.',
+  },
+  {
+    title: '100% local',
+    body: 'A native Rust engine with a GPU compositor. Your footage never leaves your disk, and it works offline.',
+  },
+];
+
+const more = [
+  {
+    icon: Terminal,
+    title: 'Scriptable',
+    body: 'A JSON-RPC, gRPC and MCP API plus a CLI, so scripts, services and AI agents can cut video with it too.',
+    href: `${REPO_URL}/blob/main/docs/README.md`,
+    cta: 'Read the API docs',
+  },
+  {
+    icon: GitPullRequest,
+    title: 'Contribute',
+    body: 'Use a build and say where it breaks, or pick up an issue. CONTRIBUTING covers setup, the layout of the tree and the checks to run.',
+    href: `${REPO_URL}/blob/main/CONTRIBUTING.md`,
+    cta: 'Read the contributing guide',
+  },
+  {
+    icon: Milestone,
+    title: 'Roadmap',
+    body: 'What comes next, what sponsorship pays for, and what each piece costs.',
+    href: `${REPO_URL}/blob/main/ROADMAP.MD`,
+    cta: 'See the roadmap',
+  },
+];
+
+const macos = platforms.find((p) => p.id === 'macos');
+
+const faq = [
+  {
+    q: 'Is Concat really free?',
+    a: 'Yes. No watermark, no account, no paid tier, and the code is AGPL-3.0.',
+  },
+  {
+    q: 'Does anything leave my machine?',
+    a: 'No. Editing, captions, voices and cutout all run locally. The optional models download once from Settings and work offline after that. Logs stay on disk unless you attach them to an issue yourself.',
+  },
+  {
+    q: 'macOS says the app is damaged or cannot be opened.',
+    a: 'The macOS builds are unsigned. Move Concat to Applications, then clear the quarantine flag once:',
+    code: macos?.command,
+  },
+  {
+    q: 'How do I install it on iPhone or iPad?',
+    a: 'iOS is in beta and is not on the App Store. Download the IPA from the picker above and install it by sideloading.',
+  },
+  {
+    q: 'What hardware do I need?',
+    a: 'Minimum: any 64-bit processor from 2013 or later, 4 GB of RAM and 500 MB of storage, with no GPU required. Recommended for smooth 1080p editing and quick 4K exports: 6 cores or more, a GPU with Metal, DirectX 12 or Vulkan, and 16 GB of RAM.',
+  },
+  {
+    q: 'Where does sponsorship money go?',
+    a: 'The roadmap lays out what sponsorship pays for and what each piece costs. Every sponsor gets a place on the repository for the months they sponsor.',
+    link: { href: `${REPO_URL}/blob/main/ROADMAP.MD`, label: 'See the roadmap' },
+  },
 ];
 ---
 
@@ -65,43 +114,105 @@ const principles = [
   <Header />
 
   <main>
-    <section class="relative pt-40 pb-24 md:pt-52 md:pb-32">
-      <Container class="flex flex-col items-center text-center">
-        <h1 class="text-display max-w-5xl" data-reveal>
-          The free, <span class="text-accent whitespace-nowrap">open-source</span> CapCut
-          replacement.
+    <section class="pt-16">
+      <div class="container-x gridline pt-16 pb-14 text-center md:pt-24 md:pb-20">
+        <h1 class="text-display mx-auto max-w-4xl" data-reveal>
+          The free, open-source CapCut replacement.
         </h1>
-        <p class="text-lead mt-6 max-w-xl text-fg-muted" data-reveal>
-          Concat runs entirely on your machine. No watermarks, no account, no subscription. The same
-          app on desktop and mobile.
+        <p class="text-lead mx-auto mt-6 max-w-2xl text-fg-muted" data-reveal>
+          Auto-captions, text-to-speech, background removal, keyframes, effects, titles and
+          multi-track cutting, up to 4K. All of it on your machine: no watermark, no account, no
+          subscription.
         </p>
         <div class="mt-10" data-reveal>
-          <DownloadButton platforms={platforms} version={manifest.version} />
+          <DownloadButton platforms={platforms} />
         </div>
-        <!--
-          Product visuals are parked for now. When they come back, DeviceFrames.astro takes the
-          cropped editor screenshot (src/assets/editor-dark.png) in its `desktop` slot and a mobile
-          screenshot in its `phone` slot; see git history for the previous markup.
-        -->
-      </Container>
+      </div>
+      <div class="bg-dots border-t border-line bg-bg-subtle">
+        <div class="container-x gridline py-8 md:py-14">
+          <Image
+            src={editor}
+            alt="The Concat editor: media library on the left, the preview with a generated caption in the middle, the text inspector on the right and a multi-track timeline below"
+            widths={[640, 1024, 1440, 2048]}
+            sizes="(min-width: 1280px) 1152px, 100vw"
+            loading="eager"
+            fetchpriority="high"
+            class="h-auto w-full rounded-lg border border-line"
+            data-reveal
+          />
+        </div>
+      </div>
     </section>
 
-    <Section id="features" title="Everything you use CapCut for." class="border-t border-line">
-      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
-        {features.map(({ icon: Icon, title, body }) => (
-          <article class="hairline rounded-xl border border-line bg-bg-raised p-7">
-            <Icon class="size-5 text-accent" aria-hidden="true" />
-            <h3 class="mt-6 text-lg">{title}</h3>
-            <p class="mt-2 text-[0.9375rem] leading-relaxed text-fg-muted">{body}</p>
-          </article>
-        ))}
+    <section class="border-t border-line">
+      <div class="gridline mx-auto w-full max-w-(--container-content)">
+        <ul class="grid grid-cols-2 lg:grid-cols-4" data-reveal="stagger">
+          {numbers.map((n) => (
+            <li class="border-line px-5 py-8 max-lg:[&:nth-child(even)]:border-l max-lg:[&:nth-child(n+3)]:border-t sm:px-8 lg:px-12 lg:py-12 lg:[&:not(:first-child)]:border-l">
+              <p class="text-stat text-accent-ink">{n.value}</p>
+              <p class="mt-3 text-sm text-fg-muted">{n.label}</p>
+            </li>
+          ))}
+        </ul>
       </div>
+    </section>
 
-      <dl class="mt-16 grid gap-10 border-t border-line pt-12 md:grid-cols-3" data-reveal="stagger">
+    <Section align="center" bodyClass="py-16 lg:py-24">
+      <p class="text-display-sm mx-auto max-w-3xl text-center text-fg-muted" data-reveal>
+        <span class="text-fg">Everything people actually open CapCut for</span>, with none of the
+        catches. No watermark, no account, no subscription, no upload.
+      </p>
+    </Section>
+
+    <Section
+      id="features"
+      title="Built for the edits people make every day."
+      lead="Captions, voices, titles and effects on a multi-track timeline, rendered by a native Rust engine with a GPU compositor."
+    >
+      <River
+        title="Auto-captions, offline."
+        image={shotCaptions}
+        alt="The Concat preview with a caption generated by Concat over a talking-head clip"
+      >
+        Local Whisper transcribes on your machine. Pick a model size, get styled captions on the
+        timeline. The models download once from Settings and work without a network after that.
+      </River>
+      <River
+        title="Titles that look designed."
+        image={shotTitles}
+        imageClass="max-w-[34rem]"
+        alt="The edge of the preview and the text inspector with font, weight, size, color, shadow and background settings"
+        align="end"
+      >
+        Fonts, stroke, shadow and a background plate, with presets to start from. Type, style and
+        animate text on any track, and keyframe position, scale, rotation and opacity with a curve
+        editor built in.
+      </River>
+      <River
+        title="A timeline that keeps up."
+        image={shotTimeline}
+        alt="The timeline with a text track, a Vivid effect, a 4K video track and three speech clips with waveforms"
+      >
+        Split, trim, ripple, merge, freeze frame and speed, on a magnetic timeline if you want it.
+        Several tracks and several cuts per project. 170+ effects, filters and transitions render
+        live in the preview, and free local voices drop straight onto the timeline.
+      </River>
+      <p class="border-t border-line pt-8" data-reveal>
+        <ArrowLink href={`${REPO_URL}#highlights`} target="_blank" rel="noopener">
+          Every feature, on GitHub
+        </ArrowLink>
+      </p>
+    </Section>
+
+    <Section bodyClass="py-14 lg:py-20">
+      <dl
+        class="grid gap-10 md:grid-cols-3 md:gap-0 md:divide-x md:divide-line"
+        data-reveal="stagger"
+      >
         {principles.map((p) => (
-          <div>
-            <dt class="text-lg">{p.title}</dt>
-            <dd class="mt-2 text-[0.9375rem] leading-relaxed text-fg-muted">{p.body}</dd>
+          <div class="md:px-10 md:first:pl-0 md:last:pr-0">
+            <dt class="text-xl font-medium">{p.title}</dt>
+            <dd class="mt-3 text-[0.9375rem] leading-relaxed text-fg-muted">{p.body}</dd>
           </div>
         ))}
       </dl>
@@ -110,17 +221,16 @@ const principles = [
     <Section
       id="download"
       title="Runs everywhere."
-      lead={`macOS, Windows, Linux, Android and iOS. Builds are published on GitHub Releases. Current version ${manifest.version}.`}
-      class="border-t border-line"
+      lead={`macOS, Windows, Linux, Android and iOS. Every build is a GitHub Releases asset with a checksum. Current version ${manifest.version}.`}
     >
       <div data-reveal>
         <Downloader platforms={platforms} />
       </div>
 
-      <p class="mt-8 text-sm text-fg-subtle" data-reveal>
+      <p class="mt-6 text-sm text-fg-subtle" data-reveal>
         <a
           href={RELEASES_URL}
-          class="underline underline-offset-4 transition-colors duration-300 hover:text-accent"
+          class="underline underline-offset-4 transition-colors duration-200 hover:text-accent-ink"
           target="_blank"
           rel="noopener"
         >
@@ -129,89 +239,137 @@ const principles = [
         <span class="mx-2">/</span>
         <a
           href={CHECKSUMS_URL}
-          class="underline underline-offset-4 transition-colors duration-300 hover:text-accent"
+          class="underline underline-offset-4 transition-colors duration-200 hover:text-accent-ink"
         >
           SHA256SUMS
         </a>
       </p>
     </Section>
 
+    <Section title="Beyond the editor.">
+      <div
+        class="grid gap-10 md:grid-cols-3 md:gap-0 md:divide-x md:divide-line"
+        data-reveal="stagger"
+      >
+        {more.map(({ icon: Icon, ...m }) => (
+          <article class="flex flex-col md:px-10 md:first:pl-0 md:last:pr-0">
+            <span class="flex size-10 items-center justify-center rounded-md border border-line bg-bg-subtle">
+              <Icon class="size-5" aria-hidden="true" />
+            </span>
+            <h3 class="mt-6 text-lg font-medium">{m.title}</h3>
+            <p class="mt-2 text-[0.9375rem] leading-relaxed text-fg-muted">{m.body}</p>
+            <ArrowLink href={m.href} class="mt-5" target="_blank" rel="noopener">
+              {m.cta}
+            </ArrowLink>
+          </article>
+        ))}
+      </div>
+    </Section>
+
     <Section
       id="sponsor"
       title="Sponsor Concat."
       lead="Concat is free and open source, and stays that way. Sponsorship funds continued development, updates, and the store releases on the roadmap."
-      class="border-t border-line"
     >
-      <div class="grid gap-4 md:grid-cols-2" data-reveal="stagger">
-        {SPONSOR_TIERS.map((tier) => (
-          <article
-            class={cn(
-              'hairline flex flex-col rounded-xl border bg-bg-raised p-7',
-              tier.recommended ? 'border-accent' : 'border-line',
-            )}
+      <div class="rounded-xl border border-line bg-bg-subtle p-4 sm:p-6 lg:p-8" data-reveal>
+        <div class="grid gap-4 md:grid-cols-2">
+          {SPONSOR_TIERS.map((tier) => (
+            <article
+              class={cn(
+                'flex flex-col rounded-lg border bg-bg p-6 lg:p-8',
+                tier.recommended ? 'border-accent' : 'border-line',
+              )}
+            >
+              <div class="flex items-center justify-between gap-4">
+                <h3 class="text-lg font-medium">{tier.name}</h3>
+                {tier.recommended && (
+                  <span class="rounded-md bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent-ink">
+                    Recommended
+                  </span>
+                )}
+              </div>
+              <p class="mt-4 flex items-baseline gap-1.5">
+                <span class="text-stat">{formatPrice(tier.price)}</span>
+                <span class="text-[0.9375rem] text-fg-muted">/ month</span>
+              </p>
+              <ul class="mt-6 mb-8 flex flex-col gap-2 text-[0.9375rem] leading-relaxed text-fg-muted">
+                {tier.benefits.map((benefit) => (
+                  <li class="flex gap-3">
+                    <Check class="mt-1 size-4 shrink-0 text-accent-ink" aria-hidden="true" />
+                    <span>{benefit}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button
+                href="#contact"
+                variant={tier.recommended ? 'primary' : 'secondary'}
+                class="mt-auto w-full"
+              >
+                Get in touch
+              </Button>
+            </article>
+          ))}
+        </div>
+        <p class="mt-6 max-w-2xl text-sm leading-relaxed text-fg-muted">
+          Tiers are monthly. For as long as you sponsor, you or your company are listed on the{' '}
+          <a
+            href={REPO_URL}
+            class="underline underline-offset-4 transition-colors duration-200 hover:text-accent-ink"
+            target="_blank"
+            rel="noopener"
           >
-            <div class="flex items-center justify-between gap-4">
-              <h3 class="text-lg">{tier.name}</h3>
-              {tier.recommended && (
-                <span class="rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-accent">
-                  Recommended
-                </span>
+            Concat repository
+          </a>{' '}
+          with name, description, logo and a link.
+        </p>
+      </div>
+    </Section>
+
+    <Section id="faq" title="Common questions.">
+      <div class="border-t border-line" data-reveal>
+        {faq.map((item) => (
+          <details class="group border-b border-line">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-lg font-medium [&::-webkit-details-marker]:hidden">
+              {item.q}
+              <Plus
+                class="size-5 shrink-0 text-fg-subtle transition-transform duration-300 ease-out-expo group-open:rotate-45"
+                aria-hidden="true"
+              />
+            </summary>
+            <div class="max-w-2xl pb-6 text-[0.9375rem] leading-relaxed text-fg-muted">
+              <p>{item.a}</p>
+              {item.code && (
+                <code class="mt-3 block w-fit rounded-md border border-line bg-bg-subtle px-3 py-2 font-mono text-xs text-fg select-all">
+                  {item.code}
+                </code>
+              )}
+              {item.link && (
+                <ArrowLink href={item.link.href} class="mt-3" target="_blank" rel="noopener">
+                  {item.link.label}
+                </ArrowLink>
               )}
             </div>
-            <p class="mt-4 flex items-baseline gap-1.5">
-              <span class="text-4xl font-medium tracking-tight">{formatPrice(tier.price)}</span>
-              <span class="text-[0.9375rem] text-fg-muted">/ month</span>
-            </p>
-            <ul class="mt-6 mb-8 flex flex-col gap-2 text-[0.9375rem] leading-relaxed text-fg-muted">
-              {tier.benefits.map((benefit) => (
-                <li class="flex gap-3">
-                  <Check class="mt-1 size-4 shrink-0 text-accent" aria-hidden="true" />
-                  <span>{benefit}</span>
-                </li>
-              ))}
-            </ul>
-            <Button
-              href="#contact"
-              variant={tier.recommended ? 'primary' : 'secondary'}
-              class="mt-auto w-full"
-            >
-              Get in touch
-            </Button>
-          </article>
+          </details>
         ))}
       </div>
-
-      <p class="mt-8 max-w-2xl text-[0.9375rem] leading-relaxed text-fg-muted" data-reveal>
-        Tiers are monthly. For as long as you sponsor, you or your company are listed on the{' '}
-        <a
-          href={REPO_URL}
-          class="underline underline-offset-4 transition-colors duration-300 hover:text-accent"
-          target="_blank"
-          rel="noopener"
-        >
-          Concat repository
-        </a>{' '}
-        with name, description, logo and a link.
-      </p>
     </Section>
 
     <Section
       id="contact"
       title="Contact."
       lead="Sponsoring starts with a message. Say which tier you have in mind and how you or your company should appear on the repository."
-      class="border-t border-line"
     >
       <div class="grid gap-4 md:grid-cols-2" data-reveal="stagger">
-        <article class="hairline rounded-xl border border-line bg-bg-raised p-7">
+        <article class="rounded-lg border border-line bg-bg p-6 lg:p-8">
           <svg
             viewBox="0 0 24 24"
             fill="currentColor"
             aria-hidden="true"
-            class="size-5 text-accent"
+            class="size-5 text-accent-ink"
           >
             <path d={siDiscord.path}></path>
           </svg>
-          <h3 class="mt-6 text-lg">Discord</h3>
+          <h3 class="mt-6 text-lg font-medium">Discord</h3>
           <p class="mt-2 text-[0.9375rem] leading-relaxed text-fg-muted">
             Join the Concat server and send a message.
           </p>
@@ -226,9 +384,9 @@ const principles = [
           </Button>
         </article>
         {CONTACT_EMAIL && (
-          <article class="hairline rounded-xl border border-line bg-bg-raised p-7">
-            <Mail class="size-5 text-accent" aria-hidden="true" />
-            <h3 class="mt-6 text-lg">Email</h3>
+          <article class="rounded-lg border border-line bg-bg p-6 lg:p-8">
+            <Mail class="size-5 text-accent-ink" aria-hidden="true" />
+            <h3 class="mt-6 text-lg font-medium">Email</h3>
             <p class="mt-2 text-[0.9375rem] leading-relaxed text-fg-muted">
               For anything longer, or if you are not on Discord.
             </p>

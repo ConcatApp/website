@@ -10,10 +10,9 @@ import { formatBytes, type PlatformModel } from '@/lib/releases';
 
 interface Props {
   platforms: PlatformModel[];
-  version: string;
 }
 
-const { platforms, version } = Astro.props;
+const { platforms } = Astro.props;
 
 type Entry = { url: string; size: string };
 const map = Object.fromEntries(
@@ -35,21 +34,14 @@ const initial = map.windows ?? Object.values(map)[0];
 const initialFile = initial ? initial.arches[initial.defaultArch] : undefined;
 ---
 
-<div class="flex flex-col items-center gap-4">
-  <div class="flex flex-wrap items-center justify-center gap-3">
-    <Button href={initialFile?.url ?? '#download'} size="lg" data-download-primary>
-      <Download class="size-4" aria-hidden="true" />
-      <span data-download-label>Download{initial ? ` for ${initial.name}` : ''}</span>
-    </Button>
-    <Button href="#download" variant="secondary" size="lg">
-      All platforms
-    </Button>
-  </div>
-  <p class="text-sm text-fg-subtle">
-    Version {version}
-    <span data-download-size>{initialFile ? `, ${initialFile.size}` : ''}</span>. Free and open
-    source under AGPL-3.0.
-  </p>
+<div class="flex flex-wrap items-center justify-center gap-3">
+  <Button href={initialFile?.url ?? '#download'} size="lg" data-download-primary>
+    <Download class="size-4" aria-hidden="true" />
+    <span data-download-label>Download{initial ? ` for ${initial.name}` : ''}</span>
+  </Button>
+  <Button href="#download" variant="secondary" size="lg">
+    All platforms
+  </Button>
 </div>
 
 <script type="application/json" id="concat-downloads" set:html={JSON.stringify(map)}></script>
@@ -70,13 +62,11 @@ const initialFile = initial ? initial.arches[initial.defaultArch] : undefined;
     if (!platform) return;
 
     const label = button.querySelector('[data-download-label]');
-    const size = document.querySelector('[data-download-size]');
     const point = (arch: string) => {
       const file = platform.arches[arch] ?? platform.arches[platform.defaultArch];
       if (!file) return;
       button.href = file.url;
       if (label) label.textContent = `Download for ${platform.name}`;
-      if (size) size.textContent = `, ${file.size}`;
     };
 
     point(platform.defaultArch);

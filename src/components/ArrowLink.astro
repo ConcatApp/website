@@ -1,0 +1,28 @@
+---
+/** Accent text link with a trailing arrow, the secondary action inside feature rows and cards. */
+import type { HTMLAttributes } from 'astro/types';
+import { ArrowRight } from '@lucide/astro';
+import { cn } from '@/lib/cn';
+
+interface Props extends HTMLAttributes<'a'> {
+  href: string;
+  class?: string;
+}
+
+const { href, class: className, ...rest } = Astro.props;
+---
+
+<a
+  href={href}
+  class={cn(
+    'group inline-flex items-center gap-1.5 text-[0.9375rem] font-medium text-accent-ink transition-colors duration-200 hover:text-fg',
+    className,
+  )}
+  {...rest}
+>
+  <slot />
+  <ArrowRight
+    class="size-4 transition-transform duration-300 ease-out-expo group-hover:translate-x-0.5"
+    aria-hidden="true"
+  />
+</a>

@@ -1,24 +1,48 @@
 /**
  * Pulls product visuals from the Concat app repository and prepares them for the site.
- *   node scripts/prepare-assets.mjs            (expects ../relay, i.e. a clone of github.com/jub0t/Concat)
- *   CONCAT_REPO=/path/to/Concat node scripts/prepare-assets.mjs
+ *   node scripts/prepare-assets.mjs
+ *
+ * Source, in order: CONCAT_REPO, a clone at ../relay, else the raw files on jsDelivr
+ * (https://cdn.jsdelivr.net/gh/jub0t/Concat@main/assets/...) downloaded to a temp folder.
  *
  * Outputs
- *   src/assets/editor-dark.png    editor screenshot with its baked-in window chrome cropped away
- *   src/assets/phone-preview.png  the 9:16 preview area of the same screenshot (phone frame stand-in)
+ *   src/assets/editor-light.png       light editor screenshot with the window chrome cropped away (hero)
+ *   src/assets/feature-captions.png   the preview with a generated caption (feature row)
+ *   src/assets/feature-titles.png     the preview edge and the text inspector (feature row)
+ *   src/assets/feature-timeline.png   the timeline: text, effect, video and speech tracks (feature row)
  *   src/assets/logo-lime.png, src/assets/logo-dark.png
  *   public/favicon.ico, public/favicon.png, public/apple-touch-icon.png
  */
 import sharp from 'sharp';
-import { copyFileSync, mkdirSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
 
-const REPO = resolve(process.env.CONCAT_REPO ?? '../relay');
-const ASSETS = resolve(REPO, 'assets');
+const CDN = 'https://cdn.jsdelivr.net/gh/jub0t/Concat@main/assets';
+const FILES = ['editor-light.png', 'concat_logo_512.png', 'logo-dark.png', 'icons/concat.ico'];
+
+async function findAssets() {
+  const local = resolve(process.env.CONCAT_REPO ?? '../relay', 'assets');
+  if (existsSync(local)) return local;
+  const dir = join(tmpdir(), 'concat-assets');
+  mkdirSync(join(dir, 'icons'), { recursive: true });
+  for (const file of FILES) {
+    const res = await fetch(`${CDN}/${file}`);
+    if (!res.ok) {
+      console.warn(`skip ${file}: HTTP ${res.status}`);
+      continue;
+    }
+    writeFileSync(join(dir, file), Buffer.from(await res.arrayBuffer()));
+  }
+  console.log(`no local clone, downloaded from jsDelivr to ${dir}`);
+  return dir;
+}
+
+const ASSETS = await findAssets();
 mkdirSync('src/assets', { recursive: true });
 mkdirSync('public', { recursive: true });
 
-const shot = resolve(ASSETS, 'editor-dark.png');
+const shot = resolve(ASSETS, 'editor-light.png');
 const { data, info } = await sharp(shot).raw().toBuffer({ resolveWithObject: true });
 const { width, height, channels } = info;
 const px = (x, y) => {
@@ -32,15 +56,15 @@ const bg = px(4, 4);
 const midY = Math.floor(height / 2);
 const midX = Math.floor(width / 2);
 let left = 0;
-while (left < width && diff(px(left, midY), bg) < 24) left++;
+while (left < width && diff(px(left, midY), bg) < 12) left++;
 let right = width - 1;
-while (right > 0 && diff(px(right, midY), bg) < 24) right--;
+while (right > 0 && diff(px(right, midY), bg) < 12) right--;
 let top = 0;
-while (top < height && diff(px(midX, top), bg) < 24) top++;
+while (top < height && diff(px(midX, top), bg) < 12) top++;
 let bottom = height - 1;
-while (bottom > 0 && diff(px(midX, bottom), bg) < 24) bottom--;
+while (bottom > 0 && diff(px(midX, bottom), bg) < 12) bottom--;
 
-// Title bar: first horizontal edge below the window top, sampled at 30% width.
+// Title bar: first horizontal edge below the window top, sampled at 30% of the window width.
 const winH = bottom - top;
 const sampleX = left + Math.round((right - left) * 0.3);
 let titleH = Math.round(winH * 0.048);
@@ -57,42 +81,55 @@ console.log(
   titleH,
 );
 
-const inset = 4;
+const inset = 6;
+const content = {
+  left: left + inset,
+  top: top + titleH,
+  width: right - left - inset * 2,
+  height: bottom - (top + titleH) - inset,
+};
 await sharp(shot)
-  .extract({
-    left: left + inset,
-    top: top + titleH,
-    width: right - left - inset * 2,
-    height: bottom - (top + titleH) - inset,
-  })
+  .extract(content)
   .png({ compressionLevel: 9 })
-  .toFile('src/assets/editor-dark.png');
+  .toFile('src/assets/editor-light.png');
 
-// 9:16 preview area (fractions of the full screenshot, measured once on the 3164x1920 source).
-await sharp(shot)
-  .extract({
-    left: Math.round(width * 0.4815),
-    top: Math.round(height * 0.146),
-    width: Math.round(width * 0.122),
-    height: Math.round(height * 0.362),
-  })
-  .png({ compressionLevel: 9 })
-  .toFile('src/assets/phone-preview.png');
+// Feature crops as fractions of the content area [x, y, width, height], measured on the
+// 3024x1922 source on 2026-09-28. Re-measure if the app's layout changes.
+const crops = {
+  'feature-captions.png': [0.316, 0.007, 0.458, 0.498],
+  'feature-titles.png': [0.656, 0.007, 0.337, 0.498],
+  'feature-timeline.png': [0.005, 0.519, 0.651, 0.47],
+};
+for (const [file, [x, y, w, h]] of Object.entries(crops)) {
+  await sharp(shot)
+    .extract({
+      left: content.left + Math.round(content.width * x),
+      top: content.top + Math.round(content.height * y),
+      width: Math.round(content.width * w),
+      height: Math.round(content.height * h),
+    })
+    .png({ compressionLevel: 9 })
+    .toFile(`src/assets/${file}`);
+}
 
-copyFileSync(resolve(ASSETS, 'concat_logo_512.png'), 'src/assets/logo-lime.png');
-copyFileSync(resolve(ASSETS, 'logo-dark.png'), 'src/assets/logo-dark.png');
-copyFileSync(resolve(ASSETS, 'icons/concat.ico'), 'public/favicon.ico');
-await sharp(resolve(ASSETS, 'concat_logo_512.png'))
-  .resize(180, 180)
-  .png()
-  .toFile('public/apple-touch-icon.png');
-await sharp(resolve(ASSETS, 'concat_logo_512.png'))
-  .resize(64, 64)
-  .png()
-  .toFile('public/favicon.png');
+const logo = resolve(ASSETS, 'concat_logo_512.png');
+if (existsSync(logo)) {
+  copyFileSync(logo, 'src/assets/logo-lime.png');
+  await sharp(logo).resize(180, 180).png().toFile('public/apple-touch-icon.png');
+  await sharp(logo).resize(64, 64).png().toFile('public/favicon.png');
+}
+if (existsSync(resolve(ASSETS, 'logo-dark.png'))) {
+  copyFileSync(resolve(ASSETS, 'logo-dark.png'), 'src/assets/logo-dark.png');
+}
+if (existsSync(resolve(ASSETS, 'icons/concat.ico'))) {
+  copyFileSync(resolve(ASSETS, 'icons/concat.ico'), 'public/favicon.ico');
+}
 
-for (const f of ['src/assets/editor-dark.png', 'src/assets/phone-preview.png']) {
+for (const f of [
+  'src/assets/editor-light.png',
+  ...Object.keys(crops).map((c) => `src/assets/${c}`),
+]) {
   const m = await sharp(f).metadata();
-  console.log(`${f}: ${m.width}x${m.height} (${(m.width / m.height).toFixed(3)})`);
+  console.log(`${f}: ${m.width}x${m.height} (${(m.width / m.height).toFixed(2)})`);
 }
 console.log('done');

@@ -116,15 +116,49 @@ must never show store badges. What we use instead:
 - Nice to have later: release notes excerpt, download counts from the GitHub API
   (`/repos/jub0t/Concat/releases`, `download_count` per asset), a "copy sha256" button.
 
-## 8. Design rules we are following
+## 8. Design rules we are following (revised 2026-09-28, after section 9)
 
-- Page background a cool off-white (oklch 98.5%), cards pure white, text a cool near-black (oklch 18%), never #000.
-- Depth from 1px lines, a 1px contact shadow (`hairline`) and one soft cool drop shadow (`shadow-raised`), not glows
-  or gradients.
-- One accent color, blue (oklch 54% 0.21 262, about #2063e6): primary buttons, focus, icons, selected states and
-  one highlighted word. The app icon stays lime and appears only as the favicon. Type and spacing carry the brand.
-- Every text token clears WCAG AA (4.5:1) on white and on the page background. Check before changing one.
-- Big, tight-tracked headline; generous section rhythm; max ~76rem content width.
+- White page, one gray (`bg-bg-subtle`, oklch 97.4%) for media bands and secondary buttons, text a cool
+  near-black (oklch 16%), never #000. Mona Sans throughout, headlines at weight 450 with near-normal tracking.
+- Structure from 1px rules only: a top rule per section and the two vertical "gridline" rules on the 80rem
+  column from 1280px up. No shadows, gradients, glows or grain.
+- One accent, the app's lavender #b394ff, used as a fill (primary buttons with dark text, selected borders, the
+  Recommended badge). Text in the accent hue uses `accent-ink` (oklch 46% 0.2 300) because #b394ff is only
+  2.2:1 on white. The app icon stays lime and appears only as the favicon.
+- Every text token clears WCAG AA (4.5:1) on white and on the gray band. Check before changing one.
+- Controls 6px, cards 8px, media tiles 12px. No pills. Arrow links for secondary actions.
+- Real screenshots only, cropped from the app repo's `editor-light.png` by `scripts/prepare-assets.mjs`.
+- Section rhythm 64 to 96px; the reference is dense, not airy.
 - Motion is short, eased (expo-out), and mostly one-shot reveals. Respect `prefers-reduced-motion`.
 - No numbered section labels, no em dashes, no availability eyebrows. They read as generated.
 - References: Anti-slop frontend framework https://moelkholy1995.medium.com/beyond-make-it-beautiful-the-anti-slop-framework-for-ai-frontend-craftsmanship-c99bbee6c994
+
+## 9. Reference: GitHub Sponsors page (researched 2026-09-28)
+
+https://github.com/open-source/sponsors is a GitHub marketing page, not a repo. It is composed from Primer Brand,
+GitHub's marketing design system (repo https://github.com/primer/brand, docs https://primer.style/brand), using the
+2026 "gridline" variants (Section gridline PR: https://github.com/primer/brand/pull/1477). Light mode only.
+
+- Page order: SubNav, Hero (gridline, centered, product mock block-end), Statistic row (3 cells), SectionIntro
+  (one big centered statement, max 24ch), three River sections (40/60, text and UI mock alternating), Testimonial
+  (expressive, monospace quote), CTABanner (rounded canvas-subtle container), three minimal Cards with arrow links,
+  FAQ (gridline accordion), footer.
+- Gridline: 1px `border-muted` vertical rules at the edges of a 1280px container, drawn with `::before`/`::after`
+  so they run through section padding; adjacent sections share one rule; rules only appear from 1280px up
+  (`@container (min-width: 1280px)`). Horizontal rules separate sections. No shadows anywhere.
+- Color tokens (light): canvas `#ffffff`, canvas-subtle `#F2F5F3`, border-muted `#E4EBE6`, border-default gray-4,
+  text default `#000000`, text muted gray-7, link blue-6 `#0055D5`. Accent on this page is green (Sponsors);
+  ours stays blue.
+- Type: Mona Sans (SIL OFL 1.1, variable wght 200 to 900, wdth 75 to 125, on Google Fonts;
+  https://github.com/github/mona-sans). Heading weights 425 to 480, letter-spacing 0, line-height 1.0 to 1.1 for
+  display sizes. Text scale 14/16/18/20/22/24/28/32/36/40px. Subhead 16 to 18px at weight 475 to 550. Stats,
+  labels and the testimonial use Mona Sans Mono.
+- Controls: buttons 6px radius, 40 to 48px tall, primary solid plus secondary gray fill with border; cards 8px
+  radius, media tiles 16px; arrow links ("Learn more" with an expandable arrow) instead of secondary buttons.
+- Media: UI mocks sit in a white, bordered frame on a soft pastel tile (lavender, mint, peach). That is the one
+  element that conflicts with the no-gradient rule here; a flat canvas-subtle band with the `bg-dots` utility is
+  the restrained equivalent.
+- Motion: `reveal-in-up` / `slide-in-up` at 1000ms, a typewriter label in the hero. Same class as our reveals.
+- Screenshots for comparison were taken with headless Chrome:
+  `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --screenshot=out.png --window-size=1440,4600 --timeout=20000 URL`
+  wrapped in `perl -e 'alarm 75; exec @ARGV'`. `--virtual-time-budget` never settles on github.com; avoid it.

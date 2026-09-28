@@ -3,29 +3,69 @@ import Container from '@/components/Container.astro';
 import { DISCORD_URL, RELEASES_URL, REPO_URL } from '@/lib/releases';
 
 const year = new Date().getFullYear();
-const links = [
-  { href: REPO_URL, label: 'GitHub' },
-  { href: RELEASES_URL, label: 'Releases' },
-  { href: `${REPO_URL}/blob/main/ROADMAP.MD`, label: 'Roadmap' },
-  { href: DISCORD_URL, label: 'Discord' },
-  { href: `${REPO_URL}/blob/main/LICENSE`, label: 'AGPL-3.0' },
+const columns = [
+  {
+    title: 'Product',
+    links: [
+      { href: '/#download', label: 'Download' },
+      { href: RELEASES_URL, label: 'Releases', external: true },
+      { href: `${REPO_URL}/blob/main/ROADMAP.MD`, label: 'Roadmap', external: true },
+      { href: `${REPO_URL}/blob/main/docs/README.md`, label: 'API docs', external: true },
+    ],
+  },
+  {
+    title: 'Community',
+    links: [
+      { href: REPO_URL, label: 'GitHub', external: true },
+      { href: DISCORD_URL, label: 'Discord', external: true },
+      { href: `${REPO_URL}/blob/main/CONTRIBUTING.md`, label: 'Contributing', external: true },
+      { href: `${REPO_URL}/issues`, label: 'Issues', external: true },
+    ],
+  },
+  {
+    title: 'Support',
+    links: [
+      { href: '/#sponsor', label: 'Sponsor' },
+      { href: '/#contact', label: 'Contact' },
+      { href: '/#faq', label: 'FAQ' },
+      { href: `${REPO_URL}/blob/main/LICENSE`, label: 'License', external: true },
+    ],
+  },
 ];
 ---
 
 <footer class="border-t border-line">
-  <Container class="flex flex-col gap-6 py-10 text-sm text-fg-subtle md:flex-row md:items-center md:justify-between">
-    <p>&copy; {year} Concat. Free and open source.</p>
-    <nav class="flex flex-wrap gap-x-6 gap-y-2">
-      {links.map((link) => (
-        <a
-          href={link.href}
-          class="transition-colors duration-300 hover:text-fg"
-          target="_blank"
-          rel="noopener"
-        >
-          {link.label}
-        </a>
+  <Container class="gridline py-14 lg:py-20">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <p class="text-[0.9375rem] font-semibold">Concat</p>
+        <p class="mt-3 max-w-xs text-sm leading-relaxed text-fg-muted">
+          The free, open-source CapCut replacement. Runs entirely on your machine.
+        </p>
+      </div>
+      {columns.map((col) => (
+        <div>
+          <p class="text-sm font-medium">{col.title}</p>
+          <ul class="mt-4 space-y-2.5 text-sm text-fg-muted">
+            {col.links.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="transition-colors duration-200 hover:text-fg"
+                  target={link.external ? '_blank' : undefined}
+                  rel={link.external ? 'noopener' : undefined}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       ))}
-    </nav>
+    </div>
+    <div class="mt-12 flex flex-col gap-2 border-t border-line pt-6 text-sm text-fg-subtle sm:flex-row sm:items-center sm:justify-between">
+      <p>&copy; {year} Concat. Free and open source under AGPL-3.0.</p>
+      <p>Not affiliated with CapCut or ByteDance.</p>
+    </div>
   </Container>
 </footer>

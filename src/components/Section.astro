@@ -1,25 +1,34 @@
 ---
+/**
+ * A page section inside the gridline frame: a rule on top, the two vertical rules on the content
+ * column (from 80rem up), vertical padding on that same column so the rules run through it.
+ */
 import { cn } from '@/lib/cn';
-import Container from '@/components/Container.astro';
 
 interface Props {
   id?: string;
   title?: string;
   lead?: string;
+  align?: 'start' | 'center';
   class?: string;
+  /** Classes for the padded column, e.g. to tighten the vertical rhythm. */
+  bodyClass?: string;
 }
 
-const { id, title, lead, class: className } = Astro.props;
+const { id, title, lead, align = 'start', class: className, bodyClass } = Astro.props;
 ---
 
-<section id={id} class={cn('section-y scroll-mt-16', className)}>
-  <Container>
+<section id={id} class={cn('scroll-mt-16 border-t border-line', className)}>
+  <div class={cn('container-x gridline section-y', bodyClass)}>
     {(title || lead) && (
-      <header class="mb-14 max-w-2xl" data-reveal>
+      <header
+        class={cn('mb-12 max-w-2xl', align === 'center' && 'mx-auto text-center')}
+        data-reveal
+      >
         {title && <h2 class="text-display-sm">{title}</h2>}
         {lead && <p class="text-lead mt-4 text-fg-muted">{lead}</p>}
       </header>
     )}
     <slot />
-  </Container>
+  </div>
 </section>

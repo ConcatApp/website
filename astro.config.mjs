@@ -15,12 +15,12 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.google(),
-      name: 'Hanken Grotesk',
-      cssVariable: '--font-hanken',
-      weights: ['300 800'],
-      styles: ['normal', 'italic'],
+      name: 'Mona Sans',
+      cssVariable: '--font-mona',
+      weights: ['200 900'],
+      styles: ['normal'],
       subsets: ['latin'],
-      fallbacks: ['system-ui', 'Helvetica Neue', 'Arial', 'sans-serif'],
+      fallbacks: ['system-ui', 'Segoe UI', 'Helvetica', 'Arial', 'sans-serif'],
       display: 'swap',
     },
   ],

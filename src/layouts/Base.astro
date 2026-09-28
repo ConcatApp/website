@@ -39,14 +39,14 @@ const ogImage = image ? (Astro.site ? new URL(image, Astro.site).toString() : im
     <meta property="og:description" content={description} />
     {ogImage && <meta property="og:image" content={ogImage} />}
     <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
-    <meta name="theme-color" content="#f9fafc" />
+    <meta name="theme-color" content="#ffffff" />
 
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="generator" content={Astro.generator} />
 
-    <Font cssVariable="--font-hanken" preload />
+    <Font cssVariable="--font-mona" preload />
     <ClientRouter />
 
     <!-- Marks JS availability before first paint so reveal targets can start hidden. -->
@@ -56,7 +56,6 @@ const ogImage = image ? (Astro.site ? new URL(image, Astro.site).toString() : im
   </head>
   <body class="bg-bg text-fg font-sans">
     <slot />
-    <div class="grain-overlay" aria-hidden="true"></div>
     <script>
       import '@/scripts/scroll';
     </script>

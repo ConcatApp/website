@@ -27,22 +27,22 @@ const {
 const Tag = href ? 'a' : 'button';
 
 const base =
-  'inline-flex items-center justify-center gap-2 rounded-full font-medium tracking-tight whitespace-nowrap select-none ' +
-  'transition-[background-color,color,border-color,transform,opacity] duration-300 ease-out-expo active:scale-[0.98] ' +
+  'inline-flex items-center justify-center gap-2 rounded-md font-medium whitespace-nowrap select-none ' +
+  'transition-[background-color,color,border-color] duration-200 ease-out-expo ' +
   'disabled:pointer-events-none disabled:opacity-50';
 
 const variants: Record<Variant, string> = {
-  // Solid blue with white text is the one place the accent fills a surface. No gradient, no glow.
+  // Solid blue with white text is the one place the accent fills a surface.
   primary: 'bg-accent text-accent-fg hover:bg-accent-hover',
-  secondary:
-    'bg-bg-raised text-fg border border-line hairline hover:border-line-strong hover:bg-bg-overlay',
+  // Gray fill with a rule, like a secondary control in a product UI.
+  secondary: 'bg-bg-subtle text-fg border border-line hover:border-line-strong hover:bg-bg-overlay',
   ghost: 'text-fg-muted hover:text-fg',
 };
 
 const sizes: Record<Size, string> = {
-  sm: 'h-9 px-4 text-sm',
-  md: 'h-11 px-5 text-[0.9375rem]',
-  lg: 'h-12 px-6 text-base',
+  sm: 'h-8 px-3 text-sm',
+  md: 'h-10 px-4 text-[0.9375rem]',
+  lg: 'h-12 px-5 text-base',
 };
 ---
 
