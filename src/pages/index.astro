@@ -20,9 +20,8 @@ import {
   getPlatforms,
 } from '@/lib/releases';
 import { formatCount, getStats } from '@/lib/stats';
-import { SPONSOR_TIERS, formatPrice } from '@/lib/sponsor';
+import { SPONSOR_BENEFITS } from '@/lib/sponsor';
 import { CONTACT_EMAIL } from '@/lib/contact';
-import { cn } from '@/lib/cn';
 import editor from '@/assets/editor-light.png';
 import shotCaptions from '@/assets/feature-captions.png';
 import shotTitles from '@/assets/feature-titles.png';
@@ -107,7 +106,7 @@ const faq = [
   },
   {
     q: 'Where does sponsorship money go?',
-    a: 'The roadmap lays out what sponsorship pays for and what each piece costs. Every sponsor gets a place on the repository for the months they sponsor.',
+    a: 'The roadmap lays out what sponsorship pays for and what each piece costs. Every sponsor gets a place on the repository and on this page for the months they sponsor.',
     link: { href: '/roadmap', label: 'See the roadmap' },
   },
 ];
@@ -302,46 +301,25 @@ const ld = {
       lead="Concat is free and open source, and stays that way. Sponsorship funds continued development, updates, and the store releases on the roadmap."
     >
       <div class="rounded-xl border border-line bg-bg-subtle p-4 sm:p-6 lg:p-8" data-reveal>
-        <div class="grid gap-4 md:grid-cols-2">
-          {SPONSOR_TIERS.map((tier) => (
-            <article
-              class={cn(
-                'flex flex-col rounded-lg border bg-bg p-6 lg:p-8',
-                tier.recommended ? 'border-accent' : 'border-line',
-              )}
-            >
-              <div class="flex items-center justify-between gap-4">
-                <h3 class="text-lg font-medium">{tier.name}</h3>
-                {tier.recommended && (
-                  <span class="rounded-md bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent-ink">
-                    Recommended
-                  </span>
-                )}
-              </div>
-              <p class="mt-4 flex items-baseline gap-1.5">
-                <span class="text-stat">{formatPrice(tier.price)}</span>
-                <span class="text-[0.9375rem] text-fg-muted">/ month</span>
-              </p>
-              <ul class="mt-6 mb-8 flex flex-col gap-2 text-[0.9375rem] leading-relaxed text-fg-muted">
-                {tier.benefits.map((benefit) => (
-                  <li class="flex gap-3">
-                    <Check class="mt-1 size-4 shrink-0 text-accent-ink" aria-hidden="true" />
-                    <span>{benefit}</span>
-                  </li>
-                ))}
-              </ul>
-              <Button
-                href="#contact"
-                variant={tier.recommended ? 'primary' : 'secondary'}
-                class="mt-auto w-full"
-              >
-                Get in touch
-              </Button>
-            </article>
-          ))}
-        </div>
+        <article class="grid gap-8 rounded-lg border border-accent bg-bg p-6 md:grid-cols-[1fr_auto] md:items-end lg:p-8">
+          <div>
+            <h3 class="text-lg font-medium">Sponsorship</h3>
+            <ul class="mt-6 flex flex-col gap-2 text-[0.9375rem] leading-relaxed text-fg-muted">
+              {SPONSOR_BENEFITS.map((benefit) => (
+                <li class="flex gap-3">
+                  <Check class="mt-1 size-4 shrink-0 text-accent-ink" aria-hidden="true" />
+                  <span>{benefit}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <Button href="#contact" variant="primary" class="w-full md:w-auto">
+            Get in touch
+          </Button>
+        </article>
         <p class="mt-6 max-w-2xl text-sm leading-relaxed text-fg-muted">
-          Tiers are monthly. For as long as you sponsor, you or your company are listed on the{' '}
+          Sponsorship is monthly and priced over a message. For as long as you sponsor, you or your
+          company are listed on the{' '}
           <a
             href={REPO_URL}
             class="underline underline-offset-4 transition-colors duration-200 hover:text-accent-ink"
@@ -350,7 +328,7 @@ const ld = {
           >
             Concat repository
           </a>{' '}
-          with name, description, logo and a link.
+          and on this page.
         </p>
       </div>
     </Section>
@@ -387,7 +365,7 @@ const ld = {
     <Section
       id="contact"
       title="Contact."
-      lead="Sponsoring starts with a message. Say which tier you have in mind and how you or your company should appear on the repository."
+      lead="Sponsoring starts with a message. Tell us about you or your company and how you should appear on the repository and this page."
     >
       <div class="grid gap-4 md:grid-cols-2" data-reveal="stagger">
         <article class="rounded-lg border border-line bg-bg p-6 lg:p-8">

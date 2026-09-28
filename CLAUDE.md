@@ -25,12 +25,12 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../relay` or `CONCAT_REP
   the site accent (see Design rules). The app repo draws the mark as SVG (`assets/new_concat_logo_512_*.svg`,
   since 2026-09-28); the asset script copies the rounded light tile to `src/assets/mark.svg`, which the header
   and footer inline, and renders the favicons from it. Community: Discord, AGPL-3.0 license.
-- Sponsorship: two monthly tiers in `src/lib/sponsor.ts`: Public sponsor ($100 a month, recommended) and
-  Enterprise (price shown as "Custom", agreed over a message). Sponsoring starts with a message: every tier
-  button leads to the Contact section (Discord, plus email once `CONTACT_EMAIL` in `src/lib/contact.ts` is set).
-  No payment links on the page; the old Payoneer links are in git history (e7da0d9). Every sponsor, person or
-  company, gets a place on the GitHub repo with name, description, logo and a link for the months they sponsor.
-  Enterprise adds custom integration planning.
+- Sponsorship: one offer, no public price. `src/lib/sponsor.ts` lists what it includes; the price is agreed
+  over a message, so the Sponsor section shows no amount and its button leads to the Contact section (Discord,
+  plus email once `CONTACT_EMAIL` in `src/lib/contact.ts` is set). No payment links on the page; the old
+  Payoneer links are in git history (e7da0d9), as is the removed $100 Public sponsor tier. Every sponsor,
+  person or company, gets a place on the repo README and on the website landing page with name, description,
+  logo and a link for the months they sponsor, plus custom integration planning.
 
 ## Commands
 

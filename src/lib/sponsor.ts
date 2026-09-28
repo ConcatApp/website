@@ -1,32 +1,11 @@
 /**
- * Sponsorship tiers shown in the Sponsor section. Every tier is monthly, and the perks last for the
- * months sponsored. Sponsoring starts with a message, so every tier links to the Contact section
- * rather than a payment page. The earlier Payoneer payment links are in git history (commit
- * e7da0d9) if direct payment ever comes back.
+ * What sponsoring Concat includes, shown in the Sponsor section. Sponsorship is monthly and the price
+ * is agreed over a message, so the page shows no amount and the button links to the Contact section
+ * rather than a payment page. The earlier $100 Public sponsor tier and the Payoneer payment links are
+ * in git history (commit e7da0d9 for the links).
  */
-export interface SponsorTier {
-  name: string;
-  /** Amount in US dollars per month, or a word such as "Custom" for a tier priced in conversation. */
-  price: number | string;
-  /** What the tier includes, one short line each. */
-  benefits: string[];
-  recommended?: boolean;
-}
-
-export const SPONSOR_TIERS: SponsorTier[] = [
-  {
-    name: 'Public sponsor',
-    price: 100,
-    benefits: ['One month in one of the public sponsor slots on the Concat repository.'],
-    recommended: true,
-  },
-  {
-    name: 'Enterprise',
-    price: 'Custom',
-    benefits: ['Everything in Public sponsor.', 'Custom integration planning.'],
-  },
+export const SPONSOR_BENEFITS: string[] = [
+  'Your name, description, logo and a link on the Concat repository README.',
+  'The same place on the Concat website landing page.',
+  'Custom integration planning.',
 ];
-
-export function formatPrice(price: SponsorTier['price']): string {
-  return typeof price === 'number' ? `$${price}` : price;
-}
