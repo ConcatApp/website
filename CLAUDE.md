@@ -31,7 +31,8 @@ Astro 7, Tailwind v4, static output. The app repo is checked out locally at `../
 
 - `src/layouts/Base.astro` head/meta, fonts, ClientRouter, grain overlay, loads the scroll script
 - `src/styles/global.css` all design tokens (`@theme`) and custom utilities (`@utility`)
-- `src/scripts/scroll.ts` Lenis + GSAP ScrollTrigger + Motion reveals, view-transition aware
+- `src/scripts/scroll.ts` Lenis + GSAP ScrollTrigger + Motion reveals, view-transition aware. It also owns in-page
+  `#hash` links: Astro's ClientRouter and Lenis `anchors` fight over them, so neither is allowed to handle them.
 - `src/scripts/platform.ts` client OS detection shared by the hero button and the picker
 - `src/lib/releases.ts` manifest fetch, platform/arch/format model, URLs (repo, releases, Discord)
 - `src/lib/sponsor.ts` sponsor tiers

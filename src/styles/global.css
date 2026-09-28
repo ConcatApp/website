@@ -113,6 +113,11 @@
     border-radius: 2px;
   }
 
+  /* Sections get tabindex="-1" and focus after an in-page link click (see scroll.ts); no ring for that. */
+  section[tabindex='-1']:focus-visible {
+    outline: none;
+  }
+
   /* Reveal targets start hidden only when JS runs (html.js is set inline in <head>),
      so content is always visible without JS or with reduced motion. */
   html.js [data-reveal] {

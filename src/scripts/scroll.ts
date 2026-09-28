@@ -10,6 +10,12 @@
  *   data-reveal              fade + rise once ~20% of the element is visible
  *   data-reveal="stagger"    same, but the element's direct children animate in sequence
  *   data-parallax="0.15"     drifts up to 15% of its height across its scroll range (GSAP scrub)
+ *
+ * In-page links (a[href="#id"] on the current page) are handled here too. Astro's ClientRouter would
+ * otherwise perform a native jump by setting location.href, after which Lenis's own `anchors` handler
+ * measures the target from the new viewport position and animates the page back to the top. The click
+ * is caught in the capture phase, its default prevented (which makes ClientRouter skip it), and the
+ * scroll runs through Lenis, instantly under reduced motion. The URL hash is updated in place.
  */
 import Lenis from 'lenis';
 import gsap from 'gsap';
@@ -35,7 +41,7 @@ function initLenis() {
   lenis = new Lenis({
     lerp: 0.1,
     smoothWheel: true,
-    anchors: true, // intercepts in-page #anchor links
+    anchors: false, // in-page links are handled by initAnchors below
   });
 
   lenis.on('scroll', ScrollTrigger.update);
@@ -105,6 +111,52 @@ function initParallax() {
   }
 }
 
+function initAnchors() {
+  const onClick = (ev: MouseEvent) => {
+    if (
+      ev.defaultPrevented ||
+      ev.button !== 0 ||
+      ev.metaKey ||
+      ev.ctrlKey ||
+      ev.altKey ||
+      ev.shiftKey
+    ) {
+      return;
+    }
+    const link = ev.target instanceof Element ? ev.target.closest('a[href]') : null;
+    if (!(link instanceof HTMLAnchorElement) || (link.target && link.target !== '_self')) return;
+
+    const url = new URL(link.href);
+    if (
+      url.origin !== location.origin ||
+      url.pathname !== location.pathname ||
+      url.search !== location.search ||
+      !url.hash
+    ) {
+      return;
+    }
+    const target = document.getElementById(decodeURIComponent(url.hash.slice(1)));
+    if (!target) return;
+
+    ev.preventDefault();
+    history.replaceState(history.state, '', url.hash);
+
+    // Both paths honour the section's scroll-margin-top, which keeps it clear of the fixed header.
+    if (lenis) lenis.scrollTo(target, { duration: 1 });
+    else target.scrollIntoView();
+
+    // Like a native hash jump, let keyboard focus continue from the target.
+    if (!target.hasAttribute('tabindex')) {
+      target.setAttribute('tabindex', '-1');
+      target.addEventListener('blur', () => target.removeAttribute('tabindex'), { once: true });
+    }
+    target.focus({ preventScroll: true });
+  };
+
+  document.addEventListener('click', onClick, true);
+  cleanups.push(() => document.removeEventListener('click', onClick, true));
+}
+
 function destroy() {
   for (const fn of cleanups) fn();
   cleanups = [];
@@ -114,6 +166,7 @@ function destroy() {
 function init() {
   destroy();
   initLenis();
+  initAnchors();
   initReveals();
   initParallax();
   ScrollTrigger.refresh();

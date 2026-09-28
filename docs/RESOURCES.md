@@ -63,6 +63,10 @@ strong download pages: obsidian.md, zed.dev, blender.org/download, signal.org/do
 - Production pitfalls with Astro + GSAP + Lenis: https://dev.to/keymelgaston/4-motion-design-bugs-that-break-astro-gsap-lenis-sites-in-production-31ac
 - Codrops, minimalist Astro + GSAP build (reveals, flip transitions): https://tympanus.net/codrops/2026/02/18/joffrey-spitzer-portfolio-a-minimalist-astro-gsap-build-with-reveals-flip-transitions-and-subtle-motion/
 - AstroAnimate, Astro-specific animation patterns: https://www.astroanimate.com/
+- Pitfall found here (2026-09-27): Astro's ClientRouter handles same-page `#hash` links by setting `location.href`
+  (a native jump). Lenis's `anchors` option then measures the target from the new viewport position and scrolls the
+  page back to the top whenever that position is fractional. `src/scripts/scroll.ts` catches the click in the
+  capture phase, prevents the default (ClientRouter skips prevented clicks) and scrolls through Lenis itself.
 
 ## 5. Components (optional, not installed)
 

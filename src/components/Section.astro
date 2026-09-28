@@ -12,7 +12,7 @@ interface Props {
 const { id, title, lead, class: className } = Astro.props;
 ---
 
-<section id={id} class={cn('section-y', className)}>
+<section id={id} class={cn('section-y scroll-mt-16', className)}>
   <Container>
     {(title || lead) && (
       <header class="mb-14 max-w-2xl" data-reveal>
