@@ -13,7 +13,7 @@ Astro 7, Tailwind v4, static output. The app repo is checked out locally at `../
   it at build time and falls back to `src/data/release-manifest.json`. Refresh that snapshot occasionally.
 - The app icon is lime `#c6f432`; on the site it appears only as the favicon. The site accent is blue (see
   Design rules). Community: Discord, AGPL-3.0 license.
-- Sponsorship: two monthly tiers in `src/lib/sponsor.ts`: Public sponsor ($25 a month, recommended) and
+- Sponsorship: two monthly tiers in `src/lib/sponsor.ts`: Public sponsor ($100 a month, recommended) and
   Enterprise (price shown as "Custom", agreed over a message). Sponsoring starts with a message: every tier
   button leads to the Contact section (Discord, plus email once `CONTACT_EMAIL` in `src/lib/contact.ts` is set).
   No payment links on the page; the old Payoneer links are in git history (e7da0d9). Every sponsor, person or

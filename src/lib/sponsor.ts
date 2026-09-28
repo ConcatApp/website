@@ -16,7 +16,7 @@ export interface SponsorTier {
 export const SPONSOR_TIERS: SponsorTier[] = [
   {
     name: 'Public sponsor',
-    price: 25,
+    price: 100,
     benefits: ['One month in one of the public sponsor slots on the Concat repository.'],
     recommended: true,
   },
