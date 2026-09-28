@@ -21,8 +21,10 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../relay` or `CONCAT_REP
   every release at build time, falling back to `src/data/github-stats.json`. `GITHUB_TOKEN` in the build
   environment lifts the API rate limit (the Pages workflow passes it). "170+ effects" and "14 languages" are
   the README's own figures.
-- The app icon is lime `#c6f432`; on the site it appears only as the favicon. The site accent is the app's
-  lavender `#b394ff` (see Design rules). Community: Discord, AGPL-3.0 license.
+- The app mark is a white two-C glyph on a blue tile. The blue, `#0568fd`, is the app's primary color and
+  the site accent (see Design rules). The app repo draws the mark as SVG (`assets/new_concat_logo_512_*.svg`,
+  since 2026-09-28); the asset script copies the rounded light tile to `src/assets/mark.svg`, which the header
+  and footer inline, and renders the favicons from it. Community: Discord, AGPL-3.0 license.
 - Sponsorship: two monthly tiers in `src/lib/sponsor.ts`: Public sponsor ($100 a month, recommended) and
   Enterprise (price shown as "Custom", agreed over a message). Sponsoring starts with a message: every tier
   button leads to the Contact section (Discord, plus email once `CONTACT_EMAIL` in `src/lib/contact.ts` is set).
@@ -39,7 +41,7 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../relay` or `CONCAT_REP
 - `npm run assets:prepare` downloads the app's `editor-light.png` and logos, crops the window chrome away for
   the hero and cuts the three feature-row crops (`src/assets/feature-*.png`); crop fractions live in the script
 - `npm run og:image` re-renders `public/og.png` (the 1200x630 share image) with headless Chrome; run it after
-  changing the headline or the hero screenshot and commit the result
+  changing the headline, the mark or the hero screenshot and commit the result
 
 ## Structure
 
@@ -63,11 +65,12 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../relay` or `CONCAT_REP
 - `src/lib/sponsor.ts` sponsor tiers
 - `src/lib/contact.ts` public contact channels (the email shown in the Contact section)
 - `src/components/` Astro-only: Button, Section (a gridline section with optional title and lead), Container,
-  Header (three hover/click dropdown menus: Product, Learn, Community), Footer, ArrowLink (accent text link with arrow), River (feature row: copy plus screenshot on a gray
+  Header (the mark alone as the home link, then three hover/click dropdown menus: Product, Learn,
+  Community, left-aligned after it; the wordmark only appears in the footer), Footer, ArrowLink (accent text link with arrow), River (feature row: copy plus screenshot on a gray
   band), DownloadButton (OS-detected hero CTA), Downloader (OS then architecture then files picker),
   GuideList (cards for every guide, used from the guides landing page)
-- `src/assets/` editor screenshot (light, chrome cropped), the three feature crops, logos. `public/` favicons,
-  `og.png` (share image), `robots.txt`.
+- `src/assets/` editor screenshot (light, chrome cropped), the three feature crops, the app mark (`mark.svg`).
+  `public/` favicons (`.ico`, `.svg`, `.png`, Apple touch icon), `og.png` (share image), `robots.txt`.
 - `docs/RESOURCES.md` research: the GitHub Sponsors reference and its tokens (section 9), galleries, tools
 
 Path alias: `@/` maps to `src/`.
@@ -108,10 +111,10 @@ are recorded in `docs/RESOURCES.md` section 9. Light only: white page, one gray,
 - Gridline frame: every section is `border-t border-line` with a `container-x gridline` column (80rem) that
   carries the vertical padding, so the two vertical rules run through it. The rules appear from 80rem up. Depth
   comes from rules only: no shadows, no gradients, no glows, no grain.
-- The accent `#b394ff` is a fill: primary buttons (dark text on lavender), selected borders, the Recommended
-  badge, and `bg-accent-soft` for selected states. It is too light for text on white, so links, arrow links,
-  stat numbers and the focus ring use `text-accent-ink`, a deeper purple of the same hue. Never a section
-  background, never a gradient. No blue and no lime on the page.
+- The accent `#0568fd` is a fill: primary buttons (white text on blue), selected borders, the Recommended
+  badge, and `bg-accent-soft` for selected states. As text it misses 4.5:1 on the gray band, so links, arrow
+  links, stat numbers and the focus ring use `text-accent-ink`, a deeper blue of the same hue. Never a section
+  background, never a gradient. No second hue on the page: no lavender, no lime, no green.
 - Typeface is Mona Sans only (`font-sans`). Headlines use `text-display` / `text-display-sm` at weight 450 with
   near-normal tracking; stat numbers use `text-stat`. The `eyebrow` utility is for tiny metadata, not labels.
 - Controls: `rounded-md` (6px) buttons, `rounded-lg` (8px) cards, `rounded-xl` (12px) media tiles and the

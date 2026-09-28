@@ -2,8 +2,8 @@
 /**
  * Fixed header with three dropdown menus. On a pointer device a menu opens on hover; a click (or
  * Enter on the trigger) toggles it for touch and keyboard users, and Escape, an outside click or
- * focus leaving the menu closes it. Below the md breakpoint only the wordmark, the GitHub link
- * and the Download button show.
+ * focus leaving the menu closes it. The mark alone is the home link and the menus sit right
+ * after it; below the md breakpoint only the mark, the GitHub link and the Download button show.
  */
 import { siDiscord, siGithub } from 'simple-icons';
 import {
@@ -19,6 +19,7 @@ import {
 } from '@lucide/astro';
 import Container from '@/components/Container.astro';
 import Button from '@/components/Button.astro';
+import Mark from '@/assets/mark.svg';
 import { DISCORD_URL, REPO_URL } from '@/lib/releases';
 
 interface Item {
@@ -99,60 +100,62 @@ const menus: Array<{ label: string; items: Item[] }> = [
 
 <header class="fixed inset-x-0 top-0 z-40 border-b border-line bg-bg/85 backdrop-blur-md">
   <Container as="nav" class="flex h-16 items-center justify-between" aria-label="Main">
-    <a href="/" class="text-[0.9375rem] font-semibold">
-      Concat
-    </a>
+    <div class="flex items-center gap-4">
+      <a href="/" aria-label="Concat home" class="flex items-center">
+        <Mark class="size-7" aria-hidden="true" />
+      </a>
 
-    <ul class="hidden items-center gap-1 md:flex">
-      {menus.map((menu) => (
-        <li class="group relative" data-menu>
-          <button
-            type="button"
-            class="flex h-9 items-center gap-1 rounded-md px-3 text-[0.9375rem] font-medium text-fg-muted transition-colors duration-200 group-hover:text-fg group-data-[open]:bg-bg-subtle group-data-[open]:text-fg hover:bg-bg-subtle"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            {menu.label}
-            <ChevronDown
-              class="size-3.5 transition-transform duration-200 ease-out-expo group-hover:rotate-180 group-data-[open]:rotate-180"
-              aria-hidden="true"
-            />
-          </button>
-          <div class="absolute top-full left-0 hidden pt-2 group-hover:block group-data-[open]:block">
-            <ul class="w-72 rounded-lg border border-line-strong bg-bg p-1.5">
-              {menu.items.map(({ icon: Icon, ...item }) => (
-                <li>
-                  <a
-                    href={item.href}
-                    class="group/item flex items-start gap-3 rounded-md px-3 py-2 transition-colors duration-200 hover:bg-bg-subtle"
-                    target={item.external ? '_blank' : undefined}
-                    rel={item.external ? 'noopener' : undefined}
-                  >
-                    <span class="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-md border border-line bg-bg-subtle text-fg-muted transition-colors duration-200 group-hover/item:text-fg">
-                      {Icon && <Icon class="size-4" aria-hidden="true" />}
-                      {item.brand && (
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          aria-hidden="true"
-                          class="size-4"
-                        >
-                          <path d={item.brand} />
-                        </svg>
-                      )}
-                    </span>
-                    <span class="min-w-0">
-                      <span class="block text-sm font-medium">{item.label}</span>
-                      <span class="mt-0.5 block text-xs text-fg-muted">{item.hint}</span>
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </li>
-      ))}
-    </ul>
+      <ul class="hidden items-center gap-1 md:flex">
+        {menus.map((menu) => (
+          <li class="group relative" data-menu>
+            <button
+              type="button"
+              class="flex h-9 items-center gap-1 rounded-md px-3 text-[0.9375rem] font-medium text-fg-muted transition-colors duration-200 group-hover:text-fg group-data-[open]:bg-bg-subtle group-data-[open]:text-fg hover:bg-bg-subtle"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              {menu.label}
+              <ChevronDown
+                class="size-3.5 transition-transform duration-200 ease-out-expo group-hover:rotate-180 group-data-[open]:rotate-180"
+                aria-hidden="true"
+              />
+            </button>
+            <div class="absolute top-full left-0 hidden pt-2 group-hover:block group-data-[open]:block">
+              <ul class="w-72 rounded-lg border border-line-strong bg-bg p-1.5">
+                {menu.items.map(({ icon: Icon, ...item }) => (
+                  <li>
+                    <a
+                      href={item.href}
+                      class="group/item flex items-start gap-3 rounded-md px-3 py-2 transition-colors duration-200 hover:bg-bg-subtle"
+                      target={item.external ? '_blank' : undefined}
+                      rel={item.external ? 'noopener' : undefined}
+                    >
+                      <span class="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-md border border-line bg-bg-subtle text-fg-muted transition-colors duration-200 group-hover/item:text-fg">
+                        {Icon && <Icon class="size-4" aria-hidden="true" />}
+                        {item.brand && (
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            aria-hidden="true"
+                            class="size-4"
+                          >
+                            <path d={item.brand} />
+                          </svg>
+                        )}
+                      </span>
+                      <span class="min-w-0">
+                        <span class="block text-sm font-medium">{item.label}</span>
+                        <span class="mt-0.5 block text-xs text-fg-muted">{item.hint}</span>
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
 
     <div class="flex items-center gap-4">
       <a

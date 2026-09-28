@@ -13,7 +13,8 @@ npm run dev              # http://localhost:4321
 npm run build            # -> dist/
 npm run check            # types
 npm run format           # prettier (astro + tailwind class sorting)
-npm run assets:prepare   # re-crop screenshot + copy logos from ../relay (the app repo)
+npm run assets:prepare   # re-crop screenshot + copy the mark from ../relay (the app repo)
+npm run og:image         # re-render public/og.png with headless Chrome
 ```
 
 ## Layout
@@ -30,7 +31,7 @@ src/
   data/release-manifest.json  offline fallback snapshot of the manifest
   components/                 Button, Section, Container, Header, Footer, DeviceFrames,
                               DownloadButton, Downloader
-  assets/                     editor screenshot, phone preview, logos
+  assets/                     editor screenshot, feature crops, the app mark (mark.svg)
 public/                       favicons
 docs/RESOURCES.md             research: inspiration, tools, guidelines
 ```

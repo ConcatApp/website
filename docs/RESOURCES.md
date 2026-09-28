@@ -125,9 +125,12 @@ must never show store badges. What we use instead:
   near-black (oklch 16%), never #000. Mona Sans throughout, headlines at weight 450 with near-normal tracking.
 - Structure from 1px rules only: a top rule per section and the two vertical "gridline" rules on the 80rem
   column from 1280px up. No shadows, gradients, glows or grain.
-- One accent, the app's lavender #b394ff, used as a fill (primary buttons with dark text, selected borders, the
-  Recommended badge). Text in the accent hue uses `accent-ink` (oklch 46% 0.2 300) because #b394ff is only
-  2.2:1 on white. The app icon stays lime and appears only as the favicon.
+- One accent, the app's primary blue #0568fd, used as a fill (primary buttons with white text, selected
+  borders, the Recommended badge). Text in the accent hue uses `accent-ink` (oklch 50% 0.22 261, about #0055dd,
+  next to Primer's link blue) because #0568fd is only 4.4:1 on the gray band. The app mark (a white two-C glyph
+  on the blue tile, SVG in the app repo since 2026-09-28) is inlined in the header and footer and rendered into
+  the favicons. Until 2026-09-28 the accent was the app's earlier lavender #b394ff and the icon a lime cat that
+  stayed off the page.
 - Every text token clears WCAG AA (4.5:1) on white and on the gray band. Check before changing one.
 - Controls 6px, cards 8px, media tiles 12px. No pills. Arrow links for secondary actions.
 - Real screenshots only, cropped from the app repo's `editor-light.png` by `scripts/prepare-assets.mjs`.

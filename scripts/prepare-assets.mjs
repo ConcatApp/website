@@ -10,8 +10,12 @@
  *   src/assets/feature-captions.png   the preview with a generated caption (feature row)
  *   src/assets/feature-titles.png     the preview edge and the text inspector (feature row)
  *   src/assets/feature-timeline.png   the timeline: text, effect, video and speech tracks (feature row)
- *   src/assets/logo-lime.png, src/assets/logo-dark.png
- *   public/favicon.ico, public/favicon.png, public/apple-touch-icon.png
+ *   src/assets/mark.svg               the app mark (white two-C glyph on the rounded blue tile),
+ *                                     inlined by the header and footer
+ *   public/favicon.svg                the same file
+ *   public/favicon.png                64px, rendered from the rounded tile
+ *   public/apple-touch-icon.png       180px, rendered from the square tile (iOS rounds it itself)
+ *   public/favicon.ico                the app's own, 16 to 256px frames
  */
 import sharp from 'sharp';
 import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
@@ -19,7 +23,12 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
 const CDN = 'https://cdn.jsdelivr.net/gh/jub0t/Concat@main/assets';
-const FILES = ['editor-light.png', 'concat_logo_512.png', 'logo-dark.png', 'icons/concat.ico'];
+const FILES = [
+  'editor-light.png',
+  'new_concat_logo_512_rounded_light_theme.svg',
+  'new_concat_logo_512_square_light_theme.svg',
+  'icons/concat.ico',
+];
 
 async function findAssets() {
   const local = resolve(process.env.CONCAT_REPO ?? '../relay', 'assets');
@@ -112,14 +121,19 @@ for (const [file, [x, y, w, h]] of Object.entries(crops)) {
     .toFile(`src/assets/${file}`);
 }
 
-const logo = resolve(ASSETS, 'concat_logo_512.png');
-if (existsSync(logo)) {
-  copyFileSync(logo, 'src/assets/logo-lime.png');
-  await sharp(logo).resize(180, 180).png().toFile('public/apple-touch-icon.png');
-  await sharp(logo).resize(64, 64).png().toFile('public/favicon.png');
+// The mark. The app draws it as SVG (a white two-C glyph on the #0568fd tile, since 2026-09-28),
+// so the site inlines the rounded tile and renders each favicon from it at its own size instead
+// of downscaling a raster. The Apple touch icon comes from the square tile because iOS applies
+// its own corner radius.
+const rounded = resolve(ASSETS, 'new_concat_logo_512_rounded_light_theme.svg');
+const square = resolve(ASSETS, 'new_concat_logo_512_square_light_theme.svg');
+if (existsSync(rounded)) {
+  copyFileSync(rounded, 'src/assets/mark.svg');
+  copyFileSync(rounded, 'public/favicon.svg');
+  await sharp(rounded).resize(64, 64).png().toFile('public/favicon.png');
 }
-if (existsSync(resolve(ASSETS, 'logo-dark.png'))) {
-  copyFileSync(resolve(ASSETS, 'logo-dark.png'), 'src/assets/logo-dark.png');
+if (existsSync(square)) {
+  await sharp(square).resize(180, 180).png().toFile('public/apple-touch-icon.png');
 }
 if (existsSync(resolve(ASSETS, 'icons/concat.ico'))) {
   copyFileSync(resolve(ASSETS, 'icons/concat.ico'), 'public/favicon.ico');

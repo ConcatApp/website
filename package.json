@@ -15,6 +15,7 @@
     "format:check": "prettier --check .",
     "assets:prepare": "node scripts/prepare-assets.mjs",
     "shots": "node scripts/screenshot.mjs",
+    "og:image": "node scripts/og-image.mjs",
     "deploy": "npm run build && wrangler deploy",
     "deploy:pages": "npm run build && wrangler pages deploy dist --project-name concatenate --branch main"
   },

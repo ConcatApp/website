@@ -46,16 +46,17 @@
   --color-line: color-mix(in oklch, var(--color-fg) 10%, transparent);
   --color-line-strong: color-mix(in oklch, var(--color-fg) 18%, transparent);
 
-  /* ONE accent: the app's lavender, #b394ff. It is a fill color: primary buttons (with dark text),
-     selected borders, the Recommended badge. On white it only reaches 2.2:1, so anything that is
-     text (links, arrow links, stat numbers, the focus ring) uses `accent-ink`, a deeper purple of
-     the same hue that clears 4.5:1. Never a section background. */
-  --color-accent: #b394ff;
-  --color-accent-hover: #a17dff;
-  --color-accent-fg: oklch(16% 0.012 262);
-  --color-accent-ink: oklch(46% 0.2 300);
-  /* Pale lavender for selected chips and cards. The only surface the accent is allowed to tint. */
-  --color-accent-soft: color-mix(in oklch, #b394ff 16%, white);
+  /* ONE accent: the app's primary blue, #0568fd, the tile behind its mark. It is a fill color:
+     primary buttons (with white text, 4.8:1), selected borders, the Recommended badge. As text it
+     only reaches 4.4:1 on the gray band, so anything that is text (links, arrow links, stat
+     numbers, the focus ring) uses `accent-ink`, a deeper step of the same hue that clears 5.8:1
+     on white and on the band. Never a section background. */
+  --color-accent: #0568fd;
+  --color-accent-hover: oklch(52% 0.236 261);
+  --color-accent-fg: oklch(100% 0 0);
+  --color-accent-ink: oklch(50% 0.22 261);
+  /* Pale blue for selected chips and cards. The only surface the accent is allowed to tint. */
+  --color-accent-soft: color-mix(in oklch, #0568fd 10%, white);
 
   /* Radii: controls 6px, cards 8px, media 12px. No pills. */
   --radius-sm: 0.25rem;

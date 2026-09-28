@@ -87,7 +87,7 @@ const { platforms } = Astro.props;
             <Button href={f.binary.url} variant={i === 0 ? 'primary' : 'secondary'}>
               <Download class="size-4" aria-hidden="true" />
               {f.label}
-              <span class={i === 0 ? 'text-accent-fg/70' : 'text-fg-subtle'}>
+              <span class={i === 0 ? 'font-normal text-accent-fg' : 'text-fg-subtle'}>
                 {formatBytes(f.binary.bytes)}
               </span>
             </Button>

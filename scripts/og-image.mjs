@@ -1,12 +1,21 @@
 /**
  * Renders the social share image (public/og.png, 1200x630) with headless Chrome so it uses the
- * site's real typeface and tokens. Run it after changing the headline or the hero screenshot:
+ * site's real typeface and tokens. Run it after changing the headline, the mark or the hero
+ * screenshot:
  *   node scripts/og-image.mjs
  *   CHROME=/path/to/chrome node scripts/og-image.mjs
  * The result is committed; the build never runs this.
  */
 import { spawn } from 'node:child_process';
-import { existsSync, mkdtempSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -14,6 +23,7 @@ import { pathToFileURL } from 'node:url';
 const CHROME = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const OUT = resolve('public/og.png');
 const shot = pathToFileURL(resolve('src/assets/editor-light.png')).href;
+const mark = readFileSync(resolve('src/assets/mark.svg'), 'utf8');
 
 // Mona Sans: the copy Astro's Fonts API cached for the build when there is one (no network,
 // deterministic), otherwise the Google Fonts stylesheet.
@@ -47,12 +57,14 @@ const html = `<!doctype html>
   }
   .rule { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(23, 26, 38, 0.1); }
   .rule.l { left: 64px; } .rule.r { right: 64px; }
-  .copy { position: absolute; left: 112px; top: 64px; width: 760px; }
-  h1 { font-size: 60px; font-weight: 450; letter-spacing: -0.015em; line-height: 1.04; }
-  p { margin-top: 20px; font-size: 23px; line-height: 1.4; color: oklch(45% 0.018 262); max-width: 640px; }
+  .copy { position: absolute; left: 112px; top: 44px; width: 760px; }
+  .brand { display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 500; }
+  .brand svg { width: 40px; height: 40px; }
+  h1 { margin-top: 22px; font-size: 60px; font-weight: 450; letter-spacing: -0.015em; line-height: 1.04; }
+  p { margin-top: 16px; font-size: 23px; line-height: 1.4; color: oklch(45% 0.018 262); max-width: 640px; }
   .tag {
-    display: inline-flex; align-items: center; margin-top: 26px;
-    height: 42px; padding: 0 16px; border-radius: 8px; background: #b394ff;
+    display: inline-flex; align-items: center; margin-top: 22px;
+    height: 42px; padding: 0 16px; border-radius: 8px; background: #0568fd; color: #fff;
     font-size: 19px; font-weight: 500;
   }
   .band {
@@ -73,6 +85,7 @@ const html = `<!doctype html>
 <body>
   <div class="rule l"></div><div class="rule r"></div>
   <div class="copy">
+    <div class="brand">${mark}<span>Concat</span></div>
     <h1>The free, open-source CapCut replacement.</h1>
     <p>Auto-captions, voices, effects and 4K export, all on your machine. No watermark, no account, no subscription.</p>
     <span class="tag">concatenate.pages.dev</span>
