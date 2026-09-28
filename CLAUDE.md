@@ -66,7 +66,8 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../relay` or `CONCAT_REP
 - `src/lib/contact.ts` public contact channels (the email shown in the Contact section)
 - `src/components/` Astro-only: Button, Section (a gridline section with optional title and lead), Container,
   Header (the mark alone as the home link, then three hover/click dropdown menus: Product, Learn,
-  Community, left-aligned after it; the wordmark only appears in the footer), Footer, ArrowLink (accent text link with arrow), River (feature row: copy plus screenshot on a gray
+  Community, left-aligned after it; GitHub and Discord icons and the Download button on the right; the
+  wordmark only appears in the footer), Footer, ArrowLink (accent text link with arrow), River (feature row: copy plus screenshot on a gray
   band), DownloadButton (OS-detected hero CTA), Downloader (OS then architecture then files picker),
   GuideList (cards for every guide, used from the guides landing page)
 - `src/assets/` editor screenshot (light, chrome cropped), the three feature crops, the app mark (`mark.svg`).
