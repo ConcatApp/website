@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://concatenate.pages.dev/sitemap-index.xml

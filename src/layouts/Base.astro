@@ -1,26 +1,40 @@
 ---
+/**
+ * Document shell: metadata for search engines and link previews (Open Graph and Twitter cards,
+ * which Discord, Slack, iMessage and the rest read too), the font, the client router and the
+ * scroll script. Absolute URLs come from `site` in astro.config.mjs. Pages can add tags through
+ * the `head` slot (the landing page adds JSON-LD there).
+ */
 import '@/styles/global.css';
 import 'lenis/dist/lenis.css';
 import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 
 interface Props {
+  /** Full document title, shown in the tab and in link previews. */
   title: string;
   description?: string;
-  /** Path or absolute URL to a 1200x630 social image. */
+  /** Path or absolute URL to a 1200x630 image. Defaults to the site-wide share image. */
   image?: string;
+  imageAlt?: string;
+  /** Open Graph type: "website" for landing pages, "article" for docs and guides. */
+  type?: 'website' | 'article';
   noindex?: boolean;
 }
 
+const SITE_NAME = 'Concat';
 const {
   title,
-  description = 'The free, open-source CapCut replacement. Runs entirely on your machine. No watermarks, no account, no subscription.',
-  image,
+  description = 'The free, open-source CapCut replacement. Auto-captions, voices, effects and 4K export, all on your machine. No watermarks, no account, no subscription.',
+  image = '/og.png',
+  imageAlt = 'Concat: the free, open-source CapCut replacement, with the editor window below the headline',
+  type = 'website',
   noindex = false,
 } = Astro.props;
 
-const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
-const ogImage = image ? (Astro.site ? new URL(image, Astro.site).toString() : image) : undefined;
+const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).toString() : path);
+const canonical = absolute(Astro.url.pathname);
+const ogImage = absolute(image);
 ---
 
 <!doctype html>
@@ -30,24 +44,41 @@ const ogImage = image ? (Astro.site ? new URL(image, Astro.site).toString() : im
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    {canonical && <link rel="canonical" href={canonical} />}
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+    <meta name="application-name" content={SITE_NAME} />
+    <meta name="apple-mobile-web-app-title" content={SITE_NAME} />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="color-scheme" content="light" />
 
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Concat" />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
-    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
-    <meta name="theme-color" content="#ffffff" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:secure_url" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={imageAlt} />
 
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="generator" content={Astro.generator} />
 
     <Font cssVariable="--font-mona" preload />
     <ClientRouter />
+    <slot name="head" />
 
     <!-- Marks JS availability before first paint so reveal targets can start hidden. -->
     <script is:inline>

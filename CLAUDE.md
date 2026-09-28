@@ -38,11 +38,21 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../relay` or `CONCAT_REP
 - `npm run format` Prettier with Astro and Tailwind class sorting
 - `npm run assets:prepare` downloads the app's `editor-light.png` and logos, crops the window chrome away for
   the hero and cuts the three feature-row crops (`src/assets/feature-*.png`); crop fractions live in the script
+- `npm run og:image` re-renders `public/og.png` (the 1200x630 share image) with headless Chrome; run it after
+  changing the headline or the hero screenshot and commit the result
 
 ## Structure
 
-- `src/layouts/Base.astro` head/meta, fonts, ClientRouter, loads the scroll script
-- `src/styles/global.css` all design tokens (`@theme`) and custom utilities (`@utility`)
+- `src/layouts/Base.astro` head/meta (Open Graph, Twitter card, canonical, robots, a `head` slot), fonts,
+  ClientRouter, loads the scroll script
+- `src/layouts/Docs.astro` long-form page frame for /docs and /guides: sidebar, breadcrumb, prose column,
+  "On this page", previous/next, edit link
+- `src/content.config.ts` the `docs` and `guides` collections (MDX or Markdown under `src/content/`)
+- `src/pages/docs/[...slug].astro`, `src/pages/guides/[...slug].astro` render the collections
+- `src/lib/docs.ts` sidebar sections, ordering and prev/next for both collections
+- `src/lib/remark-alerts.mjs` turns GitHub-style `> [!TIP]` blockquotes into `.alert` asides
+- `src/styles/global.css` all design tokens (`@theme`) and custom utilities (`@utility`), plus the unlayered
+  `.prose` and `.alert` rules for long-form pages
 - `src/scripts/scroll.ts` Lenis + GSAP ScrollTrigger + Motion reveals, view-transition aware. It also owns in-page
   `#hash` links: Astro's ClientRouter and Lenis `anchors` fight over them, so neither is allowed to handle them.
 - `src/scripts/platform.ts` client OS detection shared by the hero button and the picker
@@ -52,11 +62,36 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../relay` or `CONCAT_REP
 - `src/lib/contact.ts` public contact channels (the email shown in the Contact section)
 - `src/components/` Astro-only: Button, Section (a gridline section with optional title and lead), Container,
   Header, Footer, ArrowLink (accent text link with arrow), River (feature row: copy plus screenshot on a gray
-  band), DownloadButton (OS-detected hero CTA), Downloader (OS then architecture then files picker)
-- `src/assets/` editor screenshot (light, chrome cropped), the three feature crops, logos. `public/` favicons.
+  band), DownloadButton (OS-detected hero CTA), Downloader (OS then architecture then files picker),
+  GuideList (cards for every guide, used from the guides landing page)
+- `src/assets/` editor screenshot (light, chrome cropped), the three feature crops, logos. `public/` favicons,
+  `og.png` (share image), `robots.txt`.
 - `docs/RESOURCES.md` research: the GitHub Sponsors reference and its tokens (section 9), galleries, tools
 
 Path alias: `@/` maps to `src/`.
+
+## Docs and guides
+
+- `/docs` is the developer reference (API, transports, recipes). It was migrated from the app repository's
+  `docs/` folder on 2026-09-28 and that folder is gone, so these pages are the source of truth: a change to a
+  method, command, event, error or transport in the app updates the page here. `/guides` is for people using
+  the app; every claim in a guide comes from the app README.
+- Pages are MDX (Markdown works too) in `src/content/docs/` and `src/content/guides/`. Frontmatter: `title`,
+  `description` (shown as the lead and used for meta tags), `section` (docs: Start, API, Transports, Recipes;
+  guides default to Guides) and `order`. `index.mdx` is the section landing page.
+- Links between pages are site-relative (`/docs/api/methods#projectopen`). Use `> [!NOTE]`, `[!TIP]`,
+  `[!IMPORTANT]`, `[!WARNING]` or `[!CAUTION]` for callouts. No emoji, including status ticks in tables.
+- Markdown runs on the unified processor from `@astrojs/markdown-remark` (set as `markdown.processor` in
+  `astro.config.mjs`) because Astro 7's default Sätteri processor takes no remark plugins. Code blocks use
+  Shiki's `github-light`.
+
+## Metadata and search
+
+- `site` in `astro.config.mjs` is `https://concatenate.pages.dev`. Canonical URLs, absolute Open Graph image
+  URLs and the sitemap (`@astrojs/sitemap`, linked from `public/robots.txt`) derive from it.
+- `Base.astro` takes `title`, `description`, `image`, `imageAlt`, `type` and `noindex`. The default image is
+  `public/og.png`. The landing page adds JSON-LD (`SoftwareApplication`) through the `head` slot; docs and
+  guides pass `type="article"`.
 
 ## Design rules
 

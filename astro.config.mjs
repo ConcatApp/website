@@ -2,11 +2,24 @@
 import { defineConfig, fontProviders } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
+import mdx from '@astrojs/mdx';
+import { unified } from '@astrojs/markdown-remark';
+import remarkAlerts from './src/lib/remark-alerts.mjs';
+
+import sitemap from '@astrojs/sitemap';
+
 // https://astro.build/config
 export default defineConfig({
-  // TODO: set the production origin once known. Enables canonical URLs,
-  // absolute OG image URLs and (if added) @astrojs/sitemap.
-  // site: 'https://concat.app',
+  // Docs and guides are MDX. The unified processor (rather than Astro 7's default Sätteri) so the
+  // remark plugin for GitHub-style alerts runs; MDX inherits it. Shiki in a light theme.
+  markdown: {
+    processor: unified({ remarkPlugins: [remarkAlerts] }),
+    shikiConfig: { theme: 'github-light' },
+  },
+
+  // Production origin: canonical URLs, absolute Open Graph image URLs and the sitemap all derive
+  // from it. The Workers host serves the same build and points its canonicals here.
+  site: 'https://concatenate.pages.dev',
 
   prefetch: true,
 
@@ -28,4 +41,6 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+
+  integrations: [mdx(), sitemap()],
 });
