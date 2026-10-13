@@ -7,9 +7,32 @@ import Section from '@/components/Section.astro';
 import DownloadButton from '@/components/DownloadButton.astro';
 import Downloader from '@/components/Downloader.astro';
 import Button from '@/components/Button.astro';
-import River from '@/components/River.astro';
 import ArrowLink from '@/components/ArrowLink.astro';
-import { Check, GitPullRequest, Mail, Milestone, Plus, Terminal } from '@lucide/astro';
+import Ribbon from '@/components/Ribbon.astro';
+import Tour, { type Step } from '@/components/Tour.astro';
+import {
+  ArrowRight,
+  AudioLines,
+  Braces,
+  Captions,
+  Check,
+  Clapperboard,
+  Film,
+  GitPullRequest,
+  HardDrive,
+  Languages,
+  Mail,
+  Milestone,
+  Mic,
+  Plus,
+  ScanFace,
+  Spline,
+  Star,
+  Terminal,
+  Upload,
+  UserX,
+  WandSparkles,
+} from '@lucide/astro';
 import { siDiscord } from 'simple-icons';
 import {
   CHECKSUMS_URL,
@@ -20,48 +43,150 @@ import {
   getPlatforms,
 } from '@/lib/releases';
 import { formatCount, getStats } from '@/lib/stats';
-import { SPONSOR_BENEFITS } from '@/lib/sponsor';
+import { SPONSOR_BENEFITS, SPONSORS } from '@/lib/sponsor';
 import { CONTACT_EMAIL } from '@/lib/contact';
-import editor from '@/assets/editor-light.png';
+import editor from '@/assets/editor.png';
 import shotCaptions from '@/assets/feature-captions.png';
 import shotTitles from '@/assets/feature-titles.png';
-import shotTimeline from '@/assets/feature-timeline.png';
+import shotVoices from '@/assets/feature-voices.png';
 
 const { manifest } = await getManifest();
 const platforms = getPlatforms(manifest);
 const { stats } = await getStats();
+const macos = platforms.find((p) => p.id === 'macos');
 
-const numbers = [
-  { value: formatCount(stats.downloads, { plus: true }), label: 'Downloads from GitHub Releases' },
-  { value: formatCount(stats.stars), label: 'Stars on GitHub' },
-  { value: '170+', label: 'Effects, filters, transitions and text animations' },
-  { value: '14', label: 'Languages in the app' },
+const facts = [
+  {
+    icon: HardDrive,
+    value: formatCount(stats.downloads, { plus: true }),
+    label: 'Downloads from GitHub Releases',
+  },
+  { icon: Star, value: formatCount(stats.stars), label: 'Stars on GitHub' },
+  { icon: WandSparkles, value: '170+', label: 'Effects, filters, transitions and text animations' },
+  { icon: Languages, value: '14', label: 'Languages in the app' },
 ];
 
-const principles = [
+const tour: Step[] = [
   {
-    title: 'No watermarks',
-    body: 'Exports are yours, at full quality. There is no paid tier to unlock and never will be.',
+    title: 'One window, four panes.',
+    body: 'Library on the left, the monitor in the middle, the inspector on the right, the timeline underneath. Every pane can be swapped, split or dragged somewhere else.',
+    region: [0, 0, 1, 1],
   },
   {
-    title: 'No account',
-    body: 'Install it, drop in footage, cut. Nothing to sign up for and nothing to renew.',
+    title: 'The Library.',
+    body: 'Media, Titles, Stickers, Effects, Filters, Transitions and Templates as pages. Import footage, then single-click a filter to audition it on the monitor or drag it onto a lane.',
+    region: [0.006, 0.045, 0.305, 0.56],
   },
   {
-    title: '100% local',
-    body: 'A native Rust engine with a GPU compositor. Your footage never leaves your disk, and it works offline.',
+    title: 'The monitor.',
+    body: 'Scrub, play, step frames. Drag a title or a clip around in the picture; its position, scale and rotation follow. Quality switches between full, half and quarter.',
+    region: [0.317, 0.045, 0.455, 0.56],
+  },
+  {
+    title: 'The inspector.',
+    body: 'Everything about the selected clip: Text, Effects, Adjust, sound. Font, weight, size, colour, shadow and a background plate for titles, with keyframes a diamond away.',
+    region: [0.78, 0.045, 0.215, 0.56],
+  },
+  {
+    title: 'The timeline.',
+    body: 'Several tracks, several timelines per project. The tray under the tabs holds split, the razor, the magnetic switch, Text to Speech, Record Voiceover and Generate Captions.',
+    region: [0, 0.62, 1, 0.38],
+  },
+];
+
+const features = [
+  {
+    icon: Captions,
+    title: 'Auto-captions, offline.',
+    body: 'Local Whisper transcribes on your machine and puts styled captions on the timeline, one title per phrase or per sentence.',
+    image: shotCaptions,
+    alt: 'The timeline with a lane of generated captions above the video and the voice clip',
+    href: '/guides/auto-captions',
+    cta: 'How captions work',
+  },
+  {
+    icon: Mic,
+    title: 'Text to speech and voice cloning.',
+    body: 'Built-in speakers that are quick, or any voice from a few seconds of a recording. The result lands on the timeline.',
+    image: shotVoices,
+    alt: 'The Text to speech sheet with a script, the model and voice pickers and the Generate speech button',
+    href: '/guides/text-to-speech',
+    cta: 'Generate a voice',
+  },
+  {
+    icon: ScanFace,
+    title: 'Background removal.',
+    body: 'A person, an object, or paint the mask yourself with a smart brush. No green screen needed.',
+    href: '/guides/remove-a-background',
+    cta: 'Remove a background',
+  },
+  {
+    icon: Spline,
+    title: 'Keyframes with a curve editor.',
+    body: 'Position, scale, rotation, opacity, volume and effect parameters. Ease in, ease out, or draw the curve.',
+    href: '/guides/keyframes',
+    cta: 'Animate anything',
+  },
+  {
+    icon: Clapperboard,
+    title: 'Titles that look designed.',
+    body: 'Fonts, stroke, shadow and a background plate, with presets to start from. Style many titles at once.',
+    image: shotTitles,
+    alt: 'The Text inspector with font, weight, size, colour, shadow and background settings',
+    href: '/guides/titles-and-text',
+    cta: 'Add titles',
+  },
+  {
+    icon: Film,
+    title: '4K export, 10-bit, no watermark.',
+    body: 'H.264, HEVC and AV1 up to 4K 60. Hardware encoders where the machine has them. Presets for YouTube and for small files.',
+    href: '/guides/export',
+    cta: 'Export a video',
+  },
+];
+
+const sides = [
+  {
+    id: 'for-you',
+    eyebrow: 'For people who edit',
+    title: 'Install it, drop footage in, cut.',
+    rows: [
+      { icon: UserX, term: 'Account', text: 'None. Nothing to sign up for and nothing to renew.' },
+      {
+        icon: Upload,
+        term: 'Upload',
+        text: 'None. The engine, the models and your footage stay on your disk.',
+      },
+      {
+        icon: Check,
+        term: 'Watermark',
+        text: 'None, at any resolution. There is no paid tier to unlock and never will be.',
+      },
+    ],
+    cta: { label: 'Read the guides', href: '/guides' },
+  },
+  {
+    id: 'for-machines',
+    eyebrow: 'For scripts and agents',
+    title: 'Anything the window can do, a program can do.',
+    rows: [
+      {
+        icon: Braces,
+        term: 'API',
+        text: 'JSON-RPC over stdin or a socket, gRPC over HTTP/2, and MCP for AI agents.',
+      },
+      { icon: Terminal, term: 'CLI', text: 'Create, import, edit and export from a shell.' },
+      {
+        icon: AudioLines,
+        term: 'Same engine',
+        text: 'Same commands, same clamps, same refusals as the editor. A method added to the API reaches every transport.',
+      },
+    ],
+    cta: { label: 'Read the developer docs', href: '/docs' },
   },
 ];
 
 const more = [
-  {
-    icon: Terminal,
-    title: 'Scriptable',
-    body: 'A JSON-RPC, gRPC and MCP API plus a CLI, so scripts, services and AI agents can cut video with it too.',
-    href: '/docs',
-    cta: 'Read the developer docs',
-    external: false,
-  },
   {
     icon: GitPullRequest,
     title: 'Contribute',
@@ -80,16 +205,19 @@ const more = [
   },
 ];
 
-const macos = platforms.find((p) => p.id === 'macos');
-
 const faq = [
   {
     q: 'Is Concat really free?',
-    a: 'Yes. No watermark, no account, no paid tier, and the code is AGPL-3.0.',
+    a: 'Yes. No watermark, no account, no paid tier, and the code is AGPL-3.0. Sponsorship is what stands in for a subscription, and it is optional.',
   },
   {
     q: 'Does anything leave my machine?',
     a: 'No. Editing, captions, voices and cutout all run locally. The optional models download once from Settings and work offline after that. Logs stay on disk unless you attach them to an issue yourself.',
+  },
+  {
+    q: 'Where is the text-to-speech button?',
+    a: 'On the timeline tray, the row of tools under the timeline tabs: the Text to Speech button opens the speech sheet. The first time, download a voice model from Settings › Speech.',
+    link: { href: '/guides/text-to-speech', label: 'The text-to-speech guide' },
   },
   {
     q: 'macOS says the app is damaged or cannot be opened.',
@@ -98,11 +226,12 @@ const faq = [
   },
   {
     q: 'How do I install it on iPhone or iPad?',
-    a: 'iOS is in beta and is not on the App Store. Download the IPA from the picker above and install it by sideloading.',
+    a: 'iOS is in beta and is not on the App Store. Download the IPA from the picker and install it by sideloading.',
   },
   {
     q: 'What hardware do I need?',
-    a: 'Minimum: any 64-bit processor from 2013 or later, 4 GB of RAM and 500 MB of storage, with no GPU required. Recommended for smooth 1080p editing and quick 4K exports: 6 cores or more, a GPU with Metal, DirectX 12 or Vulkan, and 16 GB of RAM.',
+    a: 'Minimum: any 64-bit processor from 2013 or later, 4 GB of RAM and 500 MB of storage, with no GPU required. For smooth 1080p editing and quick 4K exports: 6 cores or more, a GPU with Metal, DirectX 12 or Vulkan, and 16 GB of RAM.',
+    link: { href: '/guides/system-requirements', label: 'System requirements' },
   },
   {
     q: 'Where does sponsorship money go?',
@@ -138,54 +267,79 @@ const ld = {
   <Header />
 
   <main>
-    <section class="pt-16">
-      <div class="container-x gridline pt-16 pb-14 text-center md:pt-24 md:pb-20">
-        <h1 class="text-display mx-auto max-w-4xl" data-reveal>
-          The free, open-source CapCut replacement.
+    <section class="pt-28 sm:pt-36">
+      <div class="container-x text-center">
+        <p
+          class="mx-auto inline-flex items-center gap-2 rounded-full border border-line bg-bg-subtle px-3.5 py-1.5 text-[13px] font-medium text-fg-muted"
+          data-reveal
+        >
+          <span class="size-1.5 rounded-full bg-accent" aria-hidden="true"></span>
+          Free and open source · {manifest.version} on GitHub Releases
+        </p>
+        <h1 class="text-display mx-auto mt-7 max-w-5xl" data-reveal>
+          The free, open-source <span class="text-accent-ink">CapCut</span> replacement.
         </h1>
-        <p class="text-lead mx-auto mt-6 max-w-2xl text-fg-muted" data-reveal>
+        <p class="text-lead mx-auto mt-7 max-w-[36rem] text-fg-muted" data-reveal>
           Auto-captions, text-to-speech, background removal, keyframes, effects, titles and
           multi-track cutting, up to 4K. All of it on your machine: no watermark, no account, no
           subscription.
         </p>
-        <div class="mt-10" data-reveal>
-          <DownloadButton platforms={platforms} />
+        <div class="mt-9 flex justify-center" data-reveal>
+          <DownloadButton platforms={platforms} class="justify-center" />
         </div>
+        <p class="mt-5 text-sm text-fg-subtle" data-reveal>
+          Windows, macOS, Linux, Android and iOS. Nothing uploads.
+        </p>
       </div>
-      <div class="bg-dots border-t border-line bg-bg-subtle">
-        <div class="container-x gridline py-8 md:py-14">
+
+      <div class="container-x mt-14 sm:mt-20">
+        <div class="frame" data-reveal>
           <Image
             src={editor}
-            alt="The Concat editor: media library on the left, the preview with a generated caption in the middle, the text inspector on the right and a multi-track timeline below"
+            alt="The Concat editor: media library on the left, the monitor with a generated caption in the middle, the text inspector on the right and a multi-track timeline below"
             widths={[640, 1024, 1440, 2048]}
-            sizes="(min-width: 1280px) 1152px, 100vw"
+            sizes="(min-width: 1200px) 1120px, 100vw"
             loading="eager"
             fetchpriority="high"
-            class="h-auto w-full rounded-lg border border-line"
-            data-reveal
+            class="block h-auto w-full"
           />
         </div>
       </div>
     </section>
 
-    <section class="border-t border-line">
-      <div class="gridline mx-auto w-full max-w-(--container-content)">
-        <ul class="grid grid-cols-2 lg:grid-cols-4" data-reveal="stagger">
-          {numbers.map((n) => (
-            <li class="border-line px-5 py-8 max-lg:[&:nth-child(even)]:border-l max-lg:[&:nth-child(n+3)]:border-t sm:px-8 lg:px-12 lg:py-12 lg:[&:not(:first-child)]:border-l">
-              <p class="text-stat text-accent-ink">{n.value}</p>
-              <p class="mt-3 text-sm text-fg-muted">{n.label}</p>
-            </li>
-          ))}
-        </ul>
+    <section aria-label="What Concat does" class="overflow-hidden py-12 lg:py-20">
+      <div class="relative left-1/2 w-[max(100%,1100px)] -translate-x-1/2">
+        <Ribbon text="Auto-captions ✦ Text to speech ✦ Voice cloning ✦ Background removal ✦ Keyframes ✦ 170+ effects ✦ 4K export ✦ No watermark" />
       </div>
     </section>
 
-    <Section align="center" bodyClass="py-16 lg:py-24">
-      <p class="text-display-sm mx-auto max-w-3xl text-center text-fg-muted" data-reveal>
-        <span class="text-fg">Everything people actually open CapCut for</span>, with none of the
-        catches. No watermark, no account, no subscription, no upload.
-      </p>
+    <Section
+      align="center"
+      title="Everything people open CapCut for. None of the catches."
+      headerClass="max-w-3xl"
+      bodyClass="pt-4 lg:pt-8"
+    >
+      <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-reveal="stagger">
+        {facts.map(({ icon: Icon, ...f }) => (
+          <li class="card-glass grid h-full content-start gap-6 rounded-[20px] p-6">
+            <span class="flex size-11 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
+              <Icon class="size-5" stroke-width={2} aria-hidden="true" />
+            </span>
+            <div>
+              <p class="text-stat text-accent-ink">{f.value}</p>
+              <p class="mt-2 text-[14.5px] leading-snug text-fg-muted">{f.label}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </Section>
+
+    <Section
+      id="tour"
+      title="A tour of the window."
+      lead="Four panes, one screenshot, nothing mocked up. Scroll and the picture follows."
+    >
+      <Tour image={editor} alt="The Concat editor window" steps={tour} />
     </Section>
 
     <Section
@@ -193,53 +347,83 @@ const ld = {
       title="Built for the edits people make every day."
       lead="Captions, voices, titles and effects on a multi-track timeline, rendered by a native Rust engine with a GPU compositor."
     >
-      <River
-        title="Auto-captions, offline."
-        image={shotCaptions}
-        alt="The Concat preview with a caption generated by Concat over a talking-head clip"
-      >
-        Local Whisper transcribes on your machine. Pick a model size, get styled captions on the
-        timeline. The models download once from Settings and work without a network after that.
-      </River>
-      <River
-        title="Titles that look designed."
-        image={shotTitles}
-        imageClass="max-w-[34rem]"
-        alt="The edge of the preview and the text inspector with font, weight, size, color, shadow and background settings"
-        align="end"
-      >
-        Fonts, stroke, shadow and a background plate, with presets to start from. Type, style and
-        animate text on any track, and keyframe position, scale, rotation and opacity with a curve
-        editor built in.
-      </River>
-      <River
-        title="A timeline that keeps up."
-        image={shotTimeline}
-        alt="The timeline with a text track, a Vivid effect, a 4K video track and three speech clips with waveforms"
-      >
-        Split, trim, ripple, merge, freeze frame and speed, on a magnetic timeline if you want it.
-        Several tracks and several cuts per project. 170+ effects, filters and transitions render
-        live in the preview, and free local voices drop straight onto the timeline.
-      </River>
-      <p class="border-t border-line pt-8" data-reveal>
-        <ArrowLink href={`${REPO_URL}#highlights`} target="_blank" rel="noopener">
+      <ul class="grid gap-5 md:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        {features.map(({ icon: Icon, ...f }) => (
+          <li class="card-glass flex h-full flex-col rounded-[24px] p-2">
+            {f.image ? (
+              <div class="bg-dots aspect-[4/3] overflow-hidden rounded-[18px] bg-bg-subtle p-4">
+                <Image
+                  src={f.image}
+                  alt={f.alt ?? ''}
+                  widths={[480, 768, 1024]}
+                  sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
+                  class="block h-full w-full rounded-lg border border-line object-cover object-top"
+                />
+              </div>
+            ) : (
+              <div class="bg-dots flex aspect-[4/3] items-center justify-center rounded-[18px] bg-bg-subtle">
+                <span class="flex size-14 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
+                  <Icon class="size-7" stroke-width={1.75} aria-hidden="true" />
+                </span>
+              </div>
+            )}
+            <div class="flex flex-1 flex-col p-5">
+              <h3 class="text-[1.25rem] leading-tight font-semibold tracking-tight">{f.title}</h3>
+              <p class="mt-2.5 text-[15px] leading-relaxed text-fg-muted">{f.body}</p>
+              <ArrowLink href={f.href} class="mt-auto pt-5">
+                {f.cta}
+              </ArrowLink>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-8 text-sm text-fg-muted" data-reveal>
+        Also: 170+ effects, filters, transitions and text animations, chroma key, colour wheels and
+        curves, one-switch voice cleanup, multi-timeline projects, stickers and shapes.{' '}
+        <a
+          href={`${REPO_URL}#highlights`}
+          class="font-medium text-accent-ink underline underline-offset-4"
+          target="_blank"
+          rel="noopener"
+        >
           Every feature, on GitHub
-        </ArrowLink>
+        </a>
       </p>
     </Section>
 
-    <Section bodyClass="py-14 lg:py-20">
-      <dl
-        class="grid gap-10 md:grid-cols-3 md:gap-0 md:divide-x md:divide-line"
-        data-reveal="stagger"
-      >
-        {principles.map((p) => (
-          <div class="md:px-10 md:first:pl-0 md:last:pr-0">
-            <dt class="text-xl font-medium">{p.title}</dt>
-            <dd class="mt-3 text-[0.9375rem] leading-relaxed text-fg-muted">{p.body}</dd>
-          </div>
+    <Section title="Two ways in, the same engine." headerClass="max-w-xl">
+      <div class="grid gap-5 lg:grid-cols-2" data-reveal="stagger">
+        {sides.map((s) => (
+          <article
+            id={s.id}
+            class="card-glass card-glass-ring flex h-full scroll-mt-24 flex-col rounded-[34px] p-8 [--ring-radius:26px] sm:p-10"
+          >
+            <p class="eyebrow">{s.eyebrow}</p>
+            <h3 class="text-display-sm mt-4 max-w-[16ch] text-[clamp(1.75rem,1.2rem+1.8vw,2.5rem)]">
+              {s.title}
+            </h3>
+            <dl class="mt-8 border-y border-line">
+              {s.rows.map(({ icon: Icon, ...r }) => (
+                <div class="grid grid-cols-[auto_1fr] items-start gap-x-4 border-t border-line py-4 first:border-t-0 sm:grid-cols-[auto_6.5rem_1fr]">
+                  <span class="flex size-9 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
+                    <Icon class="size-4" stroke-width={2.25} aria-hidden="true" />
+                  </span>
+                  <dt class="pt-1.5 text-[15px] font-semibold">{r.term}</dt>
+                  <dd class="col-span-2 pt-1 text-[15px] leading-snug text-fg-muted sm:col-span-1 sm:pt-1.5">
+                    {r.text}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            <div class="mt-auto pt-8">
+              <Button href={s.cta.href} variant="secondary">
+                {s.cta.label}
+                <ArrowRight class="size-4" stroke-width={2.25} aria-hidden="true" />
+              </Button>
+            </div>
+          </article>
         ))}
-      </dl>
+      </div>
     </Section>
 
     <Section
@@ -250,7 +434,6 @@ const ld = {
       <div data-reveal>
         <Downloader platforms={platforms} />
       </div>
-
       <p class="mt-6 text-sm text-fg-subtle" data-reveal>
         <a
           href={RELEASES_URL}
@@ -267,24 +450,151 @@ const ld = {
         >
           SHA256SUMS
         </a>
+        <span class="mx-2">/</span>
+        <a
+          href="/guides/install"
+          class="underline underline-offset-4 transition-colors duration-200 hover:text-accent-ink"
+        >
+          Install guide
+        </a>
       </p>
     </Section>
 
-    <Section title="Beyond the editor.">
-      <div
-        class="grid gap-10 md:grid-cols-3 md:gap-0 md:divide-x md:divide-line"
-        data-reveal="stagger"
-      >
+    <Section
+      id="sponsor"
+      title="Sponsor Concat."
+      lead="Concat has no paywall and never will. Sponsorship is what stands in for one: it funds continued development, updates and the store releases on the roadmap."
+    >
+      <div class="grid gap-5 lg:grid-cols-12" data-reveal="stagger">
+        <article class="card-glass card-glass-ring flex flex-col rounded-[34px] p-8 [--ring-radius:26px] sm:p-10 lg:col-span-7">
+          <p class="eyebrow">Sponsorship</p>
+          <h3 class="mt-4 text-[1.5rem] leading-tight font-semibold tracking-tight">
+            Your name, logo and link, for as long as you sponsor.
+          </h3>
+          <ul class="mt-6 flex flex-col gap-3 text-[15px] leading-relaxed text-fg-muted">
+            {SPONSOR_BENEFITS.map((benefit) => (
+              <li class="flex gap-3">
+                <span class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
+                  <Check class="size-3" stroke-width={3} aria-hidden="true" />
+                </span>
+                <span>{benefit}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-6 max-w-xl text-sm leading-relaxed text-fg-muted">
+            Sponsorship is monthly and priced over a message. The listing lives on the{' '}
+            <a
+              href={REPO_URL}
+              class="font-medium text-accent-ink underline underline-offset-4"
+              target="_blank"
+              rel="noopener"
+            >
+              Concat repository
+            </a>{' '}
+            and on this page.
+          </p>
+          <div class="mt-auto pt-8">
+            <Button href="#contact" variant="primary">
+              Get in touch
+              <ArrowRight class="size-4" stroke-width={2.25} aria-hidden="true" />
+            </Button>
+          </div>
+        </article>
+
+        <div class="flex flex-col gap-5 lg:col-span-5">
+          <p class="eyebrow px-1">Current sponsors</p>
+          {SPONSORS.map((s) => (
+            <a
+              href={s.href}
+              target="_blank"
+              rel="noopener sponsored"
+              class="card-glass flex items-center gap-5 rounded-[24px] p-5"
+            >
+              <Image
+                src={s.logo}
+                alt={`${s.name} logo`}
+                width={72}
+                height={72}
+                class="size-16 shrink-0 rounded-2xl"
+              />
+              <span class="min-w-0">
+                <span class="block text-lg font-semibold tracking-tight">{s.name}</span>
+                <span class="mt-0.5 block text-sm text-fg-muted">{s.description}</span>
+                {s.note && <span class="mt-1 block text-xs text-fg-subtle">{s.note}</span>}
+              </span>
+            </a>
+          ))}
+          <a
+            href="#contact"
+            class="flex items-center gap-5 rounded-[24px] border border-dashed border-line-strong p-5 transition-colors duration-200 hover:border-accent hover:bg-accent-soft/40"
+          >
+            <span class="flex size-16 shrink-0 items-center justify-center rounded-2xl border border-dashed border-line-strong text-fg-subtle">
+              <Plus class="size-6" aria-hidden="true" />
+            </span>
+            <span>
+              <span class="block text-lg font-semibold tracking-tight">Your logo here</span>
+              <span class="mt-0.5 block text-sm text-fg-muted">
+                Sponsor Concat and your name, logo and link take this slot.
+              </span>
+            </span>
+          </a>
+        </div>
+      </div>
+    </Section>
+
+    <Section
+      id="contact"
+      title="Contact."
+      lead="Sponsoring starts with a message. Tell us about you or your company and how you should appear on the repository and this page."
+    >
+      <div class="grid gap-5 md:grid-cols-2" data-reveal="stagger">
+        <article class="card-glass flex flex-col rounded-[24px] p-7">
+          <span class="flex size-10 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="size-5">
+              <path d={siDiscord.path}></path>
+            </svg>
+          </span>
+          <h3 class="mt-5 text-lg font-semibold tracking-tight">Discord</h3>
+          <p class="mt-2 text-[15px] leading-relaxed text-fg-muted">
+            Join the Concat server and send a message. Questions and bug reports are welcome there
+            too.
+          </p>
+          <Button
+            href={DISCORD_URL}
+            variant="secondary"
+            class="mt-auto w-fit pt-0 [margin-top:1.5rem]"
+            target="_blank"
+            rel="noopener"
+          >
+            Join the server
+          </Button>
+        </article>
+        {CONTACT_EMAIL && (
+          <article class="card-glass flex flex-col rounded-[24px] p-7">
+            <span class="flex size-10 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
+              <Mail class="size-5" aria-hidden="true" />
+            </span>
+            <h3 class="mt-5 text-lg font-semibold tracking-tight">Email</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-fg-muted">
+              For anything longer, or if you are not on Discord.
+            </p>
+            <Button href={`mailto:${CONTACT_EMAIL}`} variant="secondary" class="mt-6 w-fit">
+              {CONTACT_EMAIL}
+            </Button>
+          </article>
+        )}
+      </div>
+      <div class="mt-5 grid gap-5 md:grid-cols-2" data-reveal="stagger">
         {more.map(({ icon: Icon, ...m }) => (
-          <article class="flex flex-col md:px-10 md:first:pl-0 md:last:pr-0">
-            <span class="flex size-10 items-center justify-center rounded-md border border-line bg-bg-subtle">
+          <article class="card-glass flex flex-col rounded-[24px] p-7">
+            <span class="flex size-10 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
               <Icon class="size-5" aria-hidden="true" />
             </span>
-            <h3 class="mt-6 text-lg font-medium">{m.title}</h3>
-            <p class="mt-2 text-[0.9375rem] leading-relaxed text-fg-muted">{m.body}</p>
+            <h3 class="mt-5 text-lg font-semibold tracking-tight">{m.title}</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-fg-muted">{m.body}</p>
             <ArrowLink
               href={m.href}
-              class="mt-5"
+              class="mt-auto pt-5"
               target={m.external ? '_blank' : undefined}
               rel={m.external ? 'noopener' : undefined}
             >
@@ -295,116 +605,77 @@ const ld = {
       </div>
     </Section>
 
-    <Section
-      id="sponsor"
-      title="Sponsor Concat."
-      lead="Concat is free and open source, and stays that way. Sponsorship funds continued development, updates, and the store releases on the roadmap."
-    >
-      <div class="rounded-xl border border-line bg-bg-subtle p-4 sm:p-6 lg:p-8" data-reveal>
-        <article class="grid gap-8 rounded-lg border border-accent bg-bg p-6 md:grid-cols-[1fr_auto] md:items-end lg:p-8">
-          <div>
-            <h3 class="text-lg font-medium">Sponsorship</h3>
-            <ul class="mt-6 flex flex-col gap-2 text-[0.9375rem] leading-relaxed text-fg-muted">
-              {SPONSOR_BENEFITS.map((benefit) => (
-                <li class="flex gap-3">
-                  <Check class="mt-1 size-4 shrink-0 text-accent-ink" aria-hidden="true" />
-                  <span>{benefit}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <Button href="#contact" variant="primary" class="w-full md:w-auto">
-            Get in touch
-          </Button>
-        </article>
-        <p class="mt-6 max-w-2xl text-sm leading-relaxed text-fg-muted">
-          Sponsorship is monthly and priced over a message. For as long as you sponsor, you or your
-          company are listed on the{' '}
-          <a
-            href={REPO_URL}
-            class="underline underline-offset-4 transition-colors duration-200 hover:text-accent-ink"
-            target="_blank"
-            rel="noopener"
-          >
-            Concat repository
-          </a>{' '}
-          and on this page.
-        </p>
-      </div>
-    </Section>
-
-    <Section id="faq" title="Common questions.">
-      <div class="border-t border-line" data-reveal>
-        {faq.map((item) => (
-          <details class="group border-b border-line">
-            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-lg font-medium [&::-webkit-details-marker]:hidden">
-              {item.q}
-              <Plus
-                class="size-5 shrink-0 text-fg-subtle transition-transform duration-300 ease-out-expo group-open:rotate-45"
-                aria-hidden="true"
-              />
-            </summary>
-            <div class="max-w-2xl pb-6 text-[0.9375rem] leading-relaxed text-fg-muted">
-              <p>{item.a}</p>
-              {item.code && (
-                <code class="mt-3 block w-fit rounded-md border border-line bg-bg-subtle px-3 py-2 font-mono text-xs text-fg select-all">
-                  {item.code}
-                </code>
-              )}
-              {item.link && (
-                <ArrowLink href={item.link.href} class="mt-3" target="_blank" rel="noopener">
-                  {item.link.label}
-                </ArrowLink>
-              )}
-            </div>
-          </details>
-        ))}
-      </div>
-    </Section>
-
-    <Section
-      id="contact"
-      title="Contact."
-      lead="Sponsoring starts with a message. Tell us about you or your company and how you should appear on the repository and this page."
-    >
-      <div class="grid gap-4 md:grid-cols-2" data-reveal="stagger">
-        <article class="rounded-lg border border-line bg-bg p-6 lg:p-8">
-          <svg
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            aria-hidden="true"
-            class="size-5 text-accent-ink"
-          >
-            <path d={siDiscord.path}></path>
-          </svg>
-          <h3 class="mt-6 text-lg font-medium">Discord</h3>
-          <p class="mt-2 text-[0.9375rem] leading-relaxed text-fg-muted">
-            Join the Concat server and send a message.
+    <Section id="faq">
+      <div class="grid gap-x-10 gap-y-8 lg:grid-cols-12">
+        <div class="lg:col-span-4" data-reveal>
+          <h2 class="text-display-sm">Questions, answered.</h2>
+          <p class="mt-4 text-[15px] text-fg-muted">
+            Anything else, ask on{' '}
+            <a
+              href={DISCORD_URL}
+              class="font-medium text-fg underline-offset-4 hover:underline"
+              target="_blank"
+              rel="noopener"
+            >
+              Discord
+            </a>{' '}
+            or read the{' '}
+            <a href="/guides" class="font-medium text-fg underline-offset-4 hover:underline">
+              guides
+            </a>
+            .
           </p>
-          <Button
-            href={DISCORD_URL}
-            variant="secondary"
-            class="mt-6"
-            target="_blank"
-            rel="noopener"
-          >
-            Join the server
-          </Button>
-        </article>
-        {CONTACT_EMAIL && (
-          <article class="rounded-lg border border-line bg-bg p-6 lg:p-8">
-            <Mail class="size-5 text-accent-ink" aria-hidden="true" />
-            <h3 class="mt-6 text-lg font-medium">Email</h3>
-            <p class="mt-2 text-[0.9375rem] leading-relaxed text-fg-muted">
-              For anything longer, or if you are not on Discord.
-            </p>
-            <Button href={`mailto:${CONTACT_EMAIL}`} variant="secondary" class="mt-6">
-              {CONTACT_EMAIL}
-            </Button>
-          </article>
-        )}
+        </div>
+        <div class="lg:col-span-7 lg:col-start-6" data-reveal>
+          {faq.map((item) => (
+            <details class="group border-b border-line py-1">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-4 text-[17px] font-semibold tracking-tight [&::-webkit-details-marker]:hidden">
+                {item.q}
+                <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-bg-overlay transition-transform duration-200 group-open:rotate-45">
+                  <Plus class="size-4" stroke-width={2.5} aria-hidden="true" />
+                </span>
+              </summary>
+              <div class="max-w-[40rem] pb-5 text-[15.5px] leading-relaxed text-fg-muted">
+                <p>{item.a}</p>
+                {item.code && (
+                  <code class="mt-3 block w-fit rounded-md border border-line bg-bg-subtle px-3 py-2 font-mono text-xs text-fg select-all">
+                    {item.code}
+                  </code>
+                )}
+                {item.link && (
+                  <ArrowLink href={item.link.href} class="mt-3">
+                    {item.link.label}
+                  </ArrowLink>
+                )}
+              </div>
+            </details>
+          ))}
+        </div>
       </div>
     </Section>
+
+    <section>
+      <div class="container-x pt-4 pb-24 lg:pt-8 lg:pb-32">
+        <div
+          class="grid grid-cols-12 items-center gap-x-6 gap-y-8 rounded-[36px] bg-accent px-7 py-12 text-accent-fg sm:px-10 lg:px-16 lg:py-20"
+          data-reveal
+        >
+          <h2 class="text-display col-span-12 text-[clamp(2.25rem,1.4rem+4.2vw,4.5rem)] lg:col-span-7">
+            Ready to cut?
+          </h2>
+          <div class="col-span-12 lg:col-span-4 lg:col-start-9">
+            <DownloadButton
+              platforms={platforms}
+              variant="inverse"
+              class="flex-col items-stretch sm:flex-row lg:flex-col"
+            />
+            <p class="mt-4 text-[14px] font-medium opacity-80">
+              Free, open source, {manifest.version}. No account, nothing uploads.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <Footer />

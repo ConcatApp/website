@@ -1,0 +1,111 @@
+---
+title: 'Cut on the timeline'
+description: 'Split, trim, ripple, merge, freeze, reverse, speed, detach audio, several timelines per project. The whole editing vocabulary on one page.'
+section: 'Timeline'
+order: 1
+---
+
+import Figure from '@/components/Figure.astro';
+import tray from '@/assets/guides/tray.png';
+import header from '@/assets/guides/track-header.png';
+
+<Figure src={tray} alt="The timeline tray" width="48rem">
+  The tray. On Windows and Linux read Ctrl for ⌘ throughout this page.
+</Figure>
+
+## Get around
+
+- **Scrub**: drag on the ruler. Click the timecode under the monitor to type a time.
+- **Play**: <kbd class="kbd">Space</kbd>. <kbd class="kbd">←</kbd> and
+  <kbd class="kbd">→</kbd> step a frame, with <kbd class="kbd">Shift</kbd> ten frames.
+  <kbd class="kbd">Home</kbd> and <kbd class="kbd">End</kbd> jump to the ends.
+- **Zoom**: <kbd class="kbd">⌘</kbd> + wheel zooms about the pointer;
+  <kbd class="kbd">⌘=</kbd> and <kbd class="kbd">⌘-</kbd> step; the fit button at the right of the
+  tray shows the whole cut.
+- **Scroll**: the wheel scrolls the lanes up and down, <kbd class="kbd">Shift</kbd> + wheel (or
+  a horizontal wheel) scrolls time. <kbd class="kbd">H</kbd> turns on the pan tool, where a drag
+  scrolls instead of selecting. The scrollbar under the lanes shows which part is in view.
+- **Preview axis** (<kbd class="kbd">S</kbd>): the monitor shows the frame under the pointer
+  as it crosses the lanes, so you can find a moment without scrubbing.
+
+## Select
+
+Click a clip. <kbd class="kbd">Shift</kbd>-click or <kbd class="kbd">⌘</kbd>-click adds to the
+selection, on the lanes and on the monitor alike. Drag on empty floor to draw a band.
+
+<kbd class="kbd">⌘A</kbd> selects everything.
+
+## Split
+
+- <kbd class="kbd">⌘B</kbd>, or **Split at playhead** on the tray, cuts every clip under the
+  playhead.
+- <kbd class="kbd">B</kbd> turns on the **razor**: a hairline follows the pointer, and a click on a
+  clip cuts it on that frame. Press <kbd class="kbd">B</kbd> again to put it away.
+- **Merge selected** joins two pieces of the same file that meet back into one clip.
+
+## Trim and move
+
+Drag a clip's left or right edge to trim it; drag the clip to move it. **Snap to edges**
+(<kbd class="kbd">N</kbd>, on by default) makes edges and the playhead stick to each other.
+**Trim follow** on the tray makes the playhead ride the edge you trim, so the monitor shows the
+new in or out point while you drag.
+
+## Delete and ripple
+
+<kbd class="kbd">Delete</kbd> removes the selection. What happens to the gap is the **Magnetic
+timeline** switch on the tray (also in Settings › General):
+
+- **Off** (the default): a delete leaves a gap, a trim moves only the edge.
+- **On**: deleting pulls what follows on the same track into the gap, and trimming an edge
+  moves the rest of the track with it.
+
+<kbd class="kbd">Shift+Delete</kbd> closes the gap either way, once.
+
+## Freeze, reverse, mirror, rotate
+
+The menu after Delete on the tray acts on the selected clip:
+
+- **Freeze**: park the playhead inside a picture clip and the frame under it becomes a still.
+- **Reverse**: the clip is rendered backwards into the project cache; the clip then shows the
+  copy. One at a time.
+- **Mirror** flips horizontally. **Rotate** turns a quarter clockwise. Both can be keyframed
+  from the Inspector.
+
+## Speed
+
+Select the clip and set **Rate** in the Inspector's Speed section. Rate re-times the clip in
+place, so its length on the timeline changes; trim afterwards, not before. For sound, **Change
+pitch with speed** decides whether a sped-up voice goes up in pitch (off by default).
+
+## Sound on a video clip
+
+- The thin line across a clip with sound is its **volume**; drag it. It snaps at 100 percent.
+- Right-click the clip for **Detach audio**: the sound becomes a clip of its own on a lane
+  below, so you can offset it or treat it separately. **Reattach audio** puts a detached pair
+  back together.
+- **Save Audio As…** in the same menu renders the clip's sound, with its treatments, to a WAV
+  and files it under Generated › Processed.
+- <kbd class="kbd">M</kbd> mutes the selected clip.
+
+## Tracks
+
+<Figure src={header} alt="A track header" width="20rem">
+  Row height, lock, hide, mute, More.
+</Figure>
+
+The plus at the left of the tray adds a track, to the top or the bottom. Lanes have no names.
+Each header has a row-height picker (Auto, Small, Medium, Large), a lock, an eye, a mute, and a
+**More** menu that holds **Delete**. Deleting a track asks first and says how many clips go
+with it; it can be undone. Drag the edge of the header column to make it wider.
+
+## Several timelines
+
+The tabs above the tray are timelines. The plus adds one; double-click a tab to rename it; drag
+to reorder; hover for the close cross. Each timeline has its own frame, rate and colour, so a
+project can hold a 16:9 cut and a 9:16 cut of the same footage, and the Export sheet exports
+whichever is active.
+
+## Copy, paste, duplicate
+
+<kbd class="kbd">⌘C</kbd>, <kbd class="kbd">⌘V</kbd> and <kbd class="kbd">⌘D</kbd> work on clips,
+including across timelines. A paste lands at the playhead.

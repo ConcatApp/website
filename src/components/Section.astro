@@ -1,7 +1,8 @@
 ---
 /**
- * A page section inside the gridline frame: a rule on top, the two vertical rules on the content
- * column (from 80rem up), vertical padding on that same column so the rules run through it.
+ * A page section: the content column with generous vertical padding, and an optional title and
+ * lead. `align="center"` centres the header. No rules or bands: depth on this page comes from
+ * cards and shadows, not from section chrome.
  */
 import { cn } from '@/lib/cn';
 
@@ -13,20 +14,30 @@ interface Props {
   class?: string;
   /** Classes for the padded column, e.g. to tighten the vertical rhythm. */
   bodyClass?: string;
+  /** Width of the header block, as a max-width class. */
+  headerClass?: string;
 }
 
-const { id, title, lead, align = 'start', class: className, bodyClass } = Astro.props;
+const {
+  id,
+  title,
+  lead,
+  align = 'start',
+  class: className,
+  bodyClass,
+  headerClass = 'max-w-2xl',
+} = Astro.props;
 ---
 
-<section id={id} class={cn('scroll-mt-16 border-t border-line', className)}>
-  <div class={cn('container-x gridline section-y', bodyClass)}>
+<section id={id} class={cn('scroll-mt-24', className)}>
+  <div class={cn('container-x section-y', bodyClass)}>
     {(title || lead) && (
       <header
-        class={cn('mb-12 max-w-2xl', align === 'center' && 'mx-auto text-center')}
+        class={cn('mb-12', headerClass, align === 'center' && 'mx-auto text-center')}
         data-reveal
       >
         {title && <h2 class="text-display-sm">{title}</h2>}
-        {lead && <p class="text-lead mt-4 text-fg-muted">{lead}</p>}
+        {lead && <p class="text-lead mt-5 text-fg-muted">{lead}</p>}
       </header>
     )}
     <slot />

@@ -12,7 +12,7 @@ export const BASE: Record<Kind, string> = { docs: '/docs', guides: '/guides' };
 export const LABEL: Record<Kind, string> = { docs: 'Developer docs', guides: 'Guides' };
 const SECTIONS: Record<Kind, string[]> = {
   docs: ['Start', 'API', 'Transports', 'Recipes'],
-  guides: ['Guides'],
+  guides: ['Start', 'Captions and voices', 'Picture', 'Timeline', 'Reference'],
 };
 
 export interface NavItem {

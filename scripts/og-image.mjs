@@ -22,7 +22,7 @@ import { pathToFileURL } from 'node:url';
 
 const CHROME = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const OUT = resolve('public/og.png');
-const shot = pathToFileURL(resolve('src/assets/editor-light.png')).href;
+const shot = pathToFileURL(resolve('src/assets/editor.png')).href;
 const mark = readFileSync(resolve('src/assets/mark.svg'), 'utf8');
 
 // Mona Sans: the copy Astro's Fonts API cached for the build when there is one (no network,
@@ -55,44 +55,33 @@ const html = `<!doctype html>
     background: #fff;
     -webkit-font-smoothing: antialiased;
   }
-  .rule { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(23, 26, 38, 0.1); }
-  .rule.l { left: 64px; } .rule.r { right: 64px; }
-  .copy { position: absolute; left: 112px; top: 44px; width: 760px; }
-  .brand { display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 500; }
+  .copy { position: absolute; left: 96px; top: 56px; width: 760px; }
+  .brand { display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
   .brand svg { width: 40px; height: 40px; }
-  h1 { margin-top: 22px; font-size: 60px; font-weight: 450; letter-spacing: -0.015em; line-height: 1.04; }
-  p { margin-top: 16px; font-size: 23px; line-height: 1.4; color: oklch(45% 0.018 262); max-width: 640px; }
+  h1 { margin-top: 24px; font-size: 62px; font-weight: 600; letter-spacing: -0.03em; line-height: 0.98; }
+  p { margin-top: 18px; font-size: 23px; line-height: 1.4; color: oklch(45% 0.018 262); max-width: 640px; }
   .tag {
     display: inline-flex; align-items: center; margin-top: 22px;
-    height: 42px; padding: 0 16px; border-radius: 8px; background: #0568fd; color: #fff;
+    height: 44px; padding: 0 18px; border-radius: 12px; background: #0568fd; color: #fff;
     font-size: 19px; font-weight: 500;
   }
-  .band {
-    position: absolute; left: 65px; right: 65px; bottom: 0; height: 236px; overflow: hidden;
-    background-color: oklch(97.4% 0.003 250);
-    background-image: radial-gradient(rgba(23, 26, 38, 0.09) 1px, transparent 1px);
-    background-size: 20px 20px;
-    border-top: 1px solid rgba(23, 26, 38, 0.1);
-  }
   .shot {
-    position: absolute; left: 112px; right: 112px; top: 28px;
-    border: 1px solid rgba(23, 26, 38, 0.12); border-radius: 10px 10px 0 0;
-    overflow: hidden; background: #fff;
+    position: absolute; left: 96px; right: 96px; top: 402px;
+    border: 1px solid rgba(23, 26, 38, 0.12); border-radius: 18px 18px 0 0;
+    overflow: hidden; background: #0b0b0c;
+    box-shadow: 0 32px 80px -24px rgba(23, 26, 38, 0.35);
   }
   .shot img { display: block; width: 100%; }
 </style>
 </head>
 <body>
-  <div class="rule l"></div><div class="rule r"></div>
   <div class="copy">
     <div class="brand">${mark}<span>Concat</span></div>
     <h1>The free, open-source CapCut replacement.</h1>
     <p>Auto-captions, voices, effects and 4K export, all on your machine. No watermark, no account, no subscription.</p>
-    <span class="tag">concatenate.pages.dev</span>
+    <span class="tag">concat.standalones.org</span>
   </div>
-  <div class="band">
-    <div class="shot"><img src="${shot}" alt=""></div>
-  </div>
+  <div class="shot"><img src="${shot}" alt=""></div>
 </body>
 </html>`;
 

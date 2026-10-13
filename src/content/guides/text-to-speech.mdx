@@ -1,0 +1,85 @@
+---
+title: 'Text to speech and voice cloning'
+description: 'Type a script, pick a voice, and the read lands on the timeline. Where the button is, which of the three voice models to use, and how to clone a voice from a recording.'
+section: 'Captions and voices'
+order: 2
+---
+
+import Figure from '@/components/Figure.astro';
+import sheet from '@/assets/guides/tts-sheet.png';
+import tray from '@/assets/guides/tray.png';
+
+## Where the button is
+
+**Text to Speech** is the speaker button on the timeline tray, the last of the editing tools.
+It is also in the **File** menu as **Text to speech…**, and on a phone it is **Speak** on the
+bottom strip. There is no keyboard shortcut.
+
+<Figure
+  src={tray}
+  alt="The timeline tray; the speaker icon at the right end of the tools is Text to Speech"
+  width="48rem"
+>
+  The speaker opens Text to speech.
+</Figure>
+
+## Generate a voice
+
+1. Put the playhead where the voice should start. If a title is selected, its words pre-fill
+   the script and the voice lands at that title's start instead.
+2. Click **Text to Speech**.
+3. Type the narration into **Script**. The line under the box estimates the length of the read.
+4. Pick a **Model** and a **Voice** (see below).
+5. Click **Generate speech**.
+
+<Figure
+  src={sheet}
+  alt="The Text to speech sheet: a Script box, Expression tags, a Voice section with Model set to Chatterbox Turbo and Voice set to Bria, a Use sample voice switch and a Generate speech button"
+>
+  The sheet, with the selected title's words already in the script.
+</Figure>
+
+The sheet shows "Generating voice" with a percentage. When it is done, a toast says "Voice added
+to the timeline": the read is a WAV in your project's `audio` folder, it is in the Library under
+**Generated › Speech**, and it sits as a clip on the first free lane at the playhead.
+
+> [!NOTE]
+> If the sheet says "Download a voice model in Settings › Speech first", open Settings from the
+> gear at the top right, go to **Speech** and click **Download** on a model. Kokoro (compact,
+> 132 MB) is the quick one to start with.
+
+## The three models
+
+| Model                | Good for                                                                                                 | Voices                                                                    | Size         |
+| -------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------ |
+| **Kokoro**           | Built-in speakers, fast. English and Chinese. Has Speed and Pauses sliders.                              | 36 named speakers, American, British and Chinese, female and male         | 132 MB       |
+| **Pocket TTS**       | Any voice from a few seconds of a recording. English. Quick, Balanced or Fine quality.                   | Bria and Loona, two recordings that ship with it, or any clip in your bin | 98 MB        |
+| **Chatterbox Turbo** | The closest to a studio read. Reads at its own pace and acts out `[laugh]`, `[chuckle]`, `[sigh]`. Slow. | Pocket's two recordings, or any clip in your bin                          | About 1.1 GB |
+
+The Model picker shows each one with a subtitle: "Built-in speakers · fast", "Any voice, from a
+recording", "Studio voice · slow". With Chatterbox picked, an **Expression** row under the script
+inserts the three tags at the cursor.
+
+## Clone a voice
+
+Pocket TTS and Chatterbox can read in any voice they are given a few seconds of.
+
+1. Import a recording of the voice, or use a clip that is already in the bin. Ten seconds of
+   clean speech is plenty.
+2. In the Text to speech sheet, pick **Pocket TTS** or **Chatterbox Turbo**.
+3. Turn on **Use sample voice**.
+4. Pick the recording under **Sample**, and drag **Voice from** to a point where the person is
+   talking: the model listens to the ten seconds from there.
+5. Generate.
+
+If a clip with sound is selected on the timeline when you open the sheet, it is already the
+sample. The sheet refuses with "Pick a sample with a voice in it" when the clip is silent.
+
+> [!TIP]
+> Chatterbox has no voice of its own. With Pocket TTS installed it borrows Bria; otherwise
+> turn on Use sample voice and give it a recording.
+
+## Put the words on screen too
+
+Select the generated clip and click **Generate Captions**: the read is transcribed back into
+titles, timed to the voice. See [auto-captions](/guides/auto-captions).

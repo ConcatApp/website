@@ -1,0 +1,33 @@
+---
+title: 'Update Concat'
+description: 'The app updates itself from Settings › Version, and can go back a release too.'
+section: 'Reference'
+order: 4
+---
+
+Open Settings (the gear at the top right) and go to **Version**.
+
+- The page names the installed version and says whether it is the latest. **Check for
+  updates** asks GitHub Releases.
+- **Switch version** lists every release from 0.2.5 on, newer or older. Pick one and click
+  **Install**: the build downloads, the installer runs, and Concat starts again on the version
+  you chose. Releases before 0.2.5 cannot update themselves, which is why they are not offered.
+
+## Where updates come from
+
+| Install                                   | How it updates                                                                         |
+| ----------------------------------------- | -------------------------------------------------------------------------------------- |
+| macOS disk image, Windows setup, AppImage | From Settings › Version, in place                                                      |
+| Windows MSI                               | From Settings › Version, with the next MSI                                             |
+| Debian, RPM and Arch packages             | Settings › Version downloads the package and opens it in the system installer          |
+| Flatpak from Flatpark                     | Through Flatpak; Settings says "Installed as a Flatpak: updates come through Flatpak." |
+| Microsoft Store                           | Through the store                                                                      |
+| Android APK, iOS IPA                      | Download the new file from GitHub Releases and install it over the old one             |
+
+A build you compiled yourself has nothing to put in its place, and Settings says so.
+
+## Projects across versions
+
+A project opened in a newer version may convert something on open and say so in a notice:
+effects that were replaced by newer ones, clips that played backwards in an older version. Save
+to keep the change. Projects with shapes do not open correctly in 0.2.5 or earlier.

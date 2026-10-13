@@ -1,129 +1,129 @@
 {
   "schema": 2,
   "product": "Concat",
-  "version": "0.2.4",
-  "tag": "v0.2.4",
+  "version": "0.2.6",
+  "tag": "v0.2.6",
   "models_release": "models-v1",
   "binaries": {
     "macos": {
       "arm64": {
         "dmg": {
-          "file": "Concat-0.2.4-macos-arm64.dmg",
-          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.4/Concat-0.2.4-macos-arm64.dmg",
-          "bytes": 59456586,
-          "sha256": "26cc6b3ab0add0ca9120196981b1eefc8a9c21538da531ca21e607e394931002"
+          "file": "Concat-0.2.6-macos-arm64.dmg",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.6/Concat-0.2.6-macos-arm64.dmg",
+          "bytes": 51359951,
+          "sha256": "2cf7eaac0c5648aac414edee9e7bb64f2f24adf342a89c727c75f10dc2184127"
         }
       },
       "x86_64": {
         "dmg": {
-          "file": "Concat-0.2.4-macos-x86_64.dmg",
-          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.4/Concat-0.2.4-macos-x86_64.dmg",
-          "bytes": 80352123,
-          "sha256": "ba4cfaca06f29f0bd5956b7394603385fdcdd45dcfbd524e5880cf4bf32c07e1"
+          "file": "Concat-0.2.6-macos-x86_64.dmg",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.6/Concat-0.2.6-macos-x86_64.dmg",
+          "bytes": 73257530,
+          "sha256": "ba25fae11856907112318ea26ec1311be1d03ddfc266ad10953b3f01b5b7724f"
         }
       }
     },
     "linux": {
       "x86_64": {
         "deb": {
-          "file": "Concat-0.2.4-linux-x86_64.deb",
-          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.4/Concat-0.2.4-linux-x86_64.deb",
-          "bytes": 144692268,
-          "sha256": "2ba47b1db76dba718364dfe360f6b69f911e2440219c62769f592d65d5bf6e84"
+          "file": "Concat-0.2.6-linux-x86_64.deb",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.6/Concat-0.2.6-linux-x86_64.deb",
+          "bytes": 137490492,
+          "sha256": "fca5f4e8a763caeb9ab8654feb55f9743eb01763f18cee71ef83bffb20259eec"
         },
         "rpm": {
-          "file": "Concat-0.2.4-linux-x86_64.rpm",
-          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.4/Concat-0.2.4-linux-x86_64.rpm",
-          "bytes": 143868282,
-          "sha256": "696e8cf16fc4dfd4641ddf637fdfa416e7ec8a125f4afd73f6b70dbfa32320b0"
+          "file": "Concat-0.2.6-linux-x86_64.rpm",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.6/Concat-0.2.6-linux-x86_64.rpm",
+          "bytes": 136662353,
+          "sha256": "069caef461a41e5a59524351174382cadddec0adee8935dfa9b0b4d22367d28b"
         },
         "appimage": {
-          "file": "Concat-0.2.4-linux-x86_64.AppImage",
-          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.4/Concat-0.2.4-linux-x86_64.AppImage",
-          "bytes": 129944056,
-          "sha256": "5c75ca5d52ec3bf23a0cae284c0f0b2b4ed0cdc3ab74a0434ed12e4f67cd6c74"
+          "file": "Concat-0.2.6-x86_64.AppImage",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.6/Concat-0.2.6-x86_64.AppImage",
+          "bytes": 122501624,
+          "sha256": "986ef9d8f78ca21125e6943990e658373affcf50b94482e5a27769a7683b350e"
         },
         "pacman": {
-          "file": "Concat-0.2.4-linux-x86_64.pkg.tar.zst",
-          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.4/Concat-0.2.4-linux-x86_64.pkg.tar.zst",
-          "bytes": 134177710,
-          "sha256": "a4c6993653d5401d198938e1f4ad928ca22334035e2ffd709907dde2e9f1dcf1"
+          "file": "Concat-0.2.6-linux-x86_64.pkg.tar.zst",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.6/Concat-0.2.6-linux-x86_64.pkg.tar.zst",
+          "bytes": 126733174,
+          "sha256": "ad0be2752734f253a023447c42d21f3546a4818e9b73277672cf056fe4f616ac"
         }
       },
       "aarch64": {
         "deb": {
-          "file": "Concat-0.2.4-linux-aarch64.deb",
-          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.4/Concat-0.2.4-linux-aarch64.deb",
-          "bytes": 133452126,
-          "sha256": "8d77db114eca79667741243911b0f3be8b502a0291e221fe9b173be2fa475db2"
+          "file": "Concat-0.2.6-linux-aarch64.deb",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.6/Concat-0.2.6-linux-aarch64.deb",
+          "bytes": 126136862,
+          "sha256": "99215754f7a964489385cb817868863557b554899b9d24118a3dcfa0b692c14d"
         },
         "rpm": {
-          "file": "Concat-0.2.4-linux-aarch64.rpm",
-          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.4/Concat-0.2.4-linux-aarch64.rpm",
-          "bytes": 132389347,
-          "sha256": "76d851f802ab1c63ef67819797e8230ab306f2d247c3fc53150b24c6b8c5850f"
+          "file": "Concat-0.2.6-linux-aarch64.rpm",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.6/Concat-0.2.6-linux-aarch64.rpm",
+          "bytes": 125033586,
+          "sha256": "f8affe9927705965c0e516c6817b902a6783c4463209c3ff5f8cc9c971f6f076"
         },
         "appimage": {
-          "file": "Concat-0.2.4-linux-aarch64.AppImage",
-          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.4/Concat-0.2.4-linux-aarch64.AppImage",
-          "bytes": 117561864,
-          "sha256": "52dd7221772942c3cc6f093092b54b66efae49c790882465e662dab3e6cdd67b"
+          "file": "Concat-0.2.6-aarch64.AppImage",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.6/Concat-0.2.6-aarch64.AppImage",
+          "bytes": 109758984,
+          "sha256": "9541d3af6d220003c8ae675c752cb598f946ab67f1ae8aa500e117dcdd9d7c89"
         },
         "pacman": {
-          "file": "Concat-0.2.4-linux-aarch64.pkg.tar.zst",
-          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.4/Concat-0.2.4-linux-aarch64.pkg.tar.zst",
-          "bytes": 123165149,
-          "sha256": "2e0e84b2c6d4e7a260dbc6e58e3c4656d801d766f0b644ac86336ff8cbe46bf6"
+          "file": "Concat-0.2.6-linux-aarch64.pkg.tar.zst",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.6/Concat-0.2.6-linux-aarch64.pkg.tar.zst",
+          "bytes": 115246505,
+          "sha256": "d634be3fd3fc7e3159011d084b98dac7df67ba8627ff7bb32a1ef82652e709be"
         }
       }
     },
     "windows": {
       "x86_64": {
         "setup": {
-          "file": "Concat-0.2.4-windows-x86_64-setup.exe",
-          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.4/Concat-0.2.4-windows-x86_64-setup.exe",
-          "bytes": 89940689,
-          "sha256": "a85a00c935fc45a8e746161939823d31cf3430d090bf1cd2313b79e4bbf924fd"
+          "file": "Concat-0.2.6-windows-x86_64-setup.exe",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.6/Concat-0.2.6-windows-x86_64-setup.exe",
+          "bytes": 82354487,
+          "sha256": "ee26f6238dbec76267418d5bf0e2bd42c29268d1678b0a60bf06b7dfbf9e1922"
         },
         "msi": {
-          "file": "Concat-0.2.4-windows-x86_64.msi",
-          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.4/Concat-0.2.4-windows-x86_64.msi",
-          "bytes": 107880448,
-          "sha256": "19ee792587e438b1e747b0d95fac44e377df57565d6d580ddef33b8672710bfa"
+          "file": "Concat-0.2.6-windows-x86_64.msi",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.6/Concat-0.2.6-windows-x86_64.msi",
+          "bytes": 99807232,
+          "sha256": "ff3252f19917af86a7d5c1711e2d2fa46a837581cdd51d0c60eab0e690005c86"
         }
       },
       "aarch64": {
         "setup": {
-          "file": "Concat-0.2.4-windows-aarch64-setup.exe",
-          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.4/Concat-0.2.4-windows-aarch64-setup.exe",
-          "bytes": 70425368,
-          "sha256": "6615c07780b4b2ac11aab27f8305240e561773b4358cfce494cf0000e166f887"
+          "file": "Concat-0.2.6-windows-aarch64-setup.exe",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.6/Concat-0.2.6-windows-aarch64-setup.exe",
+          "bytes": 62923721,
+          "sha256": "377c3e6eedc88a79d19387a938054e19f755262ad484f590b6a78dfcdb8e926b"
         },
         "msi": {
-          "file": "Concat-0.2.4-windows-aarch64.msi",
-          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.4/Concat-0.2.4-windows-aarch64.msi",
-          "bytes": 82341888,
-          "sha256": "ac86cc4e3a75464314749508bc2770816e3c8778379557e65c1ab057449669ef"
+          "file": "Concat-0.2.6-windows-aarch64.msi",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.6/Concat-0.2.6-windows-aarch64.msi",
+          "bytes": 74268672,
+          "sha256": "e5bc3992caccaad03177ee1f25b79bbac3797c9b1fe41083ee77c623c4ce2ecd"
         }
       }
     },
     "android": {
       "arm64": {
         "apk": {
-          "file": "Concat-0.2.4-android-arm64.apk",
-          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.4/Concat-0.2.4-android-arm64.apk",
-          "bytes": 65324072,
-          "sha256": "699f77bc623fdd33b7f41b5c21e7c1818aea714d503c6344b49b976050f4bc3e"
+          "file": "Concat-0.2.6-android-arm64.apk",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.6/Concat-0.2.6-android-arm64.apk",
+          "bytes": 57369640,
+          "sha256": "06b1634c4003993f3a1dc85bc84e11b55b93bcdff01c53d0bc85211df821339c"
         }
       }
     },
     "ios": {
       "arm64": {
         "ipa": {
-          "file": "Concat-0.2.4-ios-arm64.ipa",
-          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.4/Concat-0.2.4-ios-arm64.ipa",
-          "bytes": 63309432,
-          "sha256": "8b254696ce47839c29ab081b1e805240515a1ee39c5d40eeb52ad0068f1d43f8"
+          "file": "Concat-0.2.6-ios-arm64.ipa",
+          "url": "https://github.com/jub0t/Concat/releases/download/v0.2.6/Concat-0.2.6-ios-arm64.ipa",
+          "bytes": 55177104,
+          "sha256": "4d269b58e20efa48c8f1f138738fdffe24cc413d59236bbb23b55afaec6c4a70"
         }
       }
     }

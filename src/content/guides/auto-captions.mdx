@@ -1,0 +1,95 @@
+---
+title: 'Auto-captions'
+description: 'One button transcribes a clip on your machine and puts a title per phrase on the timeline. Where the button is, which model to pick, and how to restyle the result.'
+section: 'Captions and voices'
+order: 1
+---
+
+import Figure from '@/components/Figure.astro';
+import sheet from '@/assets/guides/captions-sheet.png';
+import progress from '@/assets/guides/captions-progress.png';
+import result from '@/assets/guides/captions-result.png';
+import tray from '@/assets/guides/tray.png';
+
+## Where the button is
+
+**Generate Captions** is the **T** button on the timeline tray, right after the magnetic switch.
+On a phone it is **Captions** on the bottom strip.
+
+<Figure
+  src={tray}
+  alt="The timeline tray with the Generate Captions and Text to Speech buttons at the right of the editing tools"
+  width="48rem"
+>
+  The T opens Captions; the speaker next to it opens Text to speech.
+</Figure>
+
+## Caption a clip
+
+1. Select the clip with the voice in it on the timeline. A video with its own sound works, and
+   so does a separate audio clip, such as a voiceover.
+2. Click **Generate Captions**.
+3. Pick a **Model**. **Base (English)** is the sweet spot; the sheet lists whichever Whisper
+   models you have downloaded.
+4. Choose a **Placement** (Bottom, Centre or Top) and a **Size** (Small, Medium, Large).
+5. Click **Generate captions**.
+
+<Figure
+  src={sheet}
+  alt="The Captions sheet: a Transcriber section with a Model picker set to Base (English), a Captions section with Placement and Size, and a Generate captions button"
+>
+  The Captions sheet, opened with the voice clip selected.
+</Figure>
+
+The sheet reads "Loading the model", then "Transcribing" with a percentage. Nothing leaves your
+machine at any point; a 15-second clip takes a few seconds on the Base model.
+
+<Figure
+  src={progress}
+  alt="The Captions sheet while it works: Loading the model, a progress bar and a Cancel button"
+>
+  Loading the model, then transcribing.
+</Figure>
+
+When it finishes, one title per phrase spoken lands on the first lane with room, cut to the
+words' own timing, and a toast says how many captions were added.
+
+<Figure
+  src={result}
+  alt="The timeline after captioning: a new lane of pink title clips above the video, timed to the voice clip below"
+>
+  Seven captions on a new lane, each one timed to a phrase.
+</Figure>
+
+> [!NOTE]
+> If the sheet says "Download a transcriber model in Settings › Transcriber first", open
+> Settings from the gear at the top right, go to **Transcriber**, and click **Download** on
+> **Base (English)** (148 MB). Multilingual variants detect the language on their own; the
+> Small models are more accurate and a few times slower. See [the AI models](/guides/offline-models).
+
+## Caption from a script
+
+With no clip selected, or a clip with no sound, the sheet shows a **Script** box instead of the
+model picker. Type or paste the words, choose placement and size, and click **Add captions**:
+one title per sentence, each held for as long as it takes to read, one after another.
+
+## Fix a word
+
+Captions are ordinary titles. Click one on the timeline and its words are in the **Content**
+box of the Inspector's **Text** tab; fix the word there. Drag the clip's edges to retime it.
+
+## Restyle every caption at once
+
+1. Click one caption, then <kbd class="kbd">Shift</kbd>-click the others (or drag a box around
+   the lane) to select them all.
+2. The Text tab reads "Editing N titles". Change the font, size, colour, shadow or background
+   plate: it applies to all of them in one undo step.
+
+To make that look the default for every caption and title you add from now on, click **Use for
+new titles** under the Font picker. Generated captions use that kept style.
+
+## Why a word is wrong
+
+Whisper hears what it hears: product names, names of people and anything mumbled come out as the
+closest common word. The Small models get more right; a quiet room helps more. Fix the odd word in
+the Content box rather than reaching for a bigger model every time.

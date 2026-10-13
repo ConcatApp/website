@@ -1,0 +1,127 @@
+---
+/**
+ * Text running along a gentle wave: the feature list, as a strip between the hero and the rest
+ * of the page. The text is repeated to cover the path and two copies chase each other so the
+ * loop never shows a seam. Pauses on hover; stands still under prefers-reduced-motion.
+ * After the React Bits "curved loop" pattern, in plain TypeScript and GSAP.
+ */
+interface Props {
+  text: string;
+  class?: string;
+}
+const { text, class: className } = Astro.props;
+const VIEW_W = 1200;
+const VIEW_H = 160;
+const cy = VIEW_H / 2;
+const a = 44;
+const d = `M -320 ${cy} Q -160 ${cy - a} 0 ${cy} T 320 ${cy} T 640 ${cy} T 960 ${cy} T 1280 ${cy} T ${VIEW_W + 320} ${cy}`;
+---
+
+<div
+  class:list={['relative w-full overflow-hidden select-none', className]}
+  data-ribbon
+  data-text={text}
+>
+  <svg
+    class="block h-auto w-full"
+    viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
+    preserveAspectRatio="xMidYMid meet"
+    role="img"
+    aria-label={text.replaceAll('✦', ',')}
+  >
+    <path
+      d={d}
+      fill="none"
+      stroke="var(--color-accent)"
+      stroke-width="54"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      data-ribbon-path
+    ></path>
+    <text fill="var(--color-accent-fg)" dominant-baseline="central" aria-hidden="true">
+      <textPath data-ribbon-head startOffset="0"></textPath>
+    </text>
+    <text fill="var(--color-accent-fg)" dominant-baseline="central" aria-hidden="true">
+      <textPath data-ribbon-tail startOffset="0"></textPath>
+    </text>
+  </svg>
+</div>
+
+<style>
+  [data-ribbon] text {
+    font-family: var(--font-sans);
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const SPEED = 60; // path units per second
+  let cleanups: Array<() => void> = [];
+
+  function setup(root: HTMLElement) {
+    const path = root.querySelector<SVGPathElement>('[data-ribbon-path]');
+    const head = root.querySelector<SVGTextPathElement>('[data-ribbon-head]');
+    const tail = root.querySelector<SVGTextPathElement>('[data-ribbon-tail]');
+    if (!path || !head || !tail) return;
+
+    const id = `ribbon-${Math.random().toString(36).slice(2, 8)}`;
+    path.id = id;
+    head.setAttribute('href', `#${id}`);
+    tail.setAttribute('href', `#${id}`);
+
+    const unit = `${root.dataset.text ?? ''} ✦ `;
+    const length = path.getTotalLength();
+    // One copy is at least as long as the path, so the two copies always cover it.
+    let copyLength = 0;
+    const fill = () => {
+      head.textContent = unit;
+      const unitWidth = head.getComputedTextLength() || 1;
+      const reps = Math.ceil(length / unitWidth) + 1;
+      const copy = unit.repeat(reps);
+      head.textContent = copy;
+      tail.textContent = copy;
+      copyLength = head.getComputedTextLength() || length;
+      apply(state.offset);
+    };
+    const apply = (offset: number) => {
+      const o = ((offset % copyLength) + copyLength) % copyLength;
+      head.setAttribute('startOffset', String(o));
+      tail.setAttribute('startOffset', String(o - copyLength));
+    };
+    const state = { offset: 0 };
+    fill();
+    document.fonts?.ready.then(fill).catch(() => {});
+    if (reducedMotion.matches) return;
+
+    const tween = gsap.to(state, {
+      offset: () => copyLength,
+      duration: () => copyLength / SPEED,
+      ease: 'none',
+      repeat: -1,
+      onUpdate: () => apply(state.offset),
+    });
+    const pause = () => tween.pause();
+    const resume = () => tween.resume();
+    root.addEventListener('pointerenter', pause);
+    root.addEventListener('pointerleave', resume);
+    cleanups.push(() => {
+      tween.kill();
+      root.removeEventListener('pointerenter', pause);
+      root.removeEventListener('pointerleave', resume);
+    });
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    for (const root of document.querySelectorAll<HTMLElement>('[data-ribbon]')) setup(root);
+  });
+  document.addEventListener('astro:before-swap', () => {
+    for (const fn of cleanups) fn();
+    cleanups = [];
+  });
+</script>

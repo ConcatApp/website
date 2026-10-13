@@ -1,8 +1,8 @@
 ---
 /**
- * Hero call to action. The server renders a safe default (Windows x64); a small script relabels
- * and repoints it to the visitor's platform and, where detectable, architecture using the JSON
- * map below. Every link is a GitHub Releases asset.
+ * OS-detected call to action. The server renders a safe default (Windows x64); a small script
+ * relabels and repoints every instance on the page to the visitor's platform and, where
+ * detectable, architecture using the JSON map below. Every link is a GitHub Releases asset.
  */
 import Button from '@/components/Button.astro';
 import { Download } from '@lucide/astro';
@@ -10,9 +10,14 @@ import { formatBytes, type PlatformModel } from '@/lib/releases';
 
 interface Props {
   platforms: PlatformModel[];
+  /** `inverse` is the white button on the accent block. */
+  variant?: 'primary' | 'inverse';
+  /** Show the secondary "All platforms" link next to it. */
+  all?: boolean;
+  class?: string;
 }
 
-const { platforms } = Astro.props;
+const { platforms, variant = 'primary', all = true, class: className } = Astro.props;
 
 type Entry = { url: string; size: string };
 const map = Object.fromEntries(
@@ -34,26 +39,32 @@ const initial = map.windows ?? Object.values(map)[0];
 const initialFile = initial ? initial.arches[initial.defaultArch] : undefined;
 ---
 
-<div class="flex flex-wrap items-center justify-center gap-3">
-  <Button href={initialFile?.url ?? '#download'} size="lg" data-download-primary>
-    <Download class="size-4" aria-hidden="true" />
+<div class:list={['flex flex-wrap items-center gap-3', className]} data-download>
+  <Button href={initialFile?.url ?? '#download'} size="lg" variant={variant} data-download-primary>
+    <Download class="size-[18px]" aria-hidden="true" />
     <span data-download-label>Download{initial ? ` for ${initial.name}` : ''}</span>
   </Button>
-  <Button href="#download" variant="secondary" size="lg">
-    All platforms
-  </Button>
+  {all && (
+    <Button
+      href="#download"
+      variant={variant === 'inverse' ? 'outline-inverse' : 'secondary'}
+      size="lg"
+    >
+      All platforms
+    </Button>
+  )}
+  <script type="application/json" data-download-map set:html={JSON.stringify(map)}></script>
 </div>
 
-<script type="application/json" id="concat-downloads" set:html={JSON.stringify(map)}></script>
 <script>
   import { detectArch, detectPlatform } from '@/scripts/platform';
 
   type Entry = { url: string; size: string };
   type Platform = { name: string; defaultArch: string; arches: Record<string, Entry> };
 
-  async function apply() {
-    const data = document.getElementById('concat-downloads');
-    const button = document.querySelector<HTMLAnchorElement>('[data-download-primary]');
+  async function apply(root: HTMLElement) {
+    const data = root.querySelector('[data-download-map]');
+    const button = root.querySelector<HTMLAnchorElement>('[data-download-primary]');
     if (!data || !button) return;
 
     const map = JSON.parse(data.textContent || '{}') as Record<string, Platform>;
@@ -74,5 +85,7 @@ const initialFile = initial ? initial.arches[initial.defaultArch] : undefined;
     if (arch) point(arch);
   }
 
-  document.addEventListener('astro:page-load', () => void apply());
+  document.addEventListener('astro:page-load', () => {
+    for (const root of document.querySelectorAll<HTMLElement>('[data-download]')) void apply(root);
+  });
 </script>

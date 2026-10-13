@@ -1,0 +1,68 @@
+---
+title: 'Effects, filters and transitions'
+description: 'The Library pages for looks and effects, and the one thing to know: a single click auditions, a double-click or the plus applies.'
+section: 'Picture'
+order: 2
+---
+
+Concat ships 170+ effects, filters, transitions and text animations, rendered on the GPU and
+shown live in the monitor. They live on three Library pages. What a click does differs by page,
+which is the thing that trips people up.
+
+| Page            | Single click                                                  | Double-click or the card's plus               | Needs                                                                     |
+| --------------- | ------------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------- |
+| **Filters**     | Auditions the look over the whole picture, without placing it | Lays the look down as a layer at the playhead | Nothing selected                                                          |
+| **Effects**     | Adds the effect to the selected clip                          | Same                                          | One selected video, image or text clip (audio effects: a clip with sound) |
+| **Transitions** | Puts the transition on the cut between two selected clips     | Same                                          | Two selected clips that meet on the same track                            |
+
+## Filters
+
+Filters are colour looks: Everyday, Cinematic, Portrait, Food, Scenery, Retro, Film, Black &
+White, Vibe, Tone, Clean, Color, and an **Imported** shelf for your own LUTs.
+
+Click a card and the look appears over the picture so you can compare; click it again to take
+it off. The first time, a toast explains: "Showing the look over the picture. Double-click the
+card, or its plus, to lay it on the timeline."
+
+A laid-down filter is a **layer clip**: it treats everything under it for as long as it runs.
+Trim it on the timeline to change what it covers; stack two for a combined grade. Select the
+layer and its **Filter** tab has a **Strength** slider and a **Ramp in** and **Ramp out**.
+
+**Import a LUT (.cube)**, on the Filters toolbar, reads a `.cube` table from Resolve or anywhere
+else and files it under Imported.
+
+## Effects
+
+The Effects page has two headings in its left column: **Video Effects** (Basic, Blur, Distort,
+Glitch, Light, Stylize and more) and **Audio Effects** (Voice, Space, Tone). Select a clip on
+the timeline first, then click a card. The Inspector jumps to the clip's **Effects** tab (or
+**Audio › Sound** for an audio effect), where the effect sits in the clip's chain with its knobs.
+
+The chain runs top to bottom. Reorder with the chevrons, bypass one with its eye, remove it with
+the cross. Any knob with a diamond can be keyframed; see [keyframes](/guides/keyframes). The
+Effects tab also has an **Effect library** of its own, with search, a shelf picker and a
+**Favourites** star filter: hover a tile in either library and press its star to favourite it.
+
+Chroma key, luma key, colour wheels, curves, contrast, saturation and white balance are effects
+too; the first three are also built into every clip's Video tab, under **Remove background**
+and **Adjust**.
+
+## Transitions
+
+1. Select the two clips that meet, in either order (<kbd class="kbd">Shift</kbd>-click the
+   second).
+2. Open the Library's **Transitions** page and click a card: Dissolve, Wipe, Slide, Zoom, Spin,
+   Glitch, Light, Blur and the rest.
+
+The transition sits on the cut. A small button at the head of the second clip opens it; drag it
+to change the duration, or select it and use the **Duration** knob in the Inspector, where
+**Remove** also lives. Both clips need at least a frame of handle; the app says so when there is
+no room.
+
+## Your own effects
+
+Effects are packages, and a package of your own goes in Concat's effects folder. The Effects
+page gets a **Reload custom effects** button once one is there, so a package written or dropped
+in while the app runs shows up without a restart, and one that will not load says why. The
+community shares packages in the
+[ConcatApp/assets](https://github.com/ConcatApp/assets) repository.

@@ -125,7 +125,7 @@ An error has a `code` you branch on and a `message` you can show a person.
 | `notOpen`      | -32001          | That project folder is not open                                                                           |
 | `notFound`     | -32002          | That job, template or package does not exist                                                              |
 | `refused`      | -32003          | The edit layer said no. Nothing changed. The message is the window's own sentence                         |
-| `busy`         | -32004          | A one-at-a-time job is already running                                                                    |
+| `busy`         | -32004          | A one-at-a-time job is already running. The socket server also answers it when all 64 seats are taken     |
 | `cancelled`    | -32005          | The job was stopped by `export.cancel`. Only ever inside `export.failed`                                  |
 | `unauthorized` | -32006          | Wrong or missing token. Raised by the socket transports, never by the API itself                          |
 | `failed`       | -32000          | Everything else: a file that would not read or write, a decode that failed, a model that did not download |
@@ -225,6 +225,10 @@ job threads, so it must be `Send + Sync`. The window's Remote page is a
 | Platform       | `config`                                                | `data`                                                     |
 | -------------- | ------------------------------------------------------- | ---------------------------------------------------------- |
 | macOS          | `~/Library/Application Support/app.concat.editor`       | same folder                                                |
-| Windows        | `%APPDATA%\app.concat.editor`                           | same folder                                                |
+| Windows        | `%APPDATA%\app.concat.editor`                           | `%LOCALAPPDATA%\app.concat.editor`                         |
 | Linux          | `~/.config/app.concat.editor` (or `$XDG_CONFIG_HOME/…`) | `~/.local/share/app.concat.editor` (or `$XDG_DATA_HOME/…`) |
 | Portable build | `portable/` beside the executable                       | same folder                                                |
+
+Since 0.2.6 a Windows build keeps models, caches and logs in `%LOCALAPPDATA%`, so a roaming
+profile no longer carries them; they move there from `%APPDATA%` on first launch. Settings,
+recents, templates and looks stay in `config`.

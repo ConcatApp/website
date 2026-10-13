@@ -1,0 +1,130 @@
+---
+/**
+ * A scroll-driven tour of the editor window. The real screenshot sits in a sticky frame; as each
+ * step scrolls into view the picture pans and zooms to the part of the window the copy is about.
+ * Regions are fractions of the screenshot [x, y, width, height]. Nothing is mocked: it is one
+ * image, moved.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+export interface Step {
+  title: string;
+  body: string;
+  /** [x, y, w, h] as fractions of the image. */
+  region: [number, number, number, number];
+}
+
+interface Props {
+  image: ImageMetadata;
+  alt: string;
+  steps: Step[];
+}
+
+const { image, alt, steps } = Astro.props;
+const ratio = image.height / image.width;
+---
+
+<div class="grid gap-10 lg:grid-cols-12 lg:gap-x-10" data-tour data-ratio={ratio}>
+  <div class="lg:order-2 lg:col-span-7">
+    <div
+      class="frame sticky top-24 bg-bg-subtle"
+      style={`aspect-ratio: ${image.width} / ${image.height}`}
+      data-tour-frame
+    >
+      <Image
+        src={image}
+        alt={alt}
+        widths={[768, 1200, 1800, 2400]}
+        sizes="(min-width: 1024px) 60vw, 100vw"
+        class="block h-auto w-full origin-top-left will-change-transform"
+        data-tour-image
+      />
+    </div>
+  </div>
+  <ol class="lg:order-1 lg:col-span-5">
+    {steps.map((s, i) => (
+      <li
+        class="flex flex-col justify-center border-t border-line py-10 first:border-t-0 lg:min-h-[56vh] lg:py-14"
+        data-tour-step
+        data-region={s.region.join(',')}
+      >
+        <p class="eyebrow">{String(i + 1).padStart(2, '0')}</p>
+        <h3 class="text-title mt-3">{s.title}</h3>
+        <p class="mt-3 max-w-md text-[15.5px] leading-relaxed text-fg-muted">{s.body}</p>
+      </li>
+    ))}
+  </ol>
+</div>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let cleanups: Array<() => void> = [];
+
+  function setup(root: HTMLElement) {
+    const frame = root.querySelector<HTMLElement>('[data-tour-frame]');
+    const image = root.querySelector<HTMLElement>('[data-tour-image]');
+    const steps = Array.from(root.querySelectorAll<HTMLElement>('[data-tour-step]'));
+    if (!frame || !image || steps.length === 0) return;
+    const ratio = Number(root.dataset.ratio) || 0.58;
+
+    // The transform that fills the frame with a region, with a little breathing room.
+    const target = (region: number[]) => {
+      const [rx, ry, rw, rh] = region as [number, number, number, number];
+      const W = frame.clientWidth;
+      const H = frame.clientHeight;
+      const imgH = W * ratio;
+      const px = rx * W;
+      const py = ry * imgH;
+      const pw = rw * W;
+      const ph = rh * imgH;
+      const pad = rw >= 0.999 && rh >= 0.999 ? 1 : 0.94;
+      const s = Math.min(W / pw, H / ph) * pad;
+      let x = (W - pw * s) / 2 - px * s;
+      let y = (H - ph * s) / 2 - py * s;
+      // Keep the picture's edges outside the frame: a region at the window's edge is shown
+      // flush with it rather than with blank space beyond it.
+      if (W * s >= W) x = Math.min(0, Math.max(W - W * s, x));
+      if (imgH * s >= H) y = Math.min(0, Math.max(H - imgH * s, y));
+      return { x, y, scale: s };
+    };
+
+    let current = 0;
+    const go = (i: number) => {
+      current = i;
+      const region = (steps[i]!.dataset.region ?? '0,0,1,1').split(',').map(Number);
+      const t = target(region);
+      if (reducedMotion.matches) gsap.set(image, t);
+      else gsap.to(image, { ...t, duration: 1.1, ease: 'expo.out', overwrite: true });
+    };
+
+    const triggers = steps.map((step, i) =>
+      ScrollTrigger.create({
+        trigger: step,
+        start: 'top 60%',
+        end: 'bottom 60%',
+        onEnter: () => go(i),
+        onEnterBack: () => go(i),
+      }),
+    );
+    go(0);
+    const onResize = () => go(current);
+    window.addEventListener('resize', onResize);
+    cleanups.push(() => {
+      for (const t of triggers) t.kill();
+      window.removeEventListener('resize', onResize);
+    });
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    for (const root of document.querySelectorAll<HTMLElement>('[data-tour]')) setup(root);
+  });
+  document.addEventListener('astro:before-swap', () => {
+    for (const fn of cleanups) fn();
+    cleanups = [];
+  });
+</script>

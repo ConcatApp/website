@@ -1,9 +1,9 @@
 # Concat website
 
 Landing page for [Concat](https://github.com/jub0t/Concat), the free and open-source CapCut replacement.
-Light, premium, static. Downloads come straight from GitHub Releases.
+Light, premium, static. Live at https://concat.standalones.org. Downloads come straight from GitHub Releases.
 
-**Stack**: Astro 7 · Tailwind CSS 4 · GSAP + ScrollTrigger · Lenis · Motion · Lucide · Hanken Grotesk (self-hosted via Astro Fonts API)
+**Stack**: Astro 7 · Tailwind CSS 4 · GSAP + ScrollTrigger · Lenis · Motion · Lucide · Mona Sans (self-hosted via Astro Fonts API)
 
 ## Develop
 
@@ -13,7 +13,7 @@ npm run dev              # http://localhost:4321
 npm run build            # -> dist/
 npm run check            # types
 npm run format           # prettier (astro + tailwind class sorting)
-npm run assets:prepare   # re-crop screenshot + copy the mark from ../relay (the app repo)
+npm run assets:prepare   # re-crop screenshots + logos from ../timeline or CONCAT_REPO (the app repo)
 npm run og:image         # re-render public/og.png with headless Chrome
 ```
 
@@ -29,8 +29,9 @@ src/
   lib/sponsor.ts              sponsor tiers
   lib/contact.ts              public contact channels
   data/release-manifest.json  offline fallback snapshot of the manifest
-  components/                 Button, Section, Container, Header, Footer, DeviceFrames,
-                              DownloadButton, Downloader
+  components/                 Button, Section, Container, Header, Footer, Ribbon, Tour,
+                              DownloadButton, Downloader, GuideList, ArrowLink
+  content/docs, content/guides  the developer reference and the user guides (MDX)
   assets/                     editor screenshot, feature crops, the app mark (mark.svg)
 public/                       favicons
 docs/RESOURCES.md             research: inspiration, tools, guidelines

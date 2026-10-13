@@ -1,0 +1,49 @@
+---
+title: 'Keyframes'
+description: 'Animate position, scale, rotation, opacity, volume or any effect knob with the diamond next to it, then shape the motion in the Keyframes pane.'
+section: 'Picture'
+order: 4
+---
+
+## Set a key
+
+Every knob in the Inspector that can be animated has a small diamond next to it: Scale,
+Position X and Y, Rotation, Opacity, Volume, Strength on a filter layer, every effect parameter,
+even the colour wheels.
+
+1. Select the clip and put the playhead where the motion starts.
+2. Set the knob to its starting value and click its **diamond**. It fills: that is a key.
+3. Move the playhead to where the motion ends, change the value. A second key is set for you.
+
+The clip now animates between the two. Keys of the selected clip are drawn on the ruler as
+diamonds, and you can drag them there to retime the motion.
+
+> [!TIP]
+> Dragging a keyed position or scale on the monitor keeps the key, so you can animate by
+> moving the picture rather than typing numbers: set a key, move the playhead, drag.
+
+## The Keyframes pane
+
+The dopesheet and the curve editor live in a pane of their own. Open it with **Add a panel** on
+the title strip (the plus with a chevron), or click any pane's chip and switch it to
+**Keyframes**.
+
+- **Dopesheet** shows a row per keyed property with its keys in time. Drag a key to retime it.
+- **Curves** shows the value over time. Each key's ease is a picker: **Linear**, **Ease in**,
+  **Ease out**, **Ease in and out**, or **Custom**, which gives you Bezier handles to drag.
+
+The toolbar has **Previous key**, **Add or remove a key at the playhead**, **Next key**, and
+**Clear all keys** for the property. With nothing selected it reads "Select a clip to edit its
+keyframes".
+
+## Common moves
+
+- **Ken Burns on a photo**: key Scale at 100 and Position at the start, Scale at 115 and a
+  nudged Position at the end, Ease in and out.
+- **Fade a title in**: key Opacity at 0 on the first frame and 100 half a second later. (Fades
+  on sound have their own Fade in and Fade out knobs in the Audio tab, no keys needed.)
+- **A caption that pops**: key Scale at 80 then 100 over four frames, Ease out.
+- **Duck the music under a voice**: on the music clip, key Volume at 0 dB, then at minus 12 dB
+  a half second later, and back up after the line.
+
+Double-click a knob's label to put it back to its default, keys and all.

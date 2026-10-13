@@ -1,5 +1,5 @@
 /**
- * Concat ships as binaries on GitHub Releases (no app stores).
+ * Concat ships as binaries on GitHub Releases.
  * Every release publishes a manifest.json next to the binaries. It is fetched at build time and
  * falls back to the committed snapshot in src/data when the network is unavailable.
  */
@@ -9,6 +9,8 @@ export const REPO_URL = 'https://github.com/jub0t/Concat';
 export const RELEASES_URL = `${REPO_URL}/releases`;
 export const CHECKSUMS_URL = `${REPO_URL}/releases/latest/download/SHA256SUMS`;
 export const DISCORD_URL = 'https://discord.gg/DVuPfpXfqP';
+export const ISSUES_URL = `${REPO_URL}/issues`;
+export const FLATPARK_URL = 'https://flatpark.org/apps/app.concat.editor/';
 const MANIFEST_URL = `${REPO_URL}/releases/latest/download/manifest.json`;
 
 export interface Binary {
@@ -85,6 +87,7 @@ const DESKTOP_LINUX: FormatSpec[] = [
   ['appimage', 'AppImage'],
   ['deb', 'Debian package'],
   ['rpm', 'RPM package'],
+  ['pacman', 'Arch package'],
 ];
 
 /** Display order matters: the first architecture and first format are the one-click defaults. */
@@ -124,8 +127,9 @@ const SPEC: Array<Omit<PlatformModel, 'arches'> & { arches: ArchSpec[] }> = [
   {
     id: 'linux',
     name: 'Linux',
-    summary: 'AppImage, deb and rpm',
+    summary: 'AppImage, deb, rpm and Arch',
     archPrompt: 'Processor',
+    note: 'Also on Flatpark, a community Flatpak remote that wraps the x86_64 .deb of each release and updates with it.',
     arches: [
       { id: 'x86_64', label: 'x86_64', hint: 'Intel and AMD', formats: DESKTOP_LINUX },
       { id: 'aarch64', label: 'ARM64', hint: 'aarch64 machines', formats: DESKTOP_LINUX },

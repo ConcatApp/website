@@ -109,6 +109,7 @@ stopped:
 ```
 Concat API 0.2: JSON-RPC on 127.0.0.1:7420
 Concat API 0.2: token 3f9c1e…
+Concat API 0.2: writes under /Users/ada
 ```
 
 | Flag            | Meaning                                                                                      |
@@ -122,6 +123,13 @@ Concat API 0.2: token 3f9c1e…
 Several flags at once serve on all of them. All callers share one
 dispatcher and its open projects.
 
+> [!NOTE]
+> `concat-cli` has four more subcommands that do not speak the API:
+> `probe <file>` prints what is in a media file, `render <in> <out>` is the
+> engine's end-to-end slice, `preview` draws one effect's card and `check`
+> validates effect packages before sharing them. `concat-cli --help` lists
+> them.
+
 ---
 
 ## From the window
@@ -129,12 +137,12 @@ dispatcher and its open projects.
 **Settings › Remote** serves the same JSON-RPC lines while the editor is
 open.
 
-| Control           | Meaning                                                              |
-| ----------------- | -------------------------------------------------------------------- |
-| **Serve the API** | The switch. Remembered across launches                               |
-| **Address**       | Host and port. Default `127.0.0.1:7420`                              |
-| **Token**         | Yours, or one the window mints and shows you when the field is empty |
-| Status line       | "Listening on … · N connected", or why the bind failed               |
+| Control            | Meaning                                                              |
+| ------------------ | -------------------------------------------------------------------- |
+| **Remote control** | The switch. Remembered across launches                               |
+| **Address**        | Host and port. Default `127.0.0.1:7420`                              |
+| **Token**          | Yours, or one the window mints and shows you when the field is empty |
+| Status line        | "Listening on … · N connected", or why the bind failed               |
 
 A caller on the socket edits projects of its own, never the one on
 screen: a folder the window has open is `refused` over the socket, and

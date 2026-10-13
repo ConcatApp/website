@@ -1,0 +1,52 @@
+---
+title: 'Remove a background'
+description: 'Cut a person or an object out of a clip with no green screen, paint the mask yourself when the model gets it wrong, or key a real green screen.'
+section: 'Picture'
+order: 3
+---
+
+Select a video or image clip on the timeline and open the Inspector's **Video** tab, **Basic**
+section. Scroll to **Remove background**. It has three modes.
+
+## Auto removal
+
+1. Open **Remove background** and pick **Auto removal**.
+2. Set **Subject** to **Auto**, **Person** or **Object**. Person uses a model trained on
+   people; Object keeps the one thing the picture is of.
+3. The row reads "Fetching the model… N%" the first time (15 MB for Person, 179 MB for Object;
+   see [the AI models](/guides/offline-models)), then "Finding the subject… N%".
+4. Adjust **Feather** to soften the edge.
+
+Auto removal keeps what the model finds and drops the rest. If nothing is found the clip shows
+as shot and the panel says so: try another subject, or custom removal.
+
+## Custom removal
+
+Custom removal starts from the same mask and takes corrections you paint on the monitor:
+
+- **Smart brush** adds the thing under your stroke, **Smart eraser** removes it. Both are
+  model-aware, so a loose stroke is enough. The first use fetches the brush model (about 40 MB).
+- **Brush** and **Eraser** paint the mask directly, pixel by pixel, for the places the smart
+  tools miss.
+- **Size** and **Feather** set the stroke. The panel counts your strokes.
+- Click **Apply** to end painting.
+
+Strokes draw on the stage in blue (keep) and red (erase) while you paint.
+
+## Chroma key
+
+Shot on a real green or blue screen? Pick **Chroma key**, click the **Color** swatch and pick
+the screen colour from the picture, then tune **Similarity**, **Softness** and **Spill** (spill
+suppression cleans the green fringe off hair and edges). Green Screen and Blue Screen on the
+Effects page are the same thing pre-keyed to that colour.
+
+## What goes behind
+
+The cut-out clip has nothing behind it, so put the new background on a lane below it. Any
+picture or video works; so does a shape from the Stickers page, or nothing, for a title card.
+
+## Enhance
+
+Next to Basic, the **Enhance** section restores and enlarges a clip's picture with a small
+model (5 MB), into a copy the clip then shows. Tick to start; it runs in the background, one clip
+at a time, and the row reads "Enhancing… N%". Untick to show the original again.

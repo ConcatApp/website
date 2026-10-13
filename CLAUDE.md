@@ -2,7 +2,7 @@
 
 Landing page for Concat, the free and open-source CapCut replacement (github.com/jub0t/Concat).
 Astro 7, Tailwind v4, static output. Product visuals come from the app repo's `assets/` folder, pulled from
-jsDelivr by `npm run assets:prepare` (a local clone at `../relay` or `CONCAT_REPO` is used when present).
+jsDelivr by `npm run assets:prepare` (a local clone at `../timeline` or `CONCAT_REPO` is used when present).
 
 ## Product facts (from the app README)
 
@@ -14,7 +14,9 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../relay` or `CONCAT_REP
   4K 60 10-bit, a JSON-RPC, gRPC and MCP API plus a CLI, 14 languages.
 - Platforms shown on the site are whatever the release manifest ships: Windows (x64, ARM64), macOS (Apple
   Silicon, Intel, unsigned), Linux (AppImage/deb/rpm, x64, ARM64), Android (APK), iOS (IPA, beta, sideload).
-- Distribution is GitHub Releases only. Not on the App Store or Google Play; never show store badges.
+- Distribution is GitHub Releases. Linux also has an Arch package in the manifest and a community Flatpak
+  on Flatpark (linked as text in the picker note); 0.2.6 started shipping to the Microsoft Store too, but
+  the site has no store link yet. Not on the App Store or Google Play; never show store badges.
 - Each release ships `manifest.json` with per-platform URLs, sizes and sha256. `src/lib/releases.ts` fetches
   it at build time and falls back to `src/data/release-manifest.json`. Refresh that snapshot occasionally.
 - The stats row uses real numbers only: `src/lib/stats.ts` fetches GitHub stars and the download total across
@@ -25,6 +27,9 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../relay` or `CONCAT_REP
   the site accent (see Design rules). The app repo draws the mark as SVG (`assets/new_concat_logo_512_*.svg`,
   since 2026-09-28); the asset script copies the rounded light tile to `src/assets/mark.svg`, which the header
   and footer inline, and renders the favicons from it. Community: Discord, AGPL-3.0 license.
+- The current paid sponsor is Proxyon (name, description, logo, link and discount code copied from the app
+  README into `SPONSORS` in `src/lib/sponsor.ts`; the logo is `src/assets/sponsors/proxyon.png`, pulled by
+  the asset script). Keep that list in step with the README's "Paid Sponsors" table.
 - Sponsorship: one offer, no public price. `src/lib/sponsor.ts` lists what it includes; the price is agreed
   over a message, so the Sponsor section shows no amount and its button leads to the Contact section (Discord,
   plus email once `CONTACT_EMAIL` in `src/lib/contact.ts` is set). No payment links on the page; the old
@@ -38,8 +43,10 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../relay` or `CONCAT_REP
 - `npm run build` production build to `dist/`
 - `npm run check` Astro + TypeScript type check
 - `npm run format` Prettier with Astro and Tailwind class sorting
-- `npm run assets:prepare` downloads the app's `editor-light.png` and logos, crops the window chrome away for
-  the hero and cuts the three feature-row crops (`src/assets/feature-*.png`); crop fractions live in the script
+- `npm run assets:prepare` downloads the app's `editor-light.png`, logos and sponsor logo, crops the window
+  chrome away for the hero (when no dark capture exists) and cuts the feature crops
+  (`src/assets/feature-*.png`); crop fractions live in the script. The app's mark SVGs embed a raster since 2026-10,
+  so the script keeps the last clean vector `src/assets/mark.svg` from git until upstream is a vector again
 - `npm run og:image` re-renders `public/og.png` (the 1200x630 share image) with headless Chrome; run it after
   changing the headline, the mark or the hero screenshot and commit the result
 
@@ -59,18 +66,23 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../relay` or `CONCAT_REP
   `.prose` and `.alert` rules for long-form pages
 - `src/scripts/scroll.ts` Lenis + GSAP ScrollTrigger + Motion reveals, view-transition aware. It also owns in-page
   `#hash` links: Astro's ClientRouter and Lenis `anchors` fight over them, so neither is allowed to handle them.
+  It tears down only its own triggers; `Tour` and `Ribbon` clean up theirs on `astro:before-swap`.
 - `src/scripts/platform.ts` client OS detection shared by the hero button and the picker
 - `src/lib/releases.ts` manifest fetch, platform/arch/format model, URLs (repo, releases, Discord)
 - `src/lib/stats.ts` GitHub stars and download total for the stats row, with snapshot fallback
 - `src/lib/sponsor.ts` sponsor tiers
 - `src/lib/contact.ts` public contact channels (the email shown in the Contact section)
-- `src/components/` Astro-only: Button, Section (a gridline section with optional title and lead), Container,
-  Header (the mark alone as the home link, then three hover/click dropdown menus: Product, Learn,
-  Community, left-aligned after it; GitHub and Discord icons and the Download button on the right; the
-  wordmark only appears in the footer), Footer, ArrowLink (accent text link with arrow), River (feature row: copy plus screenshot on a gray
-  band), DownloadButton (OS-detected hero CTA), Downloader (OS then architecture then files picker),
-  GuideList (cards for every guide, used from the guides landing page)
-- `src/assets/` editor screenshot (light, chrome cropped), the three feature crops, the app mark (`mark.svg`).
+- `src/components/` Astro-only: Button (primary, secondary, ghost, inverse and outline-inverse for the
+  accent block), Section (content column with optional title and lead), Container, Header (floating glass
+  bar: mark and wordmark as the home link, three hover/click dropdown menus Product, Learn, Community;
+  GitHub and Discord icons and the Download button on the right; a menu button opens a sheet below md),
+  Footer, ArrowLink (accent text link with arrow), Ribbon (text on a curved path, GSAP loop), Tour
+  (sticky screenshot panned to regions as steps scroll by), DownloadButton (OS-detected CTA, any number
+  per page, `variant="inverse"` on the accent block), Downloader (OS then architecture then files picker),
+  GuideList (cards for every guide grouped by section, used from the guides landing page)
+- `src/assets/` `editor.png` (the hero, from `app/hero.png`), the feature and guide crops, `guides/`
+  screenshots for the guides, the app mark (`mark.svg`), `sponsors/` logos.
+- `src/components/Figure.astro` a framed screenshot with a caption, for MDX guides.
   `public/` favicons (`.ico`, `.svg`, `.png`, Apple touch icon), `og.png` (share image), `robots.txt`.
 - `docs/RESOURCES.md` research: the GitHub Sponsors reference and its tokens (section 9), galleries, tools
 
@@ -78,6 +90,9 @@ Path alias: `@/` maps to `src/`.
 
 ## Docs and guides
 
+- Guides describe the shipping release (0.2.6). Features that exist only on the app's main branch (Record
+  Voiceover, the Styles and Languages shelves, font search, as of 2026-10-10; Enhance did ship in 0.2.6) are marked "next
+  release" in the guide rather than described as shipped; drop the marks when the release ships.
 - `/docs` is the developer reference (API, transports, recipes). It was migrated from the app repository's
   `docs/` folder on 2026-09-28 and that folder is gone, so these pages are the source of truth: a change to a
   method, command, event, error or transport in the app updates the page here. `/guides` is for people using
@@ -85,7 +100,7 @@ Path alias: `@/` maps to `src/`.
   `models/manifest.toml` in the app repo (Chatterbox is nine files, about 1.1 GB; everything installed is about 3.4 GB).
 - Pages are MDX (Markdown works too) in `src/content/docs/` and `src/content/guides/`. Frontmatter: `title`,
   `description` (shown as the lead and used for meta tags), `section` (docs: Start, API, Transports, Recipes;
-  guides default to Guides) and `order`. `index.mdx` is the section landing page.
+  guides: Start, Captions and voices, Picture, Timeline, Reference) and `order`. `index.mdx` is the section landing page.
 - Links between pages are site-relative (`/docs/api/methods#projectopen`). Use `> [!NOTE]`, `[!TIP]`,
   `[!IMPORTANT]`, `[!WARNING]` or `[!CAUTION]` for callouts. No emoji, including status ticks in tables.
 - Markdown runs on the unified processor from `@astrojs/markdown-remark` (set as `markdown.processor` in
@@ -94,43 +109,57 @@ Path alias: `@/` maps to `src/`.
 
 ## Metadata and search
 
-- `site` in `astro.config.mjs` is `https://concatenate.pages.dev`. Canonical URLs, absolute Open Graph image
-  URLs and the sitemap (`@astrojs/sitemap`, linked from `public/robots.txt`) derive from it.
+- `site` in `astro.config.mjs` is `https://concat.standalones.org` (the domain since 2026-10-10; the Pages
+  and Workers hostnames serve the same build). Canonical URLs, absolute Open Graph image URLs and the
+  sitemap (`@astrojs/sitemap`, linked from `public/robots.txt`) derive from it.
 - `Base.astro` takes `title`, `description`, `image`, `imageAlt`, `type` and `noindex`. The default image is
   `public/og.png`. The landing page adds JSON-LD (`SoftwareApplication`) through the `head` slot; docs and
   guides pass `type="article"`.
 
 ## Design rules
 
-The reference is GitHub's Sponsors page, built on Primer Brand's gridline variants; the tokens and page grammar
-are recorded in `docs/RESOURCES.md` section 9. Light only: white page, one gray, 1px rules, one accent.
+Direction since 2026-10-10: the look of the owner's offerwall-site landing (github.com/jub0t/offerwall-site,
+`src/components/marketing/`), ported to Astro and the Concat brand. Light only: a white page, hairline
+borders, soft deep shadows on cards, one blue accent, Mona Sans. `docs/RESOURCES.md` section 10 records the
+patterns borrowed and the ones left out.
 
-- Use the tokens: `bg-bg`, `bg-bg-subtle` (media bands, secondary buttons, the sponsor container),
-  `bg-bg-overlay` (hover), `text-fg`, `text-fg-muted`, `text-fg-subtle`, `border-line`, `border-line-strong`,
-  `bg-accent`/`border-accent`, `text-accent-ink`, `bg-accent-soft`, `text-accent-fg`. No ad-hoc hex colors.
+- Use the tokens: `bg-bg`, `bg-bg-subtle` (media bands, secondary buttons), `bg-bg-overlay` (hover),
+  `text-fg`, `text-fg-muted`, `text-fg-subtle`, `border-line`, `border-line-strong`, `bg-accent`,
+  `text-accent-ink`, `bg-accent-soft`, `text-accent-fg`, `shadow-card`, `shadow-frame`. No ad-hoc hex colors.
   Every text step clears 4.5:1 on white and on the gray band; keep it that way when changing a token.
-- Gridline frame: every section is `border-t border-line` with a `container-x gridline` column (80rem) that
-  carries the vertical padding, so the two vertical rules run through it. The rules appear from 80rem up. Depth
-  comes from rules only: no shadows, no gradients, no glows, no grain.
-- The accent `#0568fd` is a fill: primary buttons (white text on blue), selected borders, the Recommended
-  badge, and `bg-accent-soft` for selected states. As text it misses 4.5:1 on the gray band, so links, arrow
-  links, stat numbers and the focus ring use `text-accent-ink`, a deeper blue of the same hue. Never a section
-  background, never a gradient. No second hue on the page: no lavender, no lime, no green.
-- Typeface is Mona Sans only (`font-sans`). Headlines use `text-display` / `text-display-sm` at weight 450 with
-  near-normal tracking; stat numbers use `text-stat`. The `eyebrow` utility is for tiny metadata, not labels.
-- Controls: `rounded-md` (6px) buttons, `rounded-lg` (8px) cards, `rounded-xl` (12px) media tiles and the
-  sponsor container. No pills. Secondary actions inside rows and cards are `ArrowLink`, not a second button.
-- Page grammar, in order: hero (centered copy, then the editor screenshot on a `bg-bg-subtle bg-dots` band),
-  stats row, one centered statement, feature rows (`River`, alternating sides, real screenshots only), three
-  pillars with rule dividers, the download picker, three cards with rule dividers, the sponsor container, an
-  FAQ of native `details` elements, contact cards, a columned footer. Sponsor, Contact and Download must stay.
-- Never invent UI mocks. Screenshots are crops of the app's real `editor-light.png` made by the asset script.
-- Never use numbered section labels ("01 — Features") or em dashes in copy. Both read as AI-generated.
-  Section headers are a plain heading. No "Now on iOS and Android" style availability eyebrows either.
-- Layout: `container-x` for the content column, `section-y` for vertical rhythm. Dense rather than airy: the
-  reference sits at 64 to 96px of section padding.
-- Motion: add `data-reveal` (or `data-reveal="stagger"`) for one-shot entrance, `data-parallax="0.1"` for drift.
-  Keep durations under 1s, ease-out-expo. Nothing loops. Reduced motion is handled automatically.
+- Surfaces: `card-glass` (hairline, faint radial tint, soft shadow, border darkens on hover) for every card;
+  `card-glass-ring` adds the inset second ring on big cards; `frame` for product screenshots; `glass` for the
+  floating header. Gradients only as the faint tint inside `card-glass`; never as a section background.
+- The accent `#0568fd` is a fill: primary buttons, the CTA block before the footer, the ribbon, selected
+  borders, and `bg-accent-soft` for icon wells and selected chips. As text it misses 4.5:1 on the gray band,
+  so links, arrow links and stat numbers use `text-accent-ink`. One hue on the page: no lavender, no lime.
+- Typeface is Mona Sans only (`font-sans`). `text-display` is the hero headline (weight 600, -0.03em),
+  `text-display-sm` section titles (weight 500), `text-title` card titles, `text-stat` the number on a fact
+  card. The `eyebrow` utility is the small uppercase label over a big card.
+- Radii: controls 10px (`rounded-md`), the large button 12px, small cards 20px, feature cards 24px, big
+  cards 34px, the CTA block 36px. Pills are allowed for chips, nav triggers and the hero badge.
+- Page grammar, in order: floating glass header; hero (badge, centered headline with the product name in
+  accent ink, OS-detected download button, the editor screenshot in a `frame`); the curved text ribbon of
+  features; a centered statement over four fact cards (real numbers only); the scroll-driven tour of the
+  window (`Tour`, one screenshot panned to each pane); the feature grid (`features`, real crops where one
+  exists, an icon well where not); two big cards ("for people who edit" and "for scripts and agents"); the
+  download picker; Sponsor (benefits card plus the current sponsors and a "Your logo here" slot); Contact
+  (Discord, email, contribute, roadmap); the two-column FAQ; the accent CTA block; a columned footer.
+  Sponsor, Contact and Download must stay.
+- Never invent UI mocks. Every app screenshot is a capture of the real app in its **dark theme** on the
+  current release, and nothing in it may read badly (fix caption text and scripts before capturing; the
+  owner was burned by a Whisper misspelling of "Concat"). The hero capture is `src/assets/app/hero.png`;
+  `npm run assets:prepare` cuts the hero and feature crops from it. Guide screenshots go through
+  `node scripts/guide-shots.mjs <captures dir>` into `src/assets/guides/` and are placed with `Figure`.
+  The capture workflow is `docs/RESOURCES.md` section 10. The tour pans the hero; its regions are
+  fractions of that image in `index.astro`.
+- Never use numbered section labels in headings ("01 — Features") or em dashes in copy. Both read as
+  AI-generated. The tour's step counter is the one place a number appears as an eyebrow. No "Now on iOS and
+  Android" style availability eyebrows.
+- Layout: `container-x` for the content column (1200px), `section-y` for vertical rhythm (80 to 128px).
+- Motion: `data-reveal` (or `data-reveal="stagger"`) for the one-shot fade, rise and unblur;
+  `data-parallax="0.1"` for drift. Durations under 1s, ease-out-expo. The ribbon is the only loop; it pauses
+  on hover and stands still under reduced motion, which is handled automatically.
 - Copy: short, concrete, outcome-first. Use the README's own claims; do not invent features. No exclamation
   marks, no "unleash", no emoji.
 

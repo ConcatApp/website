@@ -122,10 +122,11 @@ to `concat.json` (plus a compatibility mirror; see
 
 ### VideoSettings
 
-| Field                | Type    | Meaning                                                           |
-| -------------------- | ------- | ----------------------------------------------------------------- |
-| `width`, `height`    | integer | Frame size in pixels                                              |
-| `rateNum`, `rateDen` | integer | Frame rate as a fraction: 30 fps is `30/1`, 29.97 is `30000/1001` |
+| Field                | Type    | Meaning                                                                         |
+| -------------------- | ------- | ------------------------------------------------------------------------------- |
+| `width`, `height`    | integer | Frame size in pixels                                                            |
+| `rateNum`, `rateDen` | integer | Frame rate as a fraction: 30 fps is `30/1`, 29.97 is `30000/1001`               |
+| `colorSpace`         | string  | _optional_. `sdr` (Rec. 709), `hlg` or `pq` (Rec. 2020 HDR). Absent means `sdr` |
 
 ### Track
 
@@ -144,9 +145,9 @@ the JSON when they hold it.
 | ---------------------- | ----------------- | ------------------------------------------------------------------------------ |
 | `id`                   | string            | `"c…"`. Survives splits (the head keeps it) and merges                         |
 | `trackId`              | string            | The lane                                                                       |
-| `mediaId`              | string            | Empty for a text or layer clip                                                 |
+| `mediaId`              | string            | Empty for a text, shape or layer clip                                          |
 | `name`                 | string            | Display label                                                                  |
-| `kind`                 | string            | `video`, `audio`, `image`, `text`, `layer`                                     |
+| `kind`                 | string            | `video`, `audio`, `image`, `text`, `layer`, `shape`                            |
 | `start`                | number            | Seconds from the start of the timeline                                         |
 | `duration`             | number            | Seconds on the timeline. Never below 1/60                                      |
 | `sourceStart`          | number            | In-point: seconds into the media                                               |
@@ -172,6 +173,8 @@ the JSON when they hold it.
 | `detachedFrom`         | string            | _optional_. On a detached audio clip: the video it came from                   |
 | `transitionIn`         | _Transition_      | _optional_                                                                     |
 | `text`                 | _TextStyle_       | _optional_. Present on a text clip                                             |
+| `shape`                | _ShapeStyle_      | _optional_. Present on a shape clip                                            |
+| `enhanced`             | _Enhanced_        | _optional_. Present once Enhance has made a copy of the clip's media           |
 
 A clip fresh from `addClip`:
 
@@ -205,22 +208,23 @@ A clip fresh from `addClip`:
 One entry of the bin. The probe's findings are stored, so a project opens
 meaningfully even when the file is missing.
 
-| Field                      | Type           | Meaning                                                                                                                                                        |
-| -------------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                       | string         | `"m…"`, never re-issued                                                                                                                                        |
-| `path`                     | string         | Absolute path. Also the duplicate check                                                                                                                        |
-| `name`                     | string         | Display name, normally the file's basename                                                                                                                     |
-| `duration`                 | number         | _optional_. Seconds, when the container says                                                                                                                   |
-| `kind`                     | string         | `video`, `audio`, `image`                                                                                                                                      |
-| `width`, `height`          | integer        | _optional_                                                                                                                                                     |
-| `frameRate`                | number         | _optional_. Decimal, for display                                                                                                                               |
-| `frameRateFraction`        | string         | _optional_. Exact, e.g. `"30000/1001"`                                                                                                                         |
-| `videoCodec`, `audioCodec` | string         | _optional_                                                                                                                                                     |
-| `hasAudio`                 | bool           | The file carries sound                                                                                                                                         |
-| `audioTracks`              | _AudioTrack_[] | _optional_. Every audio stream, in file order                                                                                                                  |
-| `placeholder`              | bool           | _optional_. True for a template slot                                                                                                                           |
-| `colorRange`               | string         | _optional_. `limited` or `full`: the levels the picture is read as, over the file's own tag. Absent means "as tagged". Set with `setMediaColorRange`           |
-| `origin`                   | string         | _optional_. `speech` for a file the speech sheet read aloud. Absent for an import. The bin shelves a file with an origin under Generated, not with the imports |
+| Field                      | Type           | Meaning                                                                                                                                                                                                              |
+| -------------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                       | string         | `"m…"`, never re-issued                                                                                                                                                                                              |
+| `path`                     | string         | Absolute path. Also the duplicate check                                                                                                                                                                              |
+| `name`                     | string         | Display name, normally the file's basename                                                                                                                                                                           |
+| `duration`                 | number         | _optional_. Seconds, when the container says                                                                                                                                                                         |
+| `kind`                     | string         | `video`, `audio`, `image`                                                                                                                                                                                            |
+| `width`, `height`          | integer        | _optional_                                                                                                                                                                                                           |
+| `frameRate`                | number         | _optional_. Decimal, for display                                                                                                                                                                                     |
+| `frameRateFraction`        | string         | _optional_. Exact, e.g. `"30000/1001"`                                                                                                                                                                               |
+| `videoCodec`, `audioCodec` | string         | _optional_                                                                                                                                                                                                           |
+| `hasAudio`                 | bool           | The file carries sound                                                                                                                                                                                               |
+| `audioTracks`              | _AudioTrack_[] | _optional_. Every audio stream, in file order                                                                                                                                                                        |
+| `placeholder`              | bool           | _optional_. True for a template slot                                                                                                                                                                                 |
+| `colorRange`               | string         | _optional_. `limited` or `full`: the levels the picture is read as, over the file's own tag. Absent means "as tagged". Set with `setMediaColorRange`                                                                 |
+| `colorSpace`               | string         | _optional_. `hlg` or `pq` for an HDR file, as probed. Absent means SDR                                                                                                                                               |
+| `origin`                   | string         | _optional_. `speech` for a file the speech sheet read aloud, `processed` for a clip's sound rendered as it played. Absent for an import. The bin shelves a file with an origin under Generated, not with the imports |
 
 ### AudioTrack
 
@@ -259,6 +263,17 @@ is packed RGBA, a `point` is two keys `<key>.x` and `<key>.y` in 0..1.
 | `id`       | string | A transition package id, e.g. `"concat.dissolve"`, `"concat.push"`, `"concat.clock-wipe"` |
 | `duration` | number | Seconds, default 1                                                                        |
 
+### Enhanced
+
+A clip's Enhance, once it has a copy. Set by `replaceClipMedia` with
+`enhanced: true`; switched by `setClipEnhanced`.
+
+| Field      | Type   | Meaning                                |
+| ---------- | ------ | -------------------------------------- |
+| `original` | string | The bin item the clip was cut from     |
+| `copy`     | string | The bin item holding the enhanced copy |
+| `on`       | bool   | Whether the clip shows the copy        |
+
 ### TextStyle
 
 A title's styling. Sizes are **fractions of the frame**, so a title made at
@@ -287,6 +302,19 @@ change; the rest take these defaults.
 | `maxWidth`           | number | 0                       | Wrap width as a fraction of frame width; 0 is no wrap                                                             |
 | `maxHeight`          | number | 0                       | Box height as a fraction of frame height; 0 is the words' own                                                     |
 
+### ShapeStyle
+
+How a shape clip is painted. Sizes are fractions of frame height, like a
+title's. In a command you send only the fields you change.
+
+| Field         | Type   | Default     | Meaning                                                                                                                 |
+| ------------- | ------ | ----------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `kind`        | string | `"square"`  | `square`, `circle`, `triangle`, `parallelogram`, `trapezoid`, `line`, `arrow`. An unknown name reads as `square`        |
+| `size`        | number | 0.35        | The figure's longer side as a fraction of frame height, clamped to 0.01..=2                                             |
+| `fill`        | string | `"#ffffff"` | The inside, `#rrggbb[aa]`; empty for an outline alone                                                                   |
+| `stroke`      | string | `""`        | The outline's colour, drawn when `strokeWidth` is above zero. A line or an arrow is all stroke and falls back to `fill` |
+| `strokeWidth` | number | 0.012       | Outline thickness as a fraction of frame height, clamped to 0..=0.5. A line's or an arrow's own thickness               |
+
 ### Crop
 
 Fractions of the source taken off each edge: `{left, top, right, bottom}`,
@@ -298,17 +326,17 @@ each 0..=0.9, with at least a tenth of the picture left.
 | --------- | ---------- | ---------------------------------------------------------------------------------------- |
 | `mode`    | string     | `auto` (the model's mask) or `custom` (the mask plus strokes)                            |
 | `subject` | string     | _optional_, default `auto`. `person`, `object`, or `auto` (person if found, else object) |
-| `feather` | number     | Edge softness as a fraction of picture width                                             |
+| `feather` | number     | Edge softness as a fraction of picture width. Default 0.01, at most 0.1                  |
 | `strokes` | _Stroke_[] | _optional_. Corrections, in order                                                        |
 
 ### Stroke
 
-| Field    | Type       | Meaning                                             |
-| -------- | ---------- | --------------------------------------------------- |
-| `tool`   | string     | `smartBrush`, `brush`, `smartEraser`, `eraser`      |
-| `size`   | number     | Diameter as a fraction of picture width             |
-| `points` | `[x, y]`[] | Fractions of the source picture, `[0, 0]` top-left  |
-| `at`     | number     | _optional_. Source second the stroke was painted at |
+| Field    | Type       | Meaning                                              |
+| -------- | ---------- | ---------------------------------------------------- |
+| `tool`   | string     | `smartBrush`, `brush`, `smartEraser`, `eraser`       |
+| `size`   | number     | Diameter as a fraction of picture width, 0.005..=0.5 |
+| `points` | `[x, y]`[] | Fractions of the source picture, `[0, 0]` top-left   |
+| `at`     | number     | _optional_. Source second the stroke was painted at  |
 
 ### ClipKey
 
@@ -330,7 +358,8 @@ A probed file, as `addMedia`, `fillSlot`, `replaceClipMedia` and
 `freezeFrame` take it. The same fields as _MediaItem_ minus `id` and
 `placeholder`: `path`, `name`, `duration`, `kind`, `width`, `height`,
 `frameRate`, `frameRateFraction`, `videoCodec`, `audioCodec`, `hasAudio`,
-`audioTracks`, and `origin` (_optional_; leave it out for an import).
+`audioTracks`, `colorSpace` (_optional_; `hlg` or `pq`, absent is SDR) and `origin`
+(_optional_; leave it out for an import).
 
 > [!TIP]
 > Build one from a `media.probe` reply: copy `path`, `duration`, `kind`
@@ -359,7 +388,8 @@ Reply to `media.probe`.
 **VideoStreamInfo:** `index`, `codec`, `width`, `height`, `frameRate`
 (decimal), `frameRateFraction` (exact, e.g. `"30/1"`), and `colorRange`
 (`limited` or `full`, present only when the file says; a file that says
-nothing is played as limited).
+nothing is played as limited), and `colorSpace` (`hlg` or `pq` for an HDR
+file; absent for SDR).
 
 **AudioStreamInfo:** `index`, `codec`, `sampleRate`, `channels`, `title`,
 `language`.

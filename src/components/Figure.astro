@@ -1,0 +1,33 @@
+---
+/**
+ * A screenshot in a guide: the image in a framed tile with a caption under it. Used from MDX:
+ *   import Figure from '@/components/Figure.astro';
+ *   import shot from '@/assets/guides/captions-sheet.png';
+ *   <Figure src={shot} alt="The Captions sheet">The sheet, with Base (English) picked.</Figure>
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  /** Narrower figures (a crop of one control) sit at this max width instead of filling the column. */
+  width?: string;
+}
+const { src, alt, width } = Astro.props;
+---
+
+<figure class="not-prose my-8" style={width ? `max-width: ${width}` : undefined}>
+  <Image
+    src={src}
+    alt={alt}
+    widths={[640, 960, 1280, 1600]}
+    sizes="(min-width: 1024px) 720px, 100vw"
+    class="block h-auto w-full rounded-lg border border-line shadow-card"
+  />
+  {Astro.slots.has('default') && (
+    <figcaption class="mt-3 text-sm leading-relaxed text-fg-muted">
+      <slot />
+    </figcaption>
+  )}
+</figure>

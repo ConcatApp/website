@@ -1,0 +1,34 @@
+---
+title: 'Record a voiceover'
+description: 'Talk over the edit while it plays. The take lands on the timeline where you started.'
+section: 'Captions and voices'
+order: 3
+---
+
+> [!IMPORTANT]
+> Not in 0.2.6. Record Voiceover is on the app's main branch and ships with the next release;
+> until then the tray ends at Text to Speech.
+
+**Record Voiceover** is the microphone button on the timeline tray, beside Text to Speech.
+
+1. Put the playhead where the voiceover should start.
+2. Click **Record Voiceover**. The timeline's own sound is muted, playback starts from the
+   playhead, the button turns red and reads **Stop Recording**, and a level meter runs beside it.
+3. Talk.
+4. Click **Stop Recording**.
+
+The take is saved as a WAV in your project's `audio` folder, added to the Library, and placed as
+a clip on the first free lane at the point where recording began, nudged by the microphone's
+latency so it lines up. A toast says "Voiceover added to the timeline".
+
+There is no device picker: Concat records from the system's default input. Change that in your
+operating system's sound settings before you press the button.
+
+## After the take
+
+- Too quiet, or a noisy room: select the clip, open the Inspector's **Audio** tab and turn on
+  **Normalize loudness**, **Reduce noise** or **Enhance voice**. See
+  [clean up a voice](/guides/clean-up-a-voice).
+- Want captions for it: select the clip and click **Generate Captions**.
+- A flubbed line: put the playhead on it, press <kbd class="kbd">⌘B</kbd> to split, delete the
+  piece, record again.

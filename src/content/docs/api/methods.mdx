@@ -60,7 +60,7 @@ What this build serves. **Call it first.**
 ```json
 {
   "apiVersion": "0.2",
-  "concat": "0.2.4",
+  "concat": "0.2.6",
   "dirs": {
     "config": "/Users/ada/Library/Application Support/app.concat.editor",
     "data": "/Users/ada/Library/Application Support/app.concat.editor"
@@ -82,7 +82,7 @@ Creates a project folder and opens it.
 | ---------- | --------------- | -------------------------------------------------------------------------------------------- |
 | `location` | string          | The directory the project folder is made in                                                  |
 | `name`     | string          | The project's name. The folder is named after it; characters a filesystem refuses become `-` |
-| `video`    | _VideoSettings_ | _optional_. Frame and rate. **Default:** 1920×1080 at 30 fps                                 |
+| `video`    | _VideoSettings_ | _optional_. Frame, rate and colour. **Default:** 1920×1080 at 30 fps, SDR                    |
 
 ```json
 {
@@ -240,6 +240,9 @@ Sets the active timeline's frame and rate, as an **undoable** edit.
 
 A zero dimension or rate is `refused`.
 
+`colorSpace` is part of _VideoSettings_ (`sdr`, `hlg` or `pq`) and absent means `sdr`, so a call
+that leaves it out puts an HDR timeline back to SDR. Send the timeline's current value to keep it.
+
 ---
 
 ## `edit.apply`
@@ -356,7 +359,9 @@ What is inside a media file. Touches no project.
 }
 ```
 
-A file that cannot be read or decoded is `failed`.
+A file that cannot be read or decoded is `failed`. `video` also carries `colorRange` when the
+file tags its levels, and `colorSpace` (`hlg` or `pq`) for an HDR file; both are left out
+otherwise. See [Types](/docs/api/types#mediasummary).
 
 ---
 
@@ -516,9 +521,10 @@ frame loop and the mix.
 | `height`     | integer | _optional_. **Default:** the timeline's                                                                                                                                                                                         |
 | `rateNum`    | integer | _optional_. Frame rate numerator. **Default:** the timeline's                                                                                                                                                                   |
 | `rateDen`    | integer | _optional_. Frame rate denominator. **Default:** the timeline's                                                                                                                                                                 |
-| `codec`      | string  | _optional_. `h264`, `hevc` or `av1`. **Default:** `h264`. Anything else is `invalid`                                                                                                                                            |
+| `codec`      | string  | _optional_. `h264`, `hevc` or `av1`. **Default:** `h264`, or `hevc` for an HDR timeline written as HDR. Anything else is `invalid`                                                                                              |
 | `tenBit`     | bool    | _optional_. Ten bits a channel. **Default:** `false`                                                                                                                                                                            |
 | `colorRange` | string  | _optional_. `limited` (16-235, what every player and YouTube expect) or `full` (0-255, for screen content bound for a PC player). The file is tagged and converted to match. **Default:** `limited`. Anything else is `invalid` |
+| `hdr`        | bool    | _optional_. For a timeline whose `colorSpace` is `hlg` or `pq`: `true` writes the file as HDR, ten bits, BT.2020 with its HLG or PQ; `false` tone-maps it to SDR. **Default:** `true`. Nothing on an SDR timeline               |
 
 ```json
 {
@@ -562,6 +568,13 @@ Rules:
   window's Remote page the slot is the window's own, so an export begun
   in the Export sheet counts.
 - An empty timeline is `refused`.
+- HDR follows the timeline. An HDR timeline exported with `hdr` on (the
+  default) needs `hevc` or `av1`; `h264` is `invalid`, since H.264 does not
+  carry HDR. A PQ file carries its mastering-display, MaxCLL and MaxFALL
+  metadata. The timeline's colour is set with `project.setVideo` or
+  `setTimelineVideo`, and the first HDR clip dropped on an SDR timeline
+  turns it HLG.
+- `rateNum` and `rateDen` must both be positive, or the request is `invalid`.
 - Over a socket, `output` must lie under one of the server's write roots,
   or the request is `refused`.
 - `width` and `height` are at most 8192 a side, the frame rate at most

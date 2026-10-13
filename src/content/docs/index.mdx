@@ -34,7 +34,7 @@ cargo run -p concat-cli -- api '{"method":"version"}'
   "id": null,
   "result": {
     "apiVersion": "0.2",
-    "concat": "0.2.4",
+    "concat": "0.2.6",
     "dirs": { "config": "…", "data": "…" },
     "capabilities": ["events"]
   }
@@ -68,11 +68,11 @@ reports as events until it is done:
 
 ## The three ways in
 
-| Transport              | How you reach it                                                                            | Status                                                                                     |
-| ---------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| **JSON-RPC 2.0 lines** | `concat-cli api` (stdin), `concat-cli serve` (TCP or Unix socket), the window's Remote page | Shipped                                                                                    |
-| **gRPC** over HTTP/2   | `concat-cli serve --grpc`, in a build with the `grpc` feature                               | Shipped, behind a feature                                                                  |
-| **MCP**                | An MCP server exposing the API as tools                                                     | Not in this tree yet. [MCP](/docs/transports/mcp) says what exists and how to bridge today |
+| Transport              | How you reach it                                                                            | Status                                                                                             |
+| ---------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **JSON-RPC 2.0 lines** | `concat-cli api` (stdin), `concat-cli serve` (TCP or Unix socket), the window's Remote page | Shipped                                                                                            |
+| **gRPC** over HTTP/2   | `concat-cli serve --grpc`, in a build with the `grpc` feature                               | Shipped, behind a feature                                                                          |
+| **MCP**                | An MCP server exposing the API as tools                                                     | Not in this tree as of 0.2.6. [MCP](/docs/transports/mcp) says what exists and how to bridge today |
 
 All three carry the **same methods, payloads and errors**. A method added
 to the API reaches every transport without a change to any of them.
@@ -92,15 +92,15 @@ to the API reaches every transport without a change to any of them.
 
 ## Where the code is
 
-| Piece                                           | Path                                            |
-| ----------------------------------------------- | ----------------------------------------------- |
-| The contract: methods, payloads, events, errors | `src/crates/concat-api/src/message.rs`          |
-| The dispatcher that runs them                   | `src/crates/concat-api/src/lib.rs`              |
-| The JSON-RPC envelope                           | `src/crates/concat-api/src/rpc.rs`              |
-| The socket server: JSON-RPC lines, gRPC, tokens | `src/crates/concat-server/`                     |
-| The gRPC service definition                     | `src/crates/concat-server/proto/concat.proto`   |
-| The CLI: `api` and `serve`                      | `src/crates/concat-cli/src/main.rs`             |
-| The edit commands                               | `src/crates/concat-project/src/commands/mod.rs` |
+| Piece                                                                                      | Path                                            |
+| ------------------------------------------------------------------------------------------ | ----------------------------------------------- |
+| The contract: methods, payloads, events, errors                                            | `src/crates/concat-api/src/message.rs`          |
+| The dispatcher that runs them                                                              | `src/crates/concat-api/src/lib.rs`              |
+| The JSON-RPC envelope                                                                      | `src/crates/concat-api/src/rpc.rs`              |
+| The socket server: JSON-RPC lines, gRPC, tokens                                            | `src/crates/concat-server/`                     |
+| The gRPC service definition                                                                | `src/crates/concat-server/proto/concat.proto`   |
+| The CLI: `api` and `serve`, plus the engine tools `probe`, `render`, `preview` and `check` | `src/crates/concat-cli/src/main.rs`             |
+| The edit commands                                                                          | `src/crates/concat-project/src/commands/mod.rs` |
 
 Related reading: [`ARCHITECTURE.md`](https://github.com/jub0t/Concat/blob/main/ARCHITECTURE.md) places the API in
 the engine.

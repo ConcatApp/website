@@ -1,10 +1,10 @@
 ---
 /**
- * Fixed header with three dropdown menus. On a pointer device a menu opens on hover; a click (or
- * Enter on the trigger) toggles it for touch and keyboard users, and Escape, an outside click or
- * focus leaving the menu closes it. The mark alone is the home link and the menus sit right
- * after it; below the md breakpoint only the mark, the GitHub and Discord icons and the Download
- * button show.
+ * Floating glass bar over the page. The mark is the home link; three dropdown menus (Product,
+ * Learn, Community) follow it on wide screens. On a pointer device a menu opens on hover; a
+ * click (or Enter on the trigger) toggles it for touch and keyboard users, and Escape, an outside
+ * click or focus leaving the menu closes it. Below the md breakpoint the menus fold into a sheet
+ * behind the menu button.
  */
 import { siDiscord, siGithub } from 'simple-icons';
 import {
@@ -15,10 +15,11 @@ import {
   Download,
   Heart,
   Mail,
+  Menu,
   Milestone,
   Sparkles,
+  X,
 } from '@lucide/astro';
-import Container from '@/components/Container.astro';
 import Button from '@/components/Button.astro';
 import Mark from '@/assets/mark.svg';
 import { DISCORD_URL, REPO_URL } from '@/lib/releases';
@@ -63,7 +64,7 @@ const menus: Array<{ label: string; items: Item[] }> = [
       {
         href: '/guides',
         label: 'Guides',
-        hint: 'Install, requirements and models',
+        hint: 'Where everything is, step by step',
         icon: BookOpen,
       },
       { href: '/docs', label: 'Developer docs', hint: 'JSON-RPC, gRPC and MCP', icon: Braces },
@@ -76,7 +77,7 @@ const menus: Array<{ label: string; items: Item[] }> = [
       {
         href: '/#sponsor',
         label: 'Sponsor',
-        hint: 'Monthly tiers, listed on the repository',
+        hint: 'Your logo on the repository and here',
         icon: Heart,
       },
       { href: '/#contact', label: 'Contact', hint: 'Discord and email', icon: Mail },
@@ -99,19 +100,23 @@ const menus: Array<{ label: string; items: Item[] }> = [
 ];
 ---
 
-<header class="fixed inset-x-0 top-0 z-40 border-b border-line bg-bg/85 backdrop-blur-md">
-  <Container as="nav" class="flex h-16 items-center justify-between" aria-label="Main">
-    <div class="flex items-center gap-4">
-      <a href="/" aria-label="Concat home" class="flex items-center">
+<header class="fixed inset-x-0 top-0 z-40 px-3 pt-3 sm:px-5 sm:pt-4" data-header>
+  <nav
+    class="glass mx-auto flex h-14 max-w-[1100px] items-center justify-between gap-4 rounded-[18px] pr-2 pl-4 sm:pl-5"
+    aria-label="Main"
+  >
+    <div class="flex items-center gap-5">
+      <a href="/" aria-label="Concat home" class="flex items-center gap-2.5">
         <Mark class="size-7" aria-hidden="true" />
+        <span class="text-[0.9375rem] font-semibold tracking-tight max-sm:sr-only">Concat</span>
       </a>
 
-      <ul class="hidden items-center gap-1 md:flex">
+      <ul class="hidden items-center gap-0.5 md:flex">
         {menus.map((menu) => (
           <li class="group relative" data-menu>
             <button
               type="button"
-              class="flex h-9 items-center gap-1 rounded-md px-3 text-[0.9375rem] font-medium text-fg-muted transition-colors duration-200 group-hover:text-fg group-data-[open]:bg-bg-subtle group-data-[open]:text-fg hover:bg-bg-subtle"
+              class="flex h-9 items-center gap-1 rounded-full px-3 text-[14px] font-medium text-fg-muted transition-colors duration-200 group-hover:text-fg group-data-[open]:bg-bg-subtle group-data-[open]:text-fg hover:bg-bg-subtle"
               aria-haspopup="true"
               aria-expanded="false"
             >
@@ -121,17 +126,17 @@ const menus: Array<{ label: string; items: Item[] }> = [
                 aria-hidden="true"
               />
             </button>
-            <div class="absolute top-full left-0 hidden pt-2 group-hover:block group-data-[open]:block">
-              <ul class="w-72 rounded-lg border border-line-strong bg-bg p-1.5">
+            <div class="absolute top-full left-0 hidden pt-3 group-hover:block group-data-[open]:block">
+              <ul class="card-glass w-72 rounded-xl p-1.5">
                 {menu.items.map(({ icon: Icon, ...item }) => (
                   <li>
                     <a
                       href={item.href}
-                      class="group/item flex items-start gap-3 rounded-md px-3 py-2 transition-colors duration-200 hover:bg-bg-subtle"
+                      class="group/item flex items-start gap-3 rounded-lg px-3 py-2 transition-colors duration-200 hover:bg-bg-subtle"
                       target={item.external ? '_blank' : undefined}
                       rel={item.external ? 'noopener' : undefined}
                     >
-                      <span class="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-md border border-line bg-bg-subtle text-fg-muted transition-colors duration-200 group-hover/item:text-fg">
+                      <span class="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
                         {Icon && <Icon class="size-4" aria-hidden="true" />}
                         {item.brand && (
                           <svg
@@ -158,15 +163,15 @@ const menus: Array<{ label: string; items: Item[] }> = [
       </ul>
     </div>
 
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-1">
       <a
         href={REPO_URL}
         target="_blank"
         rel="noopener"
         aria-label="Concat on GitHub"
-        class="text-fg-muted transition-colors duration-200 hover:text-fg"
+        class="flex size-9 items-center justify-center rounded-full text-fg-muted transition-colors duration-200 hover:bg-bg-subtle hover:text-fg max-sm:hidden"
       >
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="size-5">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="size-[18px]">
           <path d={siGithub.path}></path>
         </svg>
       </a>
@@ -175,17 +180,69 @@ const menus: Array<{ label: string; items: Item[] }> = [
         target="_blank"
         rel="noopener"
         aria-label="Concat on Discord"
-        class="text-fg-muted transition-colors duration-200 hover:text-fg"
+        class="flex size-9 items-center justify-center rounded-full text-fg-muted transition-colors duration-200 hover:bg-bg-subtle hover:text-fg max-sm:hidden"
       >
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="size-5">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="size-[18px]">
           <path d={siDiscord.path}></path>
         </svg>
       </a>
-      <Button href="/#download" size="sm">
+      <Button href="/#download" size="sm" class="ml-1 h-10 rounded-[12px] px-5">
         Download
       </Button>
+      <button
+        type="button"
+        class="flex size-10 items-center justify-center rounded-[12px] text-fg-muted transition-colors duration-200 hover:bg-bg-subtle hover:text-fg md:hidden"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-toggle
+      >
+        <Menu class="size-5" data-icon-open aria-hidden="true" />
+        <X class="hidden size-5" data-icon-close aria-hidden="true" />
+      </button>
     </div>
-  </Container>
+  </nav>
+
+  <div
+    id="mobile-menu"
+    class="card-glass mx-auto mt-2 hidden max-w-[1100px] rounded-[18px] p-2 md:hidden"
+    data-mobile-menu
+  >
+    {menus.map((menu) => (
+      <div class="p-2">
+        <p class="px-2 pb-1 text-xs font-semibold tracking-wide text-fg-subtle uppercase">
+          {menu.label}
+        </p>
+        <ul>
+          {menu.items.map(({ icon: Icon, ...item }) => (
+            <li>
+              <a
+                href={item.href}
+                class="flex items-center gap-3 rounded-lg px-2 py-2 text-[0.9375rem] font-medium hover:bg-bg-subtle"
+                target={item.external ? '_blank' : undefined}
+                rel={item.external ? 'noopener' : undefined}
+              >
+                <span class="flex size-7 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
+                  {Icon && <Icon class="size-3.5" aria-hidden="true" />}
+                  {item.brand && (
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      aria-hidden="true"
+                      class="size-3.5"
+                    >
+                      <path d={item.brand} />
+                    </svg>
+                  )}
+                </span>
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
 </header>
 
 <script>
@@ -201,14 +258,29 @@ const menus: Array<{ label: string; items: Item[] }> = [
     for (const menu of menusOnPage()) if (menu !== except) setOpen(menu, false);
   }
 
+  function setMobile(open: boolean) {
+    const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+    const sheet = document.querySelector<HTMLElement>('[data-mobile-menu]');
+    if (!toggle || !sheet) return;
+    sheet.classList.toggle('hidden', !open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.querySelector('[data-icon-open]')?.classList.toggle('hidden', open);
+    toggle.querySelector('[data-icon-close]')?.classList.toggle('hidden', !open);
+  }
+
   // Document-level listeners are registered once; the menus they act on are looked up live, so
   // they survive Astro's client-side navigation without piling up.
   document.addEventListener('click', (event) => {
     const target = event.target as Node;
     if (!menusOnPage().some((menu) => menu.contains(target))) closeAll();
+    const header = document.querySelector('[data-header]');
+    if (header && !header.contains(target)) setMobile(false);
   });
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeAll();
+    if (event.key === 'Escape') {
+      closeAll();
+      setMobile(false);
+    }
   });
 
   document.addEventListener('astro:page-load', () => {
@@ -229,5 +301,12 @@ const menus: Array<{ label: string; items: Item[] }> = [
         if ((event.target as Element).closest('a')) setOpen(menu, false);
       });
     }
+    const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+    toggle?.addEventListener('click', () => {
+      setMobile(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+    document.querySelector('[data-mobile-menu]')?.addEventListener('click', (event) => {
+      if ((event.target as Element).closest('a')) setMobile(false);
+    });
   });
 </script>

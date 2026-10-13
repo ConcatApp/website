@@ -18,8 +18,8 @@ export default defineConfig({
   },
 
   // Production origin: canonical URLs, absolute Open Graph image URLs and the sitemap all derive
-  // from it. The Workers host serves the same build and points its canonicals here.
-  site: 'https://concatenate.pages.dev',
+  // from it. The Pages and Workers hosts serve the same build and point their canonicals here.
+  site: 'https://concat.standalones.org',
 
   prefetch: true,
 

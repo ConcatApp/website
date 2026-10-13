@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://concatenate.pages.dev/sitemap-index.xml
+Sitemap: https://concat.standalones.org/sitemap-index.xml

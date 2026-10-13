@@ -1,0 +1,63 @@
+---
+title: 'Settings'
+description: 'The gear at the top right. Seven pages: General, Appearance, Transcriber, Speech, Remote, Version, About. What each row does.'
+section: 'Reference'
+order: 2
+---
+
+Open Settings from the **gear** at the top right of the window (it is on the start screen too),
+with <kbd class="kbd">⌘,</kbd> (<kbd class="kbd">Ctrl+,</kbd>), or from File › Settings. The
+pages run down the left side.
+
+## General
+
+- **Language**: the fourteen the app ships in, each in its own name.
+- **Log level**: Errors only, Warnings, Normal, Debug, Everything. Normal is enough for most
+  reports; Debug or Everything when a report asks for it, and the file grows faster.
+- **Magnetic timeline**: whether deleting and trimming close the gap. The same switch is on
+  the tray.
+- **Playhead**: on, the playhead never leaves the content; off, a click on the ruler past the
+  last clip lands it there.
+- **Downloads**: where a model is fetched from first. Automatic, Concat's mirror, a mirror for
+  mainland China, the original source, or a custom URL of your own. Every other source is still
+  tried after the one you pick.
+
+## Appearance
+
+- **Theme**: Dark or Light. Dark is the default.
+- **Accent**: Lime, Sky, Violet, Rose, Amber, Mint, or a Custom colour.
+- **Playhead**: the colour of the line across the lanes.
+
+## Transcriber
+
+The Whisper models that auto-captions use, one row each: Tiny, Base and Small, each in an
+English and a Multilingual variant, with a line on what it is good for, accuracy pips and the
+size. **Download** fetches one; **Remove** deletes it; clicking an installed row makes it the one
+**In use**. Under the list: what is installed and how much disk it takes, and "Runs locally".
+See [the AI models](/guides/offline-models).
+
+## Speech
+
+The voice models that text to speech uses: **Chatterbox Turbo (studio)**, **Pocket TTS
+(cloning)**, **Kokoro (compact)** and **Kokoro (full precision)**, with the same Download,
+Remove and In use controls.
+
+## Remote
+
+Serves the Concat API while the window is open, so a script or another program can create, edit
+and export projects of its own. A **Remote control** switch, an **Address** (127.0.0.1 is this
+machine only; any other address is reachable from the network and needs the token), and a
+**Token** that a connection must present before its first call, with Show, Hide and New. The
+[developer docs](/docs) cover what to send it. Not on phones.
+
+## Version
+
+The installed version and whether a newer release exists, with **Check for updates**. **Switch
+version** lists every release from 0.2.5 on, newer or older, and **Install** puts the one you
+pick in this one's place. See [update Concat](/guides/update). Not on phones.
+
+## About
+
+The version, **Show the log** and **Copy system information**, then the facts a bug report
+needs: application, build, engine, operating system, processor, graphics, renderer, toolchain.
+See [report a problem](/guides/report-a-problem).

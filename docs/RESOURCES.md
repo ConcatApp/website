@@ -168,3 +168,51 @@ GitHub's marketing design system (repo https://github.com/primer/brand, docs htt
 - Screenshots for comparison were taken with headless Chrome:
   `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --screenshot=out.png --window-size=1440,4600 --timeout=20000 URL`
   wrapped in `perl -e 'alarm 75; exec @ARGV'`. `--virtual-time-budget` never settles on github.com; avoid it.
+
+## 10. The 2026-10-10 revamp: borrowed from offerwall-site, and the app screenshot workflow
+
+The landing page was rebuilt after the owner's offerwall-site landing (github.com/jub0t/offerwall-site,
+`src/components/marketing/*`, Next.js), ported to Astro. What was borrowed, and where it lives here:
+
+| offerwall-site                             | Here                                                              |
+| ------------------------------------------ | ----------------------------------------------------------------- |
+| `glass` floating nav, 18px radius, 1100px  | `Header.astro`, the `glass` utility                               |
+| `card-glass` / `card-glass-ring` cards     | the same utilities in `global.css`; every card on the page        |
+| `Reveal` (rise, unblur, ease-out-expo)     | `data-reveal` in `scroll.ts`, now with the blur                   |
+| `TextLoop` curved ribbon (React Bits)      | `Ribbon.astro`, plain TypeScript + GSAP                           |
+| `Facts` four stat cards with stroke icons  | the facts grid in `index.astro` with Lucide icons                 |
+| `Sides` two big cards with icon rows       | "Two ways in, the same engine"                                    |
+| `HowItWorks` timeline                      | replaced by `Tour.astro`, a scroll-driven pan over one screenshot |
+| `Faq` two-column accordion                 | the FAQ section                                                   |
+| `Cta` accent block, 36px radius            | the "Ready to cut?" block                                         |
+| `LogoMarquee`                              | not used; the sponsor list is short and static                    |
+| Bricolage display face, dark default theme | not used: Mona Sans stays, the site stays light                   |
+
+Reference sites for the demo-and-download genre looked at alongside it: linear.app, zed.dev, screen.studio,
+cap.so, raycast.com, obsidian.md, arc.net. Common grammar: floating nav, one big product frame under the
+headline, a scroll-driven tour, a bento of feature cards with real crops, an OS-detected download button
+repeated in an accent block before the footer.
+
+### App screenshots (dark theme, current release, nothing mocked)
+
+The owner's rule: every app screenshot on the site is the real app, in its **dark theme**, on the current
+release, and nothing in it may read badly (no model misspellings in captions, no half-typed scripts). The
+workflow used on 2026-10-10 on the owner's Mac:
+
+1. Install the current release in `/Applications` (the old build and `settings.json` were backed up first).
+2. A demo project of its own, `~/Desktop/Concat/Concat demo`, written as `concat.json` from the stock footage
+   in `~/Downloads` (Pexels clips) plus a Chatterbox voice WAV, and registered in
+   `~/Library/Application Support/app.concat.editor/recents.json` so the start screen lists it. The owner's own
+   projects are never opened or modified.
+3. The window at 1400x845 logical (2800x1690 px) is captured with `screencapture -x -R 35,33,1400,845`.
+   Clicks and keys are posted with a small Quartz CGEvent driver (`ui.py` in the session scratchpad; osascript
+   is refused assistive access on this machine, CGEvent is not). Escape does not close the app's sheets: use
+   their close cross.
+4. Captions were generated for real, then every caption's text was rewritten to clean copy in `concat.json`
+   with the app closed, because Whisper rendered "Concat" and "CapCut" as other words.
+5. Raw captures go through `node scripts/guide-shots.mjs <dir>` into `src/assets/guides/` (1600 px wide,
+   plus the crops listed in the script). The hero capture is committed as `src/assets/app/hero.png` and
+   `npm run assets:prepare` cuts the hero and the feature crops from it.
+
+Known app quirk met on the way: quitting 0.2.6 with `osascript -e 'tell application "Concat" to quit'` ends
+in SIGABRT and a crash dialog on the next launch.

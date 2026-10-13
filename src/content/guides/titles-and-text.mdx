@@ -1,0 +1,78 @@
+---
+title: 'Titles and text'
+description: 'Add a title, style it with fonts, stroke, shadow and a background plate, style many at once, and make that look the default.'
+section: 'Picture'
+order: 1
+---
+
+## Add a title
+
+Open the Library's **Text** page. Its left column has three shelves:
+
+- **Titles**: one card, **Default title**. Click it and a plain title lands at the playhead on
+  the first free lane above the picture. Drag it onto a lane instead to choose where it goes.
+- **Styles**: ready-made looks. Click one and the title arrives already styled.
+- **Languages**: the same, for scripts that need their own font (Japanese, Arabic, Hindi and
+  so on); the font is installed with the look.
+
+In 0.2.6 the looks sit on one shelf; the Styles and Languages split is in the next release.
+
+On a phone, **Text** on the bottom strip has **Add a title** and the same looks.
+
+## Write the words
+
+Select the title and type into the **Content** box at the top of the Inspector's **Text** tab.
+Press <kbd class="kbd">Return</kbd> for a new line. The monitor updates as you type.
+
+## Place it
+
+Drag the title on the monitor to move it; drag a corner grip to scale it; drag the stem above
+the box to rotate it. <kbd class="kbd">Shift</kbd> while dragging snaps to the guides. The
+**Position** section at the bottom of the Text tab holds the same two numbers, **Horizontal**
+and **Vertical**, if you prefer typing.
+
+## Style it
+
+The Text tab, top to bottom:
+
+| Section        | Controls                                                                                                                                                                                                                           |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Typography** | Font (with search, and **Import a font…** for a file of your own), Font Weight (Regular, Medium, SemiBold, Bold), Size, Italic, Color, Opacity, **Drop shadow**, **Background** and its colour, opacity, corner radius and padding |
+| **Stroke**     | Width, Color, Opacity                                                                                                                                                                                                              |
+| **Layout**     | Text Align, Width and Height (a number or Auto), Line height, Tracking                                                                                                                                                             |
+| **Position**   | Horizontal, Vertical                                                                                                                                                                                                               |
+
+Two of these do the heavy lifting for titles that sit over footage:
+
+- **Drop shadow** is a soft shadow under the words, for titles that have to sit over footage you
+  do not control.
+- **Background** is a solid box behind the words. Where a shadow softens the footage, a plate
+  replaces it; use it when what is underneath is busy. The plate takes a colour, an opacity, a
+  corner radius and padding, and goes round-ended when the plate is pill-shaped.
+
+A title with no box wraps at the frame's edge instead of running off it.
+
+## Style several at once
+
+Select more than one title (<kbd class="kbd">Shift</kbd>-click, or drag a box around them on
+the lane) and the Text tab reads "Editing N titles". Font, size, colours, stroke, shadow,
+background, box and alignment apply to all of them in one undo step. Position, rotation and
+scale move them together and keep their spacing.
+
+## Make it the default
+
+Click **Use for new titles**, under the Font picker. From then on every new title and every
+generated caption starts in that look. Set a CJK face once and it is used from then on.
+
+## Fonts
+
+The Font picker lists the bundled face, any fonts you have imported, then the machine's fonts.
+From the next release the picker has a search box, and a title whose font is not installed on
+this machine shows **FONT NOT FOUND** and draws in a fallback; install the font or pick another. Imported fonts live with Concat, so a project that
+uses one opens the same way on another machine once the font is imported there too.
+
+## Shapes
+
+The Library's **Stickers** page has a **Shapes** shelf: Square, Circle, Triangle,
+Parallelogram, Trapezoid, Line and Arrow. Click to place one at the playhead; it gets the same
+Transform and Blend controls as a picture, under a **Vector Image** tab.

@@ -1,0 +1,66 @@
+---
+title: 'Export'
+description: 'The Export sheet, every option on it, and which ones to leave alone. H.264, HEVC or AV1, up to 4K 60, 10-bit, with no watermark.'
+section: 'Timeline'
+order: 2
+---
+
+Click the blue **Export** button at the top right of the window, press <kbd class="kbd">⌘E</kbd>
+(<kbd class="kbd">Ctrl+E</kbd>), or use File › Export. On a phone, Export is in the top bar.
+
+The sheet flows into one, two or three columns depending on the window. Its sections:
+
+## Preview and Summary
+
+The current frame with a strip that scrubs the playhead, and the facts: the format you are about
+to write ("1920 × 1080 · 30 fps · H.264"), the duration, and how many clips and titles are in the
+cut. When a hardware encoder will be used, the encoding reads "· hardware".
+
+## Output
+
+| Row               | Choices                                                                                                                                                                                           | Leave it at                                                        |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| **Resolution**    | The timeline's own size (marked "Timeline") and the ladder below it: 2160, 1440, 1080, 720 on the short edge, each shown as this project's frame would come out, so a 9:16 edit reads 1080 × 1920 | The timeline's own                                                 |
+| **Frame rate**    | The timeline's own first, then every other rate                                                                                                                                                   | The timeline's own                                                 |
+| **Codec**         | **H.264** ("Plays everywhere"), **HEVC** ("Half the size"), **AV1** ("Smallest"). An encoder the machine lacks reads "Not on this device"                                                         | H.264 for anything you will upload or send; HEVC to halve the file |
+| **10-bit colour** | On or off                                                                                                                                                                                         | Off, unless the footage is 10-bit or HDR                           |
+| **Color**         | Only on an HDR timeline: HDR (HLG or PQ, "As the timeline") or SDR ("Tone-mapped, plays anywhere")                                                                                                | SDR unless you know the player does HDR                            |
+
+## Quality
+
+Three cards, each with an estimated file size: **High** (Master), **Balanced** (Recommended),
+**Small** (Share). Balanced is right for YouTube, TikTok and anything that gets re-encoded on
+upload, which is everything.
+
+## Destination
+
+A **Name**, a **Browse** button to pick the folder (the Movies folder by default), and the full
+path under them. The file is always an `.mp4`. If one with that name is already there, the
+sheet asks before replacing it.
+
+## Advanced
+
+Hidden on small windows behind **Show advanced options**:
+
+- **Bitrate**: **VBR** (the default) or **CBR** with a **Target bitrate**. Hardware encoders
+  always run VBR.
+- **Colour range**: **Limited** ("Video, YouTube") or **Full** ("Screen content"). Limited is
+  what every video player expects; Full is for screen recordings that must keep pure black and
+  white exact.
+
+## Run it
+
+The button at the bottom reads **Export · ~size**. While it runs the sheet shows the stage
+(Rendering video, Mixing audio, Finalising file), a percentage and the time left, with
+**Cancel export**. When it is done: **Show in folder** and **Export again**.
+
+## Speed and hardware
+
+On a Mac the encoders are VideoToolbox. On Windows and Linux, NVENC, Quick Sync and AMF encode
+HEVC and AV1 when the machine has the chip, ahead of the software encoders. 4K 60 10-bit is the
+ceiling. An export whose GPU device dies carries on, on a fresh device or then the software
+adapter, and the frame that came back black is drawn again.
+
+## Just the sound
+
+Right-click a clip and choose **Save Audio As…** to render that clip's sound to a WAV.

@@ -7,7 +7,7 @@
  * Re-initialises on every Astro view-transition navigation and tears down before the swap.
  *
  * Markup hooks:
- *   data-reveal              fade + rise once ~20% of the element is visible
+ *   data-reveal              fade + rise + unblur once ~20% of the element is visible
  *   data-reveal="stagger"    same, but the element's direct children animate in sequence
  *   data-parallax="0.15"     drifts up to 15% of its height across its scroll range (GSAP scrub)
  *
@@ -79,8 +79,8 @@ function initReveals() {
 
       animate(
         nodes,
-        { opacity: [0, 1], y: [20, 0] },
-        { duration: 0.9, ease: EASE_OUT_EXPO, delay: isStagger ? stagger(0.08) : 0 },
+        { opacity: [0, 1], y: [14, 0], filter: ['blur(4px)', 'blur(0px)'] },
+        { duration: 0.6, ease: EASE_OUT_EXPO, delay: isStagger ? stagger(0.06) : 0 },
       );
       // Not returning an onLeave callback => fires once.
     },
@@ -157,10 +157,12 @@ function initAnchors() {
   cleanups.push(() => document.removeEventListener('click', onClick, true));
 }
 
+// Only what this module created is torn down here. Components that make ScrollTriggers of
+// their own (the editor tour) register their own astro:before-swap cleanup; the order in which
+// page-load listeners run is not guaranteed, so killing every trigger here would wipe theirs.
 function destroy() {
   for (const fn of cleanups) fn();
   cleanups = [];
-  for (const trigger of ScrollTrigger.getAll()) trigger.kill();
 }
 
 function init() {

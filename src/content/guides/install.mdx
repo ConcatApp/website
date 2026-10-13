@@ -1,6 +1,7 @@
 ---
 title: 'Install Concat'
 description: 'Every build is a GitHub Releases asset. The download picker hands you the right one; this page covers what happens after.'
+section: 'Start'
 order: 1
 ---
 
@@ -16,12 +17,18 @@ Concat is in beta: it works, and it still has edges.
 
 ## Windows
 
-An installer or an MSI package, for x64 and ARM64 machines. Run it and follow the prompts.
+A setup program or an MSI package, for x64 and ARM64 machines. Run it and follow the prompts.
+
+The builds are not code-signed, so SmartScreen may stop the first launch. Click **More info**,
+then **Run anyway**. An MSI install updates itself from the next MSI; the setup program updates
+from inside the app (see [Update Concat](/guides/update)).
 
 ## macOS
 
-A disk image for Apple Silicon and for Intel. The builds are unsigned, so if macOS refuses to open
-the app after you move it to Applications, clear the quarantine flag once:
+A disk image for Apple Silicon and for Intel. Open it and drag Concat to Applications.
+
+The builds are unsigned, so macOS may say the app is damaged or cannot be opened. Clear the
+quarantine flag once, in Terminal:
 
 ```sh
 xattr -dr com.apple.quarantine /Applications/Concat.app
@@ -29,22 +36,41 @@ xattr -dr com.apple.quarantine /Applications/Concat.app
 
 ## Linux
 
-AppImage, `.deb` and `.rpm` packages for x86_64 and ARM64. The app repository also lists an Arch
-package on its Releases page.
+AppImage, `.deb`, `.rpm` and an Arch package, for x86_64 and ARM64.
 
-> [!NOTE]
-> An AppImage needs to be marked executable before it runs: `chmod +x Concat-*.AppImage`.
+- **AppImage**: mark it executable first, then run it. `chmod +x Concat-*.AppImage`
+- **Debian and Ubuntu**: `sudo apt install ./Concat-*.deb`
+- **Fedora and openSUSE**: `sudo dnf install ./Concat-*.rpm`
+- **Arch**: `sudo pacman -U Concat-*.pkg.tar.zst`
+- **Flatpak**: [Flatpark](https://flatpark.org/apps/app.concat.editor/) is a community remote that
+  wraps the x86_64 `.deb` of each release and updates with it.
+
+Dropped files, the frameless window's edge resize and the dock entry all work on native Wayland.
 
 ## Android
 
-An APK for phones and tablets. Android asks you to allow installs from this source the first time.
+An APK for phones and tablets. Android asks you to allow installs from this source the first
+time. The phone layout is its own editor, not a shrunken desktop: see
+[Concat on a phone](/guides/phone).
 
 ## iOS and iPadOS
 
-An IPA for iPhone and iPad, in beta and still being tested. It is not on the App Store: install it
-by sideloading.
+An IPA for iPhone and iPad, in beta. It is not on the App Store: install it by sideloading with
+the tool you already use for that (AltStore, Sideloadly and the like).
 
 ## Checking a download
 
 Every release ships a `SHA256SUMS` file next to the binaries, and the download picker prints the
-checksum of the file it points to. Compare the two if you want to verify what you downloaded.
+checksum of the file it points to. Compare the two if you want to verify what you downloaded:
+
+```sh
+shasum -a 256 Concat-0.2.6-macos-arm64.dmg
+```
+
+## First launch
+
+Concat opens on the start screen: **New project** on the left, your recent projects on the right.
+Nothing to sign in to. The AI features (captions, voices, cutout) need a model each, which you
+download from Settings the first time you use one; see [the AI models](/guides/offline-models).
+
+Next: [Your first edit](/guides/first-edit).

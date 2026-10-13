@@ -21,7 +21,11 @@ const docs = defineCollection({
 
 const guides = defineCollection({
   loader: glob({ base: './src/content/guides', pattern: '**/*.{md,mdx}' }),
-  schema: page.extend({ section: z.string().default('Guides') }),
+  schema: page.extend({
+    section: z.string().default('Start'),
+    /** Shown on the guide card and at the top of the page, under the lead. */
+    hero: z.string().optional(),
+  }),
 });
 
 export const collections = { docs, guides };

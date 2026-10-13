@@ -1,24 +1,52 @@
 ---
-/** Cards for every guide except the landing page. Used from src/content/guides/index.mdx. */
+/**
+ * Cards for every guide except the landing page, grouped by section in the order src/lib/docs.ts
+ * lists them. Used from src/content/guides/index.mdx.
+ */
+import { getNav } from '@/lib/docs';
 import { getCollection } from 'astro:content';
+import { ArrowRight } from '@lucide/astro';
 
-const guides = (await getCollection('guides'))
-  .filter((g) => g.id !== 'index')
-  .sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
+const { groups } = await getNav('guides');
+const entries = await getCollection('guides');
+const byHref = new Map(entries.map((e) => [e.id === 'index' ? '/guides' : `/guides/${e.id}`, e]));
 ---
 
-<ul class="not-prose grid gap-4 sm:grid-cols-2">
-  {guides.map((g) => (
-    <li>
-      <a
-        href={`/guides/${g.id}`}
-        class="block h-full rounded-lg border border-line p-5 transition-colors duration-200 hover:border-line-strong"
-      >
-        <p class="font-medium">{g.data.title}</p>
-        {g.data.description && (
-          <p class="mt-1.5 text-sm leading-relaxed text-fg-muted">{g.data.description}</p>
-        )}
-      </a>
-    </li>
-  ))}
-</ul>
+<div class="not-prose space-y-12">
+  {groups.map((group) => {
+    const items = group.items.filter((i) => i.href !== '/guides');
+    if (items.length === 0) return null;
+    return (
+      <section>
+        <h2 class="text-xs font-semibold tracking-wide text-fg-subtle uppercase">{group.title}</h2>
+        <ul class="mt-4 grid gap-4 sm:grid-cols-2">
+          {items.map((item) => {
+            const entry = byHref.get(item.href);
+            return (
+              <li>
+                <a
+                  href={item.href}
+                  class="card-glass group flex h-full flex-col rounded-[20px] p-5"
+                >
+                  <p class="text-[1.0625rem] font-semibold tracking-tight">{item.title}</p>
+                  {entry?.data.description && (
+                    <p class="mt-1.5 text-sm leading-relaxed text-fg-muted">
+                      {entry.data.description}
+                    </p>
+                  )}
+                  <span class="mt-auto flex items-center gap-1 pt-4 text-sm font-medium text-accent-ink">
+                    Read
+                    <ArrowRight
+                      class="size-3.5 transition-transform duration-300 ease-out-expo group-hover:translate-x-0.5"
+                      aria-hidden="true"
+                    />
+                  </span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    );
+  })}
+</div>

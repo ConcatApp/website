@@ -31,6 +31,7 @@ edit; `createdId` names what the command made, if anything.
 | [`addClip`](#addclip)                                                                                                                                                                       | media on a named track                                                | `c…`            |
 | [`addClipAtFirstFree`](#addclipatfirstfree)                                                                                                                                                 | media on the first free track                                         | `c…`            |
 | [`addTextClip`](#addtextclip)                                                                                                                                                               | a title                                                               | `c…`            |
+| [`addShapeClip`](#addshapeclip)                                                                                                                                                             | a shape drawn over the picture                                        | `c…`            |
 | [`addLayerClip`](#addlayerclip)                                                                                                                                                             | an effect layer over everything beneath                               | `c…`            |
 | [`freezeFrame`](#freezeframe)                                                                                                                                                               | a held still, cut into a clip                                         | `c…`            |
 | **Moving and cutting**                                                                                                                                                                      |                                                                       |                 |
@@ -44,12 +45,13 @@ edit; `createdId` names what the command made, if anything.
 | [`setClipTransform`](#setcliptransform)                                                                                                                                                     | scale, offset, rotation, stretch                                      |                 |
 | [`setClipSpeed`](#setclipspeed)                                                                                                                                                             | playback rate                                                         |                 |
 | [`setClipSpeedCurve`](#setclipspeedcurve)                                                                                                                                                   | speed over time                                                       |                 |
+| [`setClipEnhanced`](#setclipenhanced)                                                                                                                                                       | show a clip's enhanced copy, or its original                          |                 |
 | [`setClipKey`](#setclipkey) · [`clearClipKey`](#clearclipkey) · [`clearClipKeys`](#clearclipkeys)                                                                                           | keyframes on scale, offset, rotation, opacity, volume                 |                 |
 | [`setEffectKey`](#seteffectkey) · [`clearEffectKey`](#cleareffectkey) · [`clearEffectKeys`](#cleareffectkeys)                                                                               | keyframes on an effect parameter                                      |                 |
 | [`setClipCutout`](#setclipcutout) · [`addCutoutStroke`](#addcutoutstroke)                                                                                                                   | background removal and brush corrections                              |                 |
 | [`detachAudio`](#detachaudio) · [`reattachAudio`](#reattachaudio)                                                                                                                           | a video's sound as its own clip, and back                             | `c…`            |
 | **Tracks**                                                                                                                                                                                  |                                                                       |                 |
-| [`addTrack`](#addtrack)                                                                                                                                                                     | a new lane                                                            | `t…`            |
+| [`addTrack`](#addtrack)                                                                                                                                                                     | a new lane, on top or at the bottom                                   | `t…`            |
 | [`removeTrack`](#removetrack)                                                                                                                                                               | a lane and its clips, out                                             |                 |
 | [`setTrackFlag`](#settrackflag)                                                                                                                                                             | visible / muted                                                       |                 |
 | **Timelines**                                                                                                                                                                               |                                                                       |                 |
@@ -158,11 +160,12 @@ there. The clip keeps its length, looks and name, and its in-point unless
 `sourceStart` moves it: an enhanced copy stands in frame for frame, a
 reversed span starts at its own zero. The bin keeps the original.
 
-| Field         | Type       | Meaning                                            |
-| ------------- | ---------- | -------------------------------------------------- |
-| `clipId`      | string     | The clip. Unknown id: no-op                        |
-| `item`        | _NewMedia_ | The probed file                                    |
-| `sourceStart` | number     | _optional_. A new in-point in the copy, in seconds |
+| Field         | Type       | Meaning                                                                                                                                                                                                |
+| ------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `clipId`      | string     | The clip. Unknown id: no-op                                                                                                                                                                            |
+| `item`        | _NewMedia_ | The probed file                                                                                                                                                                                        |
+| `sourceStart` | number     | _optional_. A new in-point in the copy, in seconds                                                                                                                                                     |
+| `enhanced`    | bool       | _optional_, default `false`. The copy is the clip's Enhance: the clip remembers the media it showed as the original, so `setClipEnhanced` can switch back. Any other copy ends an Enhance the clip had |
 
 ---
 
@@ -219,6 +222,37 @@ first line.
   "offsetY": 0.35
 }
 ```
+
+### `addShapeClip`
+
+Places a shape: a clip with no media behind it that draws one figure over
+the picture. It lands the way a title does, above the picture, and is
+placed and scaled like a still, so `setClipTransform` and keyframes work
+on it.
+
+| Field      | Type         | Meaning                                                                                                    |
+| ---------- | ------------ | ---------------------------------------------------------------------------------------------------------- |
+| `trackId`  | string       | _optional_. The lane. Absent picks a free track; a vanished track is **refused**                           |
+| `above`    | bool         | _optional_, default `false`. With no `trackId`: land on the first free lane above the highest occupied one |
+| `start`    | number       | Seconds; floored at 0                                                                                      |
+| `style`    | _ShapeStyle_ | _optional_. Only the fields you set; the rest are the defaults (a white square, a third of the frame high) |
+| `duration` | number       | _optional_, default 4 s                                                                                    |
+| `name`     | string       | What the lane calls it. Empty falls back to the figure's name (`square`, `arrow`, …)                       |
+
+```json
+{
+  "op": "addShapeClip",
+  "above": true,
+  "start": 2,
+  "duration": 3,
+  "style": { "kind": "arrow", "size": 0.2, "stroke": "#ffcc00", "strokeWidth": 0.02 },
+  "name": "Arrow"
+}
+```
+
+The figures are `square`, `circle`, `triangle`, `parallelogram`, `trapezoid`,
+`line` and `arrow`. All of _ShapeStyle_ is in [Types](/docs/api/types#shapestyle).
+Shapes arrived in 0.2.6; a project with shapes does not open correctly in 0.2.5 or earlier.
 
 ### `addLayerClip`
 
@@ -404,6 +438,24 @@ Speed that changes over the clip.
 | `clipId` | string                   | The clip                                                                                                          |
 | `curve`  | _SpeedPoint_[] or `null` | Points of `{at, speed}`, `at` a fraction 0..=1 of the clip. `null` returns to a constant rate at the current mean |
 
+### `setClipEnhanced`
+
+Shows a clip's enhanced copy, or its original again, without running the
+model a second time. The clip must have an Enhance already: a copy added
+with `replaceClipMedia` and `enhanced: true`.
+
+| Field    | Type   | Meaning                                     |
+| -------- | ------ | ------------------------------------------- |
+| `clipId` | string | Unknown id: no-op                           |
+| `on`     | bool   | `true` shows the copy, `false` the original |
+
+```json
+{ "op": "setClipEnhanced", "clipId": "c4", "on": false }
+```
+
+A clip Enhance has not made a copy for is a no-op. The clip's `enhanced`
+field ([Types](/docs/api/types#enhanced)) says which media it shows.
+
 ### `setClipKey`
 
 Puts a keyframe on one property at one point of the clip.
@@ -526,7 +578,15 @@ filters back.
 
 ### `addTrack`
 
-Appends a lane, named after the highest "Track N" in use. No fields.
+Adds a lane, minting a `t` id.
+
+| Field    | Type | Meaning                                                                             |
+| -------- | ---- | ----------------------------------------------------------------------------------- |
+| `bottom` | bool | _optional_, default `false`. Under every other lane rather than on top of the stack |
+
+```json
+{ "op": "addTrack", "bottom": true }
+```
 
 ### `removeTrack`
 
