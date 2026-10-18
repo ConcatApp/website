@@ -21,6 +21,19 @@ import menuView from '@/assets/guides/menu-view.png';
   onto a different spot.
 </Figure>
 
+## The layout
+
+In 0.2.7 a new window opens with the **Library** on the left, the **Preview** in the middle, the
+**Inspector** on the right and the **Timeline** underneath, with the level **Meters** beside the
+timeline.
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).** A fresh window opens with the Inspector as a
+> full-height column down the right side, about a fifth of the width. In the rest, the Library
+> (top left, a quarter of the window) and the Preview sit across the top, with the Timeline under
+> both in the lower two fifths. The level meters are part of the timeline, at its right edge.
+> Only the opening layout changed; panes still move as described below.
+
 ## The title strip
 
 <Figure
@@ -35,7 +48,8 @@ The strip at the very top carries the **File**, **Edit** and **View** menus on t
 project's name and its save state in the middle ("saved" almost all the time: the edit autosaves
 a second and a half after every change), and three controls on the right:
 
-- **Add a panel** (the plus with a chevron) opens a list of the six pane kinds and adds one.
+- **Add a panel** (the plus with a chevron) opens a list of the pane kinds (Library, Preview,
+  Inspector, Timeline, Keyframes and, in 0.2.7, Meters) and adds one.
 - The **gear** opens Settings. It is the only door to Settings besides
   <kbd class="kbd">⌘,</kbd> and File › Settings.
 - **Export** opens the export sheet.
@@ -94,8 +108,10 @@ to move it, drag a grip to scale it, drag the stem above the box to rotate it.
 <kbd class="kbd">Shift</kbd> while dragging snaps to the guides. Right-click the picture for **Save
 Video Frame As**, which writes the frame as a PNG and drops it in the bin.
 
-**Half** quality is the default: it plays proxies, which keep 4K smooth. **Full** plays the
-original files. A single click on a file in the Library shows that file here instead of the
+**Half** quality is the default. In 0.2.7 it plays proxies, the smaller copies Concat makes of
+every video larger than HD, which keep 4K smooth; **Full** plays the original files. From 0.2.8
+proxies are a switch in Settings › General, off by default, and Half and Quarter read the files
+themselves unless you turn it on. A single click on a file in the Library shows that file here instead of the
 timeline, with a "Source" chip; click the timeline to come back.
 
 ## The Inspector
@@ -103,17 +119,25 @@ timeline, with a "Source" chip; click the timeline to come back.
 With nothing selected the Inspector shows the project's **Details** and a **Modify** button for
 the timeline's frame, rate and colour. With a clip selected it shows tabs for that kind of clip:
 
-| Clip   | Tabs                                                               |
-| ------ | ------------------------------------------------------------------ |
-| Video  | **Video** (Basic, Enhance, Adjust), **Audio** (Sound), **Effects** |
-| Image  | **Video** (Basic, Enhance, Adjust), **Effects**                    |
-| Audio  | **Audio** (Sound)                                                  |
-| Title  | **Text**                                                           |
-| Filter | **Filter** (the layer's strength and ramps)                        |
-| Shape  | **Vector Image**                                                   |
+| Clip                             | Tabs                                                               |
+| -------------------------------- | ------------------------------------------------------------------ |
+| Video                            | **Video** (Basic, Enhance, Adjust), **Audio** (Sound), **Effects** |
+| Image                            | **Video** (Basic, Enhance, Adjust), **Effects**                    |
+| Audio                            | **Audio** (Sound)                                                  |
+| Several clips with sound (0.2.8) | **Audio**, with the volume only                                    |
+| Title                            | **Text**                                                           |
+| Filter                           | **Filter** (the layer's strength and ramps)                        |
+| Shape                            | **Vector Image**                                                   |
 
 Every knob with a small diamond next to it can be keyframed at the playhead. Double-click a
 label to put a knob back to its default.
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).** The **Audio** tab has two pages, **Basic** and
+> **Audio effects** ([clean up a voice](/guides/clean-up-a-voice)). The Video tab's Basic page
+> gains a **Canvas** section and Fit and Fill buttons ([vertical video](/guides/vertical-video))
+> and a **Stabilize** section ([stabilize](/guides/stabilize)), and the Enhance page gains Size,
+> Strength and a preview ([enhance](/guides/enhance)).
 
 ## The Timeline
 
@@ -123,26 +147,31 @@ label to put a knob back to its default.
 
 From left to right on the tray:
 
-| Button                          | What it does                                                              | Key                                                   |
-| ------------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------- |
-| Add track                       | A menu: Add to top, Add to bottom                                         |                                                       |
-| Undo, Redo                      |                                                                           | <kbd class="kbd">⌘Z</kbd>, <kbd class="kbd">⇧⌘Z</kbd> |
-| Split at playhead               | Splits every clip under the playhead                                      | <kbd class="kbd">⌘B</kbd>                             |
-| Split tool                      | The razor: click a clip to cut it under the pointer                       | <kbd class="kbd">B</kbd>                              |
-| Merge selected                  | Joins two selected pieces of the same file back into one                  |                                                       |
-| Delete selected                 |                                                                           | <kbd class="kbd">Delete</kbd>                         |
-| Freeze, Reverse, Mirror, Rotate | A menu for the selected clip                                              |                                                       |
-| Pan tool                        | The hand: drag to scroll the lanes                                        | <kbd class="kbd">H</kbd>                              |
-| Trim follow                     | The playhead rides the edge you trim                                      |                                                       |
-| Snap to edges                   |                                                                           | <kbd class="kbd">N</kbd>                              |
-| Magnetic timeline               | Deleting and trimming close the gap                                       |                                                       |
-| Generate Captions               | Opens the Captions sheet                                                  |                                                       |
-| Text to Speech                  | Opens the Text to speech sheet                                            |                                                       |
-| Record Voiceover                | Records from the microphone onto the timeline. Next release; not in 0.2.6 |                                                       |
-| Preview axis                    | The monitor follows the pointer across the lanes                          | <kbd class="kbd">S</kbd>                              |
-| Zoom to fit, out, in            |                                                                           | <kbd class="kbd">⌘-</kbd>, <kbd class="kbd">⌘=</kbd>  |
+| Button                          | What it does                                                                                                    | Key                                                   |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Add track                       | A menu: Add to top, Add to bottom                                                                               |                                                       |
+| Undo, Redo                      |                                                                                                                 | <kbd class="kbd">⌘Z</kbd>, <kbd class="kbd">⇧⌘Z</kbd> |
+| Split at playhead               | Splits the selected clips at the playhead                                                                       | <kbd class="kbd">⌘B</kbd>                             |
+| Delete left, Delete right       | 0.2.8: cut the clip up to, or from, the playhead                                                                | <kbd class="kbd">Q</kbd>, <kbd class="kbd">W</kbd>    |
+| Split tool                      | The razor: click a clip to cut it under the pointer                                                             | <kbd class="kbd">B</kbd>                              |
+| Merge selected                  | Joins two selected pieces of the same file back into one (0.2.8: renders any video clips on one track into one) |                                                       |
+| Delete selected                 |                                                                                                                 | <kbd class="kbd">Delete</kbd>                         |
+| Freeze, Reverse, Mirror, Rotate | A menu for the selected clip                                                                                    |                                                       |
+| Pan tool                        | The hand: drag to scroll the lanes                                                                              | <kbd class="kbd">H</kbd>                              |
+| Trim follow                     | The playhead rides the edge you trim                                                                            |                                                       |
+| Snap to edges                   |                                                                                                                 | <kbd class="kbd">N</kbd>                              |
+| Magnetic timeline               | Deleting and trimming close the gap                                                                             |                                                       |
+| Generate Captions               | Opens the Captions sheet                                                                                        |                                                       |
+| Text to Speech                  | Opens the Text to speech sheet                                                                                  |                                                       |
+| Record Voiceover                | Records from the microphone onto the timeline (0.2.8: opens the Voiceover panel)                                |                                                       |
+| Preview axis                    | The monitor follows the pointer across the lanes                                                                | <kbd class="kbd">S</kbd>                              |
+| Zoom to fit, out, in            |                                                                                                                 | <kbd class="kbd">⌘-</kbd>, <kbd class="kbd">⌘=</kbd>  |
+| Level meters                    | 0.2.8: shows or hides the meters at the timeline's right edge                                                   |                                                       |
 
-On Windows and Linux read <kbd class="kbd">Ctrl</kbd> for <kbd class="kbd">⌘</kbd>.
+On Windows and Linux read <kbd class="kbd">Ctrl</kbd> for <kbd class="kbd">⌘</kbd>. In 0.2.7
+
+<kbd class="kbd">⌘B</kbd> splits every clip under the playhead, whatever is selected; from 0.2.8 it
+splits the selection, and everything under the playhead only when nothing is selected.
 
 <Figure
   src={header}
@@ -154,12 +183,19 @@ On Windows and Linux read <kbd class="kbd">Ctrl</kbd> for <kbd class="kbd">⌘</
 
 Above the tray sit the **timeline tabs**. A project can hold several timelines, each with its own
 frame and rate; the plus adds one, a double-click renames one. Right-click a clip for its menu:
-Copy, Duplicate, Paste, Split at playhead, Freeze frame, Enhance, Detach audio, Save Audio As,
-Mute, Lock track and Delete.
+Copy, Duplicate, Paste, Split at playhead, Freeze frame, Enhance, Detach audio, Save Audio As, Generate
+captions, Mute, Lock track and Delete. 0.2.8 adds **Delete left**, **Delete right**, **Fit to
+frame** and **Fill frame**.
 
 ## Moving panes around
 
 Every pane's header ends with a small chip. Click it to change what that pane shows, or to
 remove the pane. Drag the chip onto another pane: drop near an edge to split that pane, drop in
-the middle to swap the two. The sixth kind, **Keyframes**, is how you get the dopesheet and curve
-editor on screen; see [keyframes](/guides/keyframes).
+the middle to swap the two. The **Keyframes** kind is how you get the dopesheet and curve editor
+on screen; see [keyframes](/guides/keyframes).
+
+## Closing
+
+The edit autosaves, so closing the window is safe. From 0.2.8, if the last save fails (an
+unplugged drive, a full disk, a read-only folder), Concat asks **Quit without saving?** instead
+of keeping the window open with no way out; cancel to try again once the disk is back.

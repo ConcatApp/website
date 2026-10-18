@@ -24,13 +24,25 @@ export default defineConfig({
   prefetch: true,
 
   // Fonts are downloaded at build time and self-hosted (no runtime request to Google).
-  // Exposed as the CSS variable below; Tailwind maps it to `font-sans` in src/styles/global.css.
+  // Exposed as CSS variables; Tailwind maps them to `font-sans` and `font-heading` in global.css.
   fonts: [
     {
       provider: fontProviders.google(),
       name: 'Mona Sans',
       cssVariable: '--font-mona',
       weights: ['200 900'],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['system-ui', 'Segoe UI', 'Helvetica', 'Arial', 'sans-serif'],
+      display: 'swap',
+    },
+    // Headings and display sizes (h1 to h3, section titles, stat numbers); Mona Sans stays the
+    // body face. Tailwind maps it to `font-heading` in src/styles/global.css.
+    {
+      provider: fontProviders.google(),
+      name: 'Bricolage Grotesque',
+      cssVariable: '--font-bricolage',
+      weights: ['200 800'],
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['system-ui', 'Segoe UI', 'Helvetica', 'Arial', 'sans-serif'],

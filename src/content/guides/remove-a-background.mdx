@@ -45,8 +45,22 @@ Effects page are the same thing pre-keyed to that colour.
 The cut-out clip has nothing behind it, so put the new background on a lane below it. Any
 picture or video works; so does a shape from the Stickers page, or nothing, for a title card.
 
+## If Concat closed during a removal
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).**
+
+The smart brush and the automatic cutout start by themselves whenever a clip's mask is still to
+be worked out, including when a project opens. In 0.2.7, a removal that closed the app part way
+through started again on every open and closed it again, so the project could not be opened.
+From 0.2.8 the project opens: that stroke or cutout is skipped and a notice says so once. To
+retry, turn the cutout off and on again, or undo the stroke and paint it again.
+
+0.2.8 also fixes two Windows crashes: an automatic cutout that fell from the person model to the
+object model, or a timeline using both, could close the app on its second removal. And a stroke
+painted on a [stabilized](/guides/stabilize) clip lands where the brush was.
+
 ## Enhance
 
 Next to Basic, the **Enhance** section restores and enlarges a clip's picture with a small
-model (5 MB), into a copy the clip then shows. Tick to start; it runs in the background, one clip
-at a time, and the row reads "Enhancing… N%". Untick to show the original again.
+model (5 MB). See [Enhance](/guides/enhance).

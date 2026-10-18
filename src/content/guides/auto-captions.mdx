@@ -14,7 +14,8 @@ import tray from '@/assets/guides/tray.png';
 ## Where the button is
 
 **Generate Captions** is the **T** button on the timeline tray, right after the magnetic switch.
-On a phone it is **Captions** on the bottom strip.
+Right-clicking a clip with sound also offers **Generate captions**, with that clip already
+chosen. On a phone it is **Captions** on the bottom strip.
 
 <Figure
   src={tray}
@@ -28,7 +29,9 @@ On a phone it is **Captions** on the bottom strip.
 
 1. Select the clip with the voice in it on the timeline. A video with its own sound works, and
    so does a separate audio clip, such as a voiceover.
-2. Click **Generate Captions**.
+2. Click **Generate Captions**. With a clip with sound selected, the sheet opens with **Use voice
+   from timeline** on and that clip chosen. The list offers every clip on the timeline that has
+   sound, named by its file and where it starts.
 3. Pick a **Model**. **Base (English)** is the sweet spot; the sheet lists whichever Whisper
    models you have downloaded.
 4. Choose a **Placement** (Bottom, Centre or Top) and a **Size** (Small, Medium, Large).
@@ -43,6 +46,14 @@ On a phone it is **Captions** on the bottom strip.
 
 The sheet reads "Loading the model", then "Transcribing" with a percentage. Nothing leaves your
 machine at any point; a 15-second clip takes a few seconds on the Base model.
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).** The bar moves through each stage ("Reading the
+> clip's sound", "Loading the model", "Transcribing") and says "About m:ss left". **Cancel** is
+> reported as a cancel, not a failure, and transcription leaves two processor threads free so
+> playback keeps up while it runs. On Windows and Linux PCs, 0.2.7 transcribes with code built for
+> older processors only, which makes long clips several times slower on a recent CPU; 0.2.8 picks
+> the fastest code the processor can run.
 
 <Figure
   src={progress}
@@ -69,9 +80,39 @@ words' own timing, and a toast says how many captions were added.
 
 ## Caption from a script
 
-With no clip selected, or a clip with no sound, the sheet shows a **Script** box instead of the
-model picker. Type or paste the words, choose placement and size, and click **Add captions**:
-one title per sentence, each held for as long as it takes to read, one after another.
+Turn **Use voice from timeline** off (it starts off when no clip with sound is selected) and the
+sheet shows a **Script** box instead of the model picker. Type or paste the words, choose
+placement and size, and click **Add captions**: one title per sentence, each held for as long as
+it takes to read, one after another from the playhead.
+
+## The floating Captions panel
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).**
+
+On a desktop, Captions is no longer a sheet that dims and freezes the editor. It is a card that
+floats over the window: the timeline, the playhead and the selection keep working under it, you
+drag it by its header, and it stays where you put it for the session. Its close button hides the
+card and leaves a running transcription going; open it again to see the run. If a run fails
+while the card is closed, a notice says so. <kbd class="kbd">Escape</kbd> closes it.
+
+With the card open, the clip it captions follows the selection: select another clip with sound
+and that is the one shown and transcribed. On a phone, or in a window too narrow for the card,
+Captions stays a sheet.
+
+## Import and export SRT
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).**
+
+The Captions sheet has **Import SRT…** and **Export SRT…**.
+
+- **Import SRT…** reads a SubRip `.srt` file and lays each cue down as a title at the time the
+  file gives it, with the sheet's placement and size. The whole import is one undo step.
+- **Export SRT…** writes a lane of titles as a `.srt`: the lane of the selected title, or, with
+  no title selected, the lane with the most titles, and the notice says which. The file is named
+  after the project. On Android it goes to **Download/Concat**; on an iPhone to the app's
+  **Exports** folder in Files.
 
 ## Fix a word
 

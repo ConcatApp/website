@@ -19,6 +19,13 @@ and the audio effect chain.
   The Audio tab. Treatments and the effect chain are further down.
 </Figure>
 
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).** The Audio tab has two pages on a strip at its
+> top, as the Video tab does: **Basic** (the level, the fades, a sound clip's speed and the three
+> treatments) and **Audio effects** (the effect chain and its library). Applying an audio effect
+> from the Library opens Audio effects. On a phone, **Audio effects** sits next to **Audio** on
+> the clip's strip.
+
 ## The three treatments
 
 Each is a switch with a line explaining what it does:
@@ -35,6 +42,18 @@ the README promises.
 
 Every clip with sound wears a thin horizontal line at its level on the timeline. Drag it to set
 the volume; it snaps at 100 percent and the drag is one undo step.
+
+## The volume of several clips at once
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).**
+
+Select two or more clips that all have sound (audio clips, or videos with sound) and the
+Inspector shows only the **Audio** tab with the volume. Set it and every selected clip takes that
+level, as one undo step. A clip whose volume has keys keeps its ride: the whole ride moves by the
+same number of decibels, so the level at the playhead lands where you set it and a fade stays a
+fade. Clips on locked tracks are left alone. On a phone, the clip strip's **Audio** does the same
+for the selection.
 
 ## The effect chain
 

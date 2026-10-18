@@ -8,12 +8,12 @@ order: 4
 Minimum is what a build runs on at all. Recommended is what makes 1080p editing feel smooth and
 keeps 4K exports and captions from being a wait.
 
-|             | Minimum                                                                | Recommended                                                               |
-| ----------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| **CPU**     | Any 64-bit processor from 2013 or later                                | 6 cores or more                                                           |
-| **GPU**     | None. Without a usable GPU the window and monitor fall back to the CPU | Any GPU with Metal (macOS), DirectX 12 (Windows) or Vulkan (Linux)        |
-| **RAM**     | 4 GB                                                                   | 16 GB for 4K timelines and the larger caption models                      |
-| **Storage** | 500 MB for the app and the smallest caption model                      | About 3.4 GB for every optional model, plus room for projects and exports |
+|             | Minimum                                                                     | Recommended                                                               |
+| ----------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **CPU**     | A 64-bit processor. x86 builds are checked on an emulated 2011 Sandy Bridge | 6 cores or more                                                           |
+| **GPU**     | None. Without a usable GPU the window and monitor fall back to the CPU      | Any GPU with Metal (macOS), DirectX 12 (Windows) or Vulkan (Linux)        |
+| **RAM**     | 4 GB                                                                        | 16 GB for 4K timelines and the larger caption models                      |
+| **Storage** | 500 MB for the app and the smallest caption model                           | About 3.4 GB for every optional model, plus room for projects and exports |
 
 ## Optional models
 
@@ -33,5 +33,26 @@ See [Captions, voices and cutout](/guides/offline-models) for what each one does
 
 ## Platforms
 
-Windows (x64 and ARM64), macOS (Apple Silicon and Intel), Linux (x86_64 and ARM64) and Android
-are supported. iOS and iPadOS builds are in beta. Same app, same project files, in 14 languages.
+| Platform       | Builds                                     | Needs                                                                             |
+| -------------- | ------------------------------------------ | --------------------------------------------------------------------------------- |
+| Windows        | x64 setup and MSI (ARM64 is paused)        | A 64-bit Intel or AMD processor                                                   |
+| macOS          | Apple Silicon and Intel disk images        | macOS 12. The 0.2.7 Intel build needs 13.4; from 0.2.8 only its AI features do    |
+| Linux          | x86_64 and ARM64: AppImage, deb, rpm, Arch |                                                                                   |
+| Android        | ARM64 APK                                  | Android 8.0. In 0.2.7, a Vulkan driver; 0.2.8 falls back to OpenGL ES without one |
+| iOS and iPadOS | IPA, beta, sideloaded                      | iOS 15                                                                            |
+
+Same app, same project files, in 25 languages.
+
+## Older processors
+
+Concat runs on processors without AVX2, such as Intel's Sandy Bridge and Ivy Bridge. In 0.2.7
+the caption transcriber on Windows and Linux PCs is built for those older processors only, so it
+runs several times slower than it could on anything newer. 0.2.8 ships one version per processor
+generation and loads the fastest one the machine can run.
+
+## Graphics
+
+Without a usable GPU the window and the monitor draw on the CPU. From 0.2.8, on Windows and
+Linux, a launch that closes while starting is followed by one that draws in software, and
+**Settings › General › Draw on the GPU** turns it back on. See
+[report a problem](/guides/report-a-problem#the-window-closes-or-draws-garbage).

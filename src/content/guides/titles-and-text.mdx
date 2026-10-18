@@ -15,8 +15,6 @@ Open the Library's **Text** page. Its left column has three shelves:
 - **Languages**: the same, for scripts that need their own font (Japanese, Arabic, Hindi and
   so on); the font is installed with the look.
 
-In 0.2.6 the looks sit on one shelf; the Styles and Languages split is in the next release.
-
 On a phone, **Text** on the bottom strip has **Add a title** and the same looks.
 
 ## Write the words
@@ -52,6 +50,13 @@ Two of these do the heavy lifting for titles that sit over footage:
 
 A title with no box wraps at the frame's edge instead of running off it.
 
+> [!NOTE]
+> **Fixed in 0.2.8 (coming in the next release).** In 0.2.7 a title with a box wider than half
+> the frame, aligned left or right, is cut off at its far end; centred titles are not affected.
+> 0.2.8 slides the box back onto the frame as far as it must. 0.2.8 also draws titles and captions
+> in Thai, Arabic, Persian, Urdu, Hindi, Bengali and Korean on Android and iOS, where 0.2.7 shows
+> boxes for them.
+
 ## Style several at once
 
 Select more than one title (<kbd class="kbd">Shift</kbd>-click, or drag a box around them on
@@ -66,10 +71,11 @@ generated caption starts in that look. Set a CJK face once and it is used from t
 
 ## Fonts
 
-The Font picker lists the bundled face, any fonts you have imported, then the machine's fonts.
-From the next release the picker has a search box, and a title whose font is not installed on
-this machine shows **FONT NOT FOUND** and draws in a fallback; install the font or pick another. Imported fonts live with Concat, so a project that
-uses one opens the same way on another machine once the font is imported there too.
+The Font picker lists the bundled faces, any fonts you have imported, then the machine's fonts,
+with a search box at the top. A title whose font is not installed on this machine shows **FONT
+NOT FOUND** and draws in a fallback; install the font or pick another. Imported fonts live with
+Concat, so a project that uses one opens the same way on another machine once the font is
+imported there too.
 
 ## Shapes
 

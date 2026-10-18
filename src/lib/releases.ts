@@ -95,7 +95,8 @@ const SPEC: Array<Omit<PlatformModel, 'arches'> & { arches: ArchSpec[] }> = [
   {
     id: 'windows',
     name: 'Windows',
-    summary: 'x64 and ARM64',
+    // Worked out from the architectures the manifest ships (ARM64 is paused since 0.2.7).
+    summary: '',
     archPrompt: 'Processor',
     arches: [
       { id: 'x86_64', label: 'x64', hint: 'Intel and AMD', formats: DESKTOP_WINDOWS },
@@ -168,7 +169,9 @@ export function getPlatforms(manifest: Manifest): PlatformModel[] {
       }
       if (formats.length > 0) arches.push({ id: a.id, label: a.label, hint: a.hint, formats });
     }
-    if (arches.length > 0) out.push({ ...p, arches });
+    if (arches.length === 0) continue;
+    const summary = p.summary || arches.map((a) => a.label).join(' and ');
+    out.push({ ...p, summary, arches });
   }
   return out;
 }

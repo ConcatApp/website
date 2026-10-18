@@ -135,7 +135,8 @@ dispatcher and its open projects.
 ## From the window
 
 **Settings › Remote** serves the same JSON-RPC lines while the editor is
-open.
+open. This is the one transport every release build ships; `concat-cli`
+above needs a build from source.
 
 | Control            | Meaning                                                              |
 | ------------------ | -------------------------------------------------------------------- |
@@ -143,6 +144,14 @@ open.
 | **Address**        | Host and port. Default `127.0.0.1:7420`                              |
 | **Token**          | Yours, or one the window mints and shows you when the field is empty |
 | Status line        | "Listening on … · N connected", or why the bind failed               |
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).** The page is **Settings ›
+> Automation** and its switch is **Scripts and apps**. Address and port are one
+> field, with a warning and a **This computer only** button when the address
+> reaches past loopback; a dot beside the status line is green while it
+> listens and red when it could not start; **Copy the token** copies the token
+> without showing it. The server behind it is unchanged.
 
 A caller on the socket edits projects of its own, never the one on
 screen: a folder the window has open is `refused` over the socket, and

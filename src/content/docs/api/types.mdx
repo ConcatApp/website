@@ -112,13 +112,14 @@ to `concat.json` (plus a compatibility mirror; see
 
 ### Timeline
 
-| Field    | Type            | Meaning                                                          |
-| -------- | --------------- | ---------------------------------------------------------------- |
-| `id`     | string          | `"TL1"` for the first, `"tl…"` after                             |
-| `name`   | string          | The tab label                                                    |
-| `video`  | _VideoSettings_ | This timeline's frame and rate                                   |
-| `tracks` | _Track_[]       | Top to bottom. Never empty                                       |
-| `clips`  | _Clip_[]        | In insertion order, **not** time order; sort by `start` yourself |
+| Field        | Type            | Meaning                                                                       |
+| ------------ | --------------- | ----------------------------------------------------------------------------- |
+| `id`         | string          | `"TL1"` for the first, `"tl…"` after                                          |
+| `name`       | string          | The tab label                                                                 |
+| `video`      | _VideoSettings_ | This timeline's frame and rate                                                |
+| `tracks`     | _Track_[]       | Top to bottom. Never empty                                                    |
+| `clips`      | _Clip_[]        | In insertion order, **not** time order; sort by `start` yourself              |
+| `background` | _Background_    | _optional_, 0.2.8. What fills the frame behind the main lane; absent is black |
 
 ### VideoSettings
 
@@ -141,40 +142,42 @@ to `concat.json` (plus a compatibility mirror; see
 A clip as `project.get` returns it. Fields with a default are left out of
 the JSON when they hold it.
 
-| Field                  | Type              | Meaning                                                                        |
-| ---------------------- | ----------------- | ------------------------------------------------------------------------------ |
-| `id`                   | string            | `"c…"`. Survives splits (the head keeps it) and merges                         |
-| `trackId`              | string            | The lane                                                                       |
-| `mediaId`              | string            | Empty for a text, shape or layer clip                                          |
-| `name`                 | string            | Display label                                                                  |
-| `kind`                 | string            | `video`, `audio`, `image`, `text`, `layer`, `shape`                            |
-| `start`                | number            | Seconds from the start of the timeline                                         |
-| `duration`             | number            | Seconds on the timeline. Never below 1/60                                      |
-| `sourceStart`          | number            | In-point: seconds into the media                                               |
-| `volume`               | number            | Linear gain, 1 is unity                                                        |
-| `fadeIn`, `fadeOut`    | number            | Audio ramp seconds                                                             |
-| `scale`                | number            | Multiplier over the fitted size                                                |
-| `offsetX`, `offsetY`   | number            | Fractions of frame width / height from centred                                 |
-| `rotation`             | number            | Degrees, clockwise                                                             |
-| `stretchX`, `stretchY` | number            | _optional_, default 1                                                          |
-| `opacity`              | number            | 0..1                                                                           |
-| `speed`                | number            | Playback rate; the curve's mean when a curve is set                            |
-| `speedCurve`           | _SpeedPoint_[]    | _optional_                                                                     |
-| `keys`                 | _ClipKey_[]       | _optional_. User keyframes, sorted by property then `at`                       |
-| `flipH`, `flipV`       | bool              | _optional_                                                                     |
-| `blend`                | string            | _optional_. `multiply`, `screen`, `add`, `lighten`, `darken`; absent is normal |
-| `crop`                 | _Crop_            | _optional_                                                                     |
-| `cutout`               | _Cutout_          | _optional_                                                                     |
-| `preservePitch`        | bool              | Keep pitch when speed ≠ 1                                                      |
-| `filters`              | _AppliedFilter_[] | Audio chain, in order                                                          |
-| `videoEffects`         | _AppliedFilter_[] | Video chain, in order                                                          |
-| `audioStream`          | integer           | _optional_. Which audio stream of the media plays                              |
-| `muted`                | bool              | _optional_. True when the sound is detached                                    |
-| `detachedFrom`         | string            | _optional_. On a detached audio clip: the video it came from                   |
-| `transitionIn`         | _Transition_      | _optional_                                                                     |
-| `text`                 | _TextStyle_       | _optional_. Present on a text clip                                             |
-| `shape`                | _ShapeStyle_      | _optional_. Present on a shape clip                                            |
-| `enhanced`             | _Enhanced_        | _optional_. Present once Enhance has made a copy of the clip's media           |
+| Field                  | Type              | Meaning                                                                                                          |
+| ---------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `id`                   | string            | `"c…"`. Survives splits (the head keeps it) and merges                                                           |
+| `trackId`              | string            | The lane                                                                                                         |
+| `mediaId`              | string            | Empty for a text, shape or layer clip                                                                            |
+| `name`                 | string            | Display label                                                                                                    |
+| `kind`                 | string            | `video`, `audio`, `image`, `text`, `layer`, `shape`                                                              |
+| `start`                | number            | Seconds from the start of the timeline                                                                           |
+| `duration`             | number            | Seconds on the timeline. Never below 1/60                                                                        |
+| `sourceStart`          | number            | In-point: seconds into the media                                                                                 |
+| `volume`               | number            | Linear gain, 1 is unity                                                                                          |
+| `fadeIn`, `fadeOut`    | number            | Audio ramp seconds                                                                                               |
+| `scale`                | number            | Multiplier over the fitted size                                                                                  |
+| `offsetX`, `offsetY`   | number            | Fractions of frame width / height from centred                                                                   |
+| `rotation`             | number            | Degrees, clockwise                                                                                               |
+| `stretchX`, `stretchY` | number            | _optional_, default 1                                                                                            |
+| `opacity`              | number            | 0..1                                                                                                             |
+| `speed`                | number            | Playback rate; the curve's mean when a curve is set                                                              |
+| `speedCurve`           | _SpeedPoint_[]    | _optional_                                                                                                       |
+| `keys`                 | _ClipKey_[]       | _optional_. User keyframes, sorted by property then `at`                                                         |
+| `flipH`, `flipV`       | bool              | _optional_                                                                                                       |
+| `blend`                | string            | _optional_. `multiply`, `screen`, `add`, `lighten`, `darken`; absent is normal                                   |
+| `crop`                 | _Crop_            | _optional_                                                                                                       |
+| `cutout`               | _Cutout_          | _optional_                                                                                                       |
+| `preservePitch`        | bool              | Keep pitch when speed ≠ 1                                                                                        |
+| `filters`              | _AppliedFilter_[] | Audio chain, in order                                                                                            |
+| `videoEffects`         | _AppliedFilter_[] | Video chain, in order                                                                                            |
+| `audioStream`          | integer           | _optional_. Which audio stream of the media plays                                                                |
+| `muted`                | bool              | _optional_. True when the sound is detached                                                                      |
+| `detachedFrom`         | string            | _optional_. On a detached audio clip: the video it came from                                                     |
+| `transitionIn`         | _Transition_      | _optional_                                                                                                       |
+| `text`                 | _TextStyle_       | _optional_. Present on a text clip                                                                               |
+| `shape`                | _ShapeStyle_      | _optional_. Present on a shape clip                                                                              |
+| `enhanced`             | _Enhanced_        | _optional_. Present once Enhance has made a copy of the clip's media                                             |
+| `background`           | _Background_      | _optional_, 0.2.8. The clip's own canvas background; see [Edit commands](/docs/api/edits#framing-and-background) |
+| `stabilize`            | _Stabilize_       | _optional_, 0.2.8. Present while stabilization is on; see [`setClipStabilize`](/docs/api/edits#setclipstabilize) |
 
 A clip fresh from `addClip`:
 
@@ -466,6 +469,16 @@ the rest its `params`.
 | `mediaId`  | string | The media being analysed                          |
 | `fetching` | bool   | True while a model downloads, false while it runs |
 | `fraction` | number | 0..=1                                             |
+
+### `stabilize.progress`
+
+New in 0.2.8 (coming in the next release). A stabilized clip's media is being
+measured ahead of an export.
+
+| Field      | Type   | Meaning                  |
+| ---------- | ------ | ------------------------ |
+| `mediaId`  | string | The media being measured |
+| `fraction` | number | 0..=1                    |
 
 ### `export.progress`
 

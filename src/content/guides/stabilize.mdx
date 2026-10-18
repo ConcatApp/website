@@ -1,0 +1,52 @@
+---
+title: 'Stabilize'
+description: 'Take the shake out of handheld footage: Smoothness, Max zoom and Tripod, measured once on your machine.'
+section: 'Picture'
+order: 6
+---
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).** Stabilize is on the app's main branch and not
+> in 0.2.7.
+
+Select a video clip and open the Inspector's **Video** tab, **Basic** page. Tick **Stabilize** in
+its section header. On a phone, the clip's **Edit** sheet has the same section.
+
+## What happens when you tick it
+
+Concat measures the camera's movement in the clip's file once, in the background, and the
+section shows "Measuring the shake… N%". Until the measurement lands the clip plays as shot;
+then the monitor shows it steadied. Only the part of the file the clip uses is measured, plus a
+little either side for the smoothing, and a measurement already made is reused by every clip of
+the same file. Nothing needs downloading and nothing leaves your machine.
+
+## The three controls
+
+| Control        | What it does                                                                                                                                              |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Smoothness** | How much of the camera's movement is smoothed away. Low keeps a pan or a walk and takes out the jitter; high leaves only the slowest moves. Starts at 50% |
+| **Max zoom**   | How far the picture may be enlarged to hide the edges the correction pulls into view, up to 150%. Starts at 120%                                          |
+| **Tripod**     | Holds the frame completely still, as if the camera had been on a tripod, instead of following the camera's intended move                                  |
+
+The sliders answer at once: the correction is worked out live from the measurement, so there is
+no second wait.
+
+Once measured, the section says what zoom the clip is drawn at ("Zoomed to 112% to hide the
+edges"). When Max zoom holds the correction back, it says how much zoom steadying every frame
+would take; raise Max zoom to steady the shakiest moments fully, or accept a little movement
+there.
+
+## Export and the API
+
+An export measures any stabilized clip that has not been measured yet before it renders, so a
+file always comes out steadied. The monitor and the export draw the clip through the same
+correction. Scripts set it with the `setClipStabilize` edit; see
+[Edit commands](/docs/api/edits#setclipstabilize).
+
+## If Concat closed while measuring
+
+The project still opens: the measurement it died in is skipped and a notice says so once. Turn
+Stabilize off and on again to retry.
+
+A [background removal](/guides/remove-a-background) painted on a stabilized clip lands where you
+painted it.

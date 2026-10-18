@@ -39,12 +39,46 @@ clip menu.
 
 - Split cuts the selected clip at the playhead; there is no razor.
 - Undo and Redo are the two buttons beside the monitor.
-- Settings has no Remote and no Version page. Updates come from the APK or IPA on GitHub
-  Releases.
+- Settings has no Remote (Automation) and no Version page, and from 0.2.8 no Shortcuts or Scale.
+  Updates come from the APK or IPA on GitHub Releases.
 - The start screen has no Open project and no location picker on Android: projects live where
   the app puts them.
-- Export has no Browse: the file goes to the app's Movies folder, and sharing it is the system
-  share sheet.
+- Export has no Browse: on Android the file goes to the phone's Movies folder, where the gallery
+  shows it.
+
+## Known problems in 0.2.7
+
+- **iPhone and iPad: Import media does nothing**, so no clip can be brought in. Fixed in 0.2.8.
+- **Android phones without Vulkan**: the app closes as it opens. 0.2.8 falls back to OpenGL ES.
+- **Android**: switching dark mode, the font size or the language while the app is open closes
+  it. Fixed in 0.2.8.
+- **Titles in Thai, Arabic, Persian, Urdu, Hindi, Bengali or Korean** draw as boxes on phones.
+  Fixed in 0.2.8.
+
+## New in 0.2.8
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).** Everything in this section is on the app's
+> main branch and not in 0.2.7.
+
+- **The lanes glide.** A flick along the lanes carries on after your finger lifts and slows to a
+  stop, as other lists on the phone do.
+- **Pinch to zoom** the lanes, with the same limits as the zoom buttons. The zoom stays centred
+  on the playhead.
+- **A tap selects without seeking.** Tapping a clip selects it and leaves the playhead where it
+  was, so the clip no longer jumps away from your thumb.
+- **Frame step buttons** either side of Play step one frame back or on; hold one to keep
+  stepping. The timecode shows the frame you are on.
+- **New tools on the strip**: **Voiceover** (the [Voiceover panel](/guides/record-a-voiceover)
+  as a sheet) and **Canvas** (the [background and Fit or Fill](/guides/vertical-video)) on the
+  main strip; **Canvas**, **Audio effects** and **Enhance** on a clip's strip.
+- **Import on iPhone and iPad** asks **Photos** or **Files**. What you pick is copied into the
+  app's Documents, which the Files app now shows (projects, Imported and Exports). A finished
+  export goes into Photos and stays in Exports.
+- **Captions**: the Captions sheet can pick and write `.srt` files on a phone. See
+  [auto-captions](/guides/auto-captions#import-and-export-srt).
+- **Settings** fills the screen, with its pages as tabs and every model row whole. New project
+  asks a phone for no location, and the Export sheet stays inside the system's bars.
 
 ## Install
 

@@ -1,0 +1,53 @@
+---
+title: 'Vertical video and the canvas'
+description: 'Fill the bars around a wide shot in a tall frame with a blur, a colour or a picture, and size a clip to the frame with Fit or Fill.'
+section: 'Picture'
+order: 5
+---
+
+Make the project 9:16 (the New project sheet's **Shape**, or the Inspector's **Modify** button
+for an existing timeline) and a 16:9 clip sits in the middle of the frame with black above and
+below it. In 0.2.7 the way to fill those bars is by hand: put a second copy of the clip on a lane
+below, scale it up and give it a blur effect. The canvas below does it in one step.
+
+## The canvas
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).** Everything on this page from here on is on the
+> app's main branch and not in 0.2.7.
+
+Select a video or still on the **main lane**, the lowest lane that holds a picture, and open the
+Inspector's **Video** tab, **Basic** page. The **Canvas** section sets what fills the frame where
+the picture does not reach:
+
+| Background | What it draws                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------- |
+| **None**   | Black                                                                                       |
+| **Blur**   | The clip's own picture, enlarged to cover the frame and blurred. **Softness** sets how much |
+| **Color**  | One flat colour                                                                             |
+| **Image**  | A still from the bin, enlarged to cover the frame. Import a picture first to pick one       |
+
+**Apply to all** gives every picture on the main lane this clip's background, as one undo step.
+
+The background is drawn behind the main lane only, where CapCut has its main track. Titles,
+shapes and pictures on the lanes above sit on top of a frame that is already filled. It travels
+with its clip through fades, dissolves and wipes, and a picture that already covers the frame
+gets none. The monitor and the export draw it the same way.
+
+On a phone, **Canvas** on the bottom strip (and on a picture's strip) opens a sheet of tiles:
+four softness steps and twelve colour swatches, with Fit and Fill at its head for a
+clip, and Apply to all.
+
+## Fit and Fill
+
+The **Transform** section has a **Size** row with two buttons, also on a clip's right-click menu
+as **Fit to frame** and **Fill frame**:
+
+- **Fit**: the whole picture inside the frame, as large as it goes. Every picture starts this way.
+- **Fill**: the frame covered, the picture centred and cut at the edges that overhang.
+
+Neither stretches the picture. If the clip's scale or position has keyframes, Fit and Fill add a
+key at the playhead rather than replacing the animation.
+
+Scripts reach the same with the `frameClip`, `setTimelineBackground` and `updateClip` edits; see
+[Edit commands](/docs/api/edits#framing-and-background).

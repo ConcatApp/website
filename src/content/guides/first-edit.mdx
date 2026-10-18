@@ -34,7 +34,8 @@ now on.
 ## 2. Bring footage in
 
 The editor opens with the **Library** on the left, the **Preview** in the middle, the
-**Inspector** on the right and the **Timeline** underneath.
+**Inspector** on the right and the **Timeline** underneath. (From 0.2.8 the Inspector runs the
+full height of the right side; see [where everything is](/guides/the-window#the-layout).)
 
 <Figure
   src={editor}
@@ -68,7 +69,10 @@ The tray above the lanes holds the editing tools.
 
 - Scrub by dragging on the ruler, or press <kbd class="kbd">Space</kbd> to play.
 - Put the playhead where you want the cut and press <kbd class="kbd">⌘B</kbd>
-  (<kbd class="kbd">Ctrl+B</kbd>): every clip under the playhead splits.
+  (<kbd class="kbd">Ctrl+B</kbd>): every clip under the playhead splits. From 0.2.8 it splits
+  the selected clips, or everything under the playhead when nothing is selected, and
+  <kbd class="kbd">Q</kbd> and <kbd class="kbd">W</kbd> delete the part of a clip left or right of
+  the playhead.
 - Or press <kbd class="kbd">B</kbd> for the razor and click a clip where you want it cut.
 - Drag a clip's edge to trim it. Drag the clip itself to move it.
 - Select a clip and press <kbd class="kbd">Delete</kbd>. With the **Magnetic timeline** switch
@@ -93,7 +97,8 @@ button away on the tray. Want the words that are already spoken on screen?
 Click the blue **Export** button at the top right of the window (or press
 
 <kbd class="kbd">⌘E</kbd>). The sheet starts at the timeline's own size and rate with **Balanced**
-quality, which is right for almost everything. Pick a name, click **Export**, and the file goes to
-your Movies folder. The [export guide](/guides/export) has the rest: codecs, 10-bit, bitrate.
+quality, which is right for almost everything (from 0.2.8, a recommended **Bitrate** in its place).
+Pick a name, click **Export**, and the file goes to your Movies folder. The [export
+guide](/guides/export) has the rest: codecs, 10-bit, bitrate.
 
 That is the whole loop. Everything else on these pages is a detail of one of these five steps.

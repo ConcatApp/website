@@ -38,11 +38,14 @@ edit; `createdId` names what the command made, if anything.
 | [`moveClips`](#moveclips)                                                                                                                                                                   | reposition any number of clips                                        |                 |
 | [`trimClip`](#trimclip)                                                                                                                                                                     | drag one edge                                                         |                 |
 | [`splitClips`](#splitclips)                                                                                                                                                                 | cut at a time                                                         | `c…` (the tail) |
+| [`consolidateClips`](#consolidateclips) (0.2.8)                                                                                                                                             | render several video clips into one                                   |                 |
 | [`mergeClips`](#mergeclips)                                                                                                                                                                 | rejoin split pieces                                                   |                 |
 | [`removeClips`](#removeclips)                                                                                                                                                               | delete                                                                |                 |
 | **Changing a clip**                                                                                                                                                                         |                                                                       |                 |
 | [`updateClip`](#updateclip)                                                                                                                                                                 | patch: name, volume, fades, opacity, effects, transition, text, crop… |                 |
 | [`setClipTransform`](#setcliptransform)                                                                                                                                                     | scale, offset, rotation, stretch                                      |                 |
+| [`frameClip`](#frameclip) (0.2.8)                                                                                                                                                           | fit or fill the frame                                                 |                 |
+| [`setClipStabilize`](#setclipstabilize) (0.2.8)                                                                                                                                             | steady a shaky clip                                                   |                 |
 | [`setClipSpeed`](#setclipspeed)                                                                                                                                                             | playback rate                                                         |                 |
 | [`setClipSpeedCurve`](#setclipspeedcurve)                                                                                                                                                   | speed over time                                                       |                 |
 | [`setClipEnhanced`](#setclipenhanced)                                                                                                                                                       | show a clip's enhanced copy, or its original                          |                 |
@@ -57,6 +60,7 @@ edit; `createdId` names what the command made, if anything.
 | **Timelines**                                                                                                                                                                               |                                                                       |                 |
 | [`addTimeline`](#addtimeline)                                                                                                                                                               | a new timeline, made active                                           | `tl…`           |
 | [`removeTimeline`](#removetimeline) · [`renameTimeline`](#renametimeline) · [`selectTimeline`](#selecttimeline) · [`moveTimeline`](#movetimeline) · [`setTimelineVideo`](#settimelinevideo) | manage timelines                                                      |                 |
+| [`setTimelineBackground`](#settimelinebackground) (0.2.8)                                                                                                                                   | what fills the frame behind the main lane                             |                 |
 | **Templates and fonts**                                                                                                                                                                     |                                                                       |                 |
 | [`setMediaPlaceholder`](#setmediaplaceholder) · [`fillSlot`](#fillslot)                                                                                                                     | template slots                                                        |                 |
 | [`addFont`](#addfont) · [`removeFont`](#removefont)                                                                                                                                         | fonts for titles                                                      |                 |
@@ -347,6 +351,24 @@ Rejoins split pieces into the earliest piece, which keeps its id.
 speed, touch within a microsecond, and are in source order. The message
 says which condition failed.
 
+### `consolidateClips`
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).**
+
+Replaces two or more video clips on one track with a file the host has
+already rendered from them, as one undo step. The earliest clip keeps its
+id, track and span; properties baked into the render are reset. The window's
+**Merge selected clips** renders the file and then sends this.
+
+| Field     | Type       | Meaning                                                             |
+| --------- | ---------- | ------------------------------------------------------------------- |
+| `clipIds` | string[]   | Two or more video clips on one track, any order                     |
+| `item`    | _NewMedia_ | The finished, probed render, stored in the project's `media` folder |
+
+**Refused** with fewer than two clips, a clip that is not a video, clips on
+different tracks, or an unselected clip inside their span.
+
 ### `removeClips`
 
 Deletes clips from the active timeline.
@@ -371,22 +393,23 @@ Applies a patch: only the fields present change.
 
 _ClipPatch_ fields (all optional):
 
-| Field               | Type                   | Clamp / meaning                                                           |
-| ------------------- | ---------------------- | ------------------------------------------------------------------------- |
-| `name`              | string                 | Taken verbatim                                                            |
-| `volume`            | number                 | Floored at 0; **not** capped at 1                                         |
-| `fadeIn`, `fadeOut` | number                 | Seconds, floored at 0                                                     |
-| `opacity`           | number                 | 0..=1                                                                     |
-| `preservePitch`     | bool                   | Keep voices at pitch when speed ≠ 1                                       |
-| `muted`             | bool                   | Silence the clip's own sound                                              |
-| `flipH`, `flipV`    | bool                   | Mirror                                                                    |
-| `blend`             | string                 | `normal` (or empty), `multiply`, `screen`, `add`, `lighten`, `darken`     |
-| `filters`           | _AppliedFilter_[]      | **Replaces** the whole audio chain                                        |
-| `videoEffects`      | _AppliedFilter_[]      | **Replaces** the whole video chain                                        |
-| `crop`              | _Crop_ or `null`       | See below                                                                 |
-| `transitionIn`      | _Transition_ or `null` | The transition on the cut into the clip                                   |
-| `text`              | _TextStyle_ or `null`  | Title styling; also renames the clip after its first line                 |
-| `audioStream`       | integer or `null`      | Which of the media's audio streams to play; `null` means the file's first |
+| Field               | Type                   | Clamp / meaning                                                                                                                                                  |
+| ------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`              | string                 | Taken verbatim                                                                                                                                                   |
+| `volume`            | number                 | Floored at 0; **not** capped at 1                                                                                                                                |
+| `fadeIn`, `fadeOut` | number                 | Seconds, floored at 0                                                                                                                                            |
+| `opacity`           | number                 | 0..=1                                                                                                                                                            |
+| `preservePitch`     | bool                   | Keep voices at pitch when speed ≠ 1                                                                                                                              |
+| `muted`             | bool                   | Silence the clip's own sound                                                                                                                                     |
+| `flipH`, `flipV`    | bool                   | Mirror                                                                                                                                                           |
+| `blend`             | string                 | `normal` (or empty), `multiply`, `screen`, `add`, `lighten`, `darken`                                                                                            |
+| `filters`           | _AppliedFilter_[]      | **Replaces** the whole audio chain                                                                                                                               |
+| `videoEffects`      | _AppliedFilter_[]      | **Replaces** the whole video chain                                                                                                                               |
+| `crop`              | _Crop_ or `null`       | See below                                                                                                                                                        |
+| `transitionIn`      | _Transition_ or `null` | The transition on the cut into the clip                                                                                                                          |
+| `text`              | _TextStyle_ or `null`  | Title styling; also renames the clip after its first line                                                                                                        |
+| `audioStream`       | integer or `null`      | Which of the media's audio streams to play; `null` means the file's first                                                                                        |
+| `background`        | _Background_ or `null` | 0.2.8. The clip's own canvas background over the timeline's; `null` goes back to following the timeline's. See [Framing and background](#framing-and-background) |
 
 > [!IMPORTANT]
 > `crop`, `transitionIn`, `text` and `audioStream` have three states:
@@ -418,6 +441,53 @@ Places the picture. Send only the fields you moved.
 | `offsetY`              | number | Fraction of frame height, ±3          |
 | `rotation`             | number | Degrees, wrapped into (-180, 180]     |
 | `stretchX`, `stretchY` | number | 0.1..=10, a multiplier beyond `scale` |
+
+### `frameClip`
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).**
+
+Sizes a video or still to the frame in one step, centred and unstretched.
+
+| Field     | Type                | Meaning                                                                                              |
+| --------- | ------------------- | ---------------------------------------------------------------------------------------------------- |
+| `clipId`  | string              | Unknown id: no-op                                                                                    |
+| `framing` | `"fit"` or `"fill"` | `fit`: the whole picture inside the frame (every picture's starting size). `fill`: the frame covered |
+| `at`      | number              | _optional_, default 0. Where in the clip, 0..=1, a keyed scale or position takes its key             |
+
+A scale or position that has keys gets a key at `at` rather than a new
+constant. A no-op for a clip that is not a picture, or whose media's size is
+unknown.
+
+### `setClipStabilize`
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).**
+
+Turns stabilization on, changes its settings, or takes it off.
+
+| Field       | Type                  | Meaning                           |
+| ----------- | --------------------- | --------------------------------- |
+| `clipId`    | string                | Unknown id: no-op                 |
+| `stabilize` | _Stabilize_ or `null` | The settings; `null` turns it off |
+
+_Stabilize_:
+
+| Field          | Type   | Meaning                                                                     |
+| -------------- | ------ | --------------------------------------------------------------------------- |
+| `smoothness`   | number | 0..=1, default 0.5. How much of the camera's movement is smoothed away      |
+| `maxZoom`      | number | 1..=1.5, default 1.2. How far the picture may be enlarged to hide the edges |
+| `tripod`       | bool   | _optional_. Lock the frame entirely                                         |
+| `keepRotation` | bool   | _optional_. Correct drift and zoom only, leaving the camera's roll as shot  |
+
+The camera's movement is measured by the host the first time a clip of that
+media asks for it; until then the clip renders as shot. `export.run`
+measures any stabilized clip still unmeasured before it renders, reporting
+[`stabilize.progress`](/docs/api/types#events) events.
+
+```json
+{ "op": "setClipStabilize", "clipId": "c2", "stabilize": { "smoothness": 0.6, "maxZoom": 1.25 } }
+```
 
 ### `setClipSpeed`
 
@@ -625,6 +695,34 @@ Deletes a timeline; the active tab moves to a neighbour if it was this one.
 | `timelineId` | string. Unknown id: no-op |
 
 **Refused** on the last timeline.
+
+### `setTimelineBackground`
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).**
+
+Sets what fills a timeline's frame behind the pictures on its lowest picture
+lane, the main lane. A clip's own `background` ([`updateClip`](#updateclip))
+draws over it.
+
+| Field        | Type         | Meaning           |
+| ------------ | ------------ | ----------------- |
+| `timelineId` | string       | Unknown id: no-op |
+| `background` | _Background_ | See below         |
+
+#### Framing and background
+
+_Background_ is tagged by `kind`:
+
+| Value                                   | Draws                                                                          |
+| --------------------------------------- | ------------------------------------------------------------------------------ |
+| `{"kind": "none"}`                      | Black. Every timeline's default                                                |
+| `{"kind": "blur", "amount": 0.5}`       | The clip's own picture enlarged to cover the frame and blurred; `amount` 0..=1 |
+| `{"kind": "color", "color": "#1a1a1a"}` | One flat colour; one that does not read becomes black                          |
+| `{"kind": "image", "mediaId": "m4"}`    | A still from the bin, enlarged to cover the frame                              |
+
+The background travels with its picture through transitions, and a picture
+that already covers the frame gets none. See also [`frameClip`](#frameclip).
 
 ### `setTimelineVideo`
 

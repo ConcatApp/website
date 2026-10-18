@@ -5,11 +5,9 @@ section: 'Captions and voices'
 order: 3
 ---
 
-> [!IMPORTANT]
-> Not in 0.2.6. Record Voiceover is on the app's main branch and ships with the next release;
-> until then the tray ends at Text to Speech.
-
 **Record Voiceover** is the microphone button on the timeline tray, beside Text to Speech.
+
+## In 0.2.7
 
 1. Put the playhead where the voiceover should start.
 2. Click **Record Voiceover**. The timeline's own sound is muted, playback starts from the
@@ -21,8 +19,47 @@ The take is saved as a WAV in your project's `audio` folder, added to the Librar
 a clip on the first free lane at the point where recording began, nudged by the microphone's
 latency so it lines up. A toast says "Voiceover added to the timeline".
 
-There is no device picker: Concat records from the system's default input. Change that in your
-operating system's sound settings before you press the button.
+There is no device picker in 0.2.7: Concat records from the system's default input. Change that
+in your operating system's sound settings before you press the button. On an iPhone, 0.2.7
+records silence; the fix is in the next release.
+
+## The Voiceover panel
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).** Everything in this section is on the app's
+> main branch and not in 0.2.7.
+
+**Record Voiceover** opens a **Voiceover** panel that floats over the editor without dimming it,
+so the picture, the lanes and the clips stay usable between takes. Drag it by its header. On a
+phone it is a sheet at the foot of the screen, opened from **Voiceover** on the bottom strip.
+
+The panel opens the microphone straight away, so its meter shows the room before you say a word:
+the bar is the level, a tick marks the peak, and **CLIP** lights when the input reaches full
+scale ("Clipping: turn the input gain down").
+
+| Control                           | What it does                                                                                          |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Microphone                        | Picks the input from the system's list                                                                |
+| **Input gain**                    | How loud the microphone is recorded                                                                   |
+| **Count in 3 seconds**            | Three seconds before the take starts                                                                  |
+| **Mute timeline while recording** | Keeps the timeline's sound out of your headphones and the take                                        |
+| **Record**                        | Rolls the picture from the playhead and records                                                       |
+| **Pause**, **Resume**             | Holds the picture and the take together, then carries both on, so the take stays in step              |
+| **Stop**                          | Lands the take on the lane the last take went on when it is free, otherwise the first free lane       |
+| **Retake**                        | Throws away the take that is running, or the one just landed, and goes again from where it began      |
+| **Teleprompter**                  | A script box that scrolls while you record, at **Slow**, **Steady** or **Fast**, and holds on a pause |
+
+The microphone, the gain, the count-in and the mute switch are remembered between runs. A Retake
+of a landed take is one undo step, so <kbd class="kbd">⌘Z</kbd> brings it back.
+
+While a take runs it owns the transport: <kbd class="kbd">Space</kbd> and the monitor's Play
+pause and resume the take and the picture together, and the playhead stays with the take until
+you stop it. Closing the panel mid-take stops the take and keeps it.
+
+The take is written to disk as it goes, so a crash leaves a file that plays. A microphone that
+only hands over silence gets a note: allow Concat under **Privacy & Security › Microphone** in
+the system settings. On Android the panel asks for the microphone permission and offers **Try
+again** once it is granted.
 
 ## After the take
 
@@ -31,4 +68,4 @@ operating system's sound settings before you press the button.
   [clean up a voice](/guides/clean-up-a-voice).
 - Want captions for it: select the clip and click **Generate Captions**.
 - A flubbed line: put the playhead on it, press <kbd class="kbd">⌘B</kbd> to split, delete the
-  piece, record again.
+  piece, record again. Or, from 0.2.8, press **Retake** in the panel.

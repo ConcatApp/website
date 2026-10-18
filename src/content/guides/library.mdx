@@ -5,8 +5,8 @@ section: 'Picture'
 order: 2
 ---
 
-Concat ships 170+ effects, filters, transitions and text animations, rendered on the GPU and
-shown live in the monitor. They live on three Library pages. What a click does differs by page,
+Concat ships 100 effects, filters and transitions, rendered on the GPU and shown live in the
+monitor. They live on three Library pages. What a click does differs by page,
 which is the thing that trips people up.
 
 | Page            | Single click                                                  | Double-click or the card's plus               | Needs                                                                     |
@@ -36,7 +36,8 @@ else and files it under Imported.
 The Effects page has two headings in its left column: **Video Effects** (Basic, Blur, Distort,
 Glitch, Light, Stylize and more) and **Audio Effects** (Voice, Space, Tone). Select a clip on
 the timeline first, then click a card. The Inspector jumps to the clip's **Effects** tab (or
-**Audio › Sound** for an audio effect), where the effect sits in the clip's chain with its knobs.
+**Audio › Sound** for an audio effect; from 0.2.8, **Audio › Audio effects**), where the effect
+sits in the clip's chain with its knobs.
 
 The chain runs top to bottom. Reorder with the chevrons, bypass one with its eye, remove it with
 the cross. Any knob with a diamond can be keyframed; see [keyframes](/guides/keyframes). The
@@ -58,6 +59,13 @@ The transition sits on the cut. A small button at the head of the second clip op
 to change the duration, or select it and use the **Duration** knob in the Inspector, where
 **Remove** also lives. Both clips need at least a frame of handle; the app says so when there is
 no room.
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).** **Fade to Black** and **Fade to White** join
+> Dissolve on the Basic shelf: the outgoing shot fades to the colour by the middle of the cut and
+> the incoming one fades up out of it. And a transition now plays centred on the cut, half on
+> each side, as the timeline draws it; in 0.2.7 it runs entirely before the cut, so it looks
+> early. Where a clip has no footage past its end, its last frame is held under the incoming one.
 
 ## Your own effects
 

@@ -6,7 +6,27 @@ order: 1
 ---
 
 Shortcuts are shown in the menus and in every tray button's tooltip, with the right keys for the
-platform you are on.
+platform you are on. Single-key shortcuts do nothing while you are typing in a text field.
+
+## Change a shortcut
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).** In 0.2.7 the keys are fixed.
+
+**Settings › Shortcuts** lists every action with the keys it answers to. Click a row and press
+the keys it should take; <kbd class="kbd">Escape</kbd> cancels. If another action already has
+those keys, they move to the new one and the old action is left with no key ("… is unbound now")
+until its row's **Reset** gives it back. **Reset all** puts every key back as shipped. The
+menus and the tray's tooltips show the keys as they are bound now.
+
+A few chords belong to the window and are refused ("That chord belongs to the window"):
+
+<kbd class="kbd">⌘O</kbd> and <kbd class="kbd">⌘W</kbd> everywhere, and on Windows and Linux
+<kbd class="kbd">Ctrl+Q</kbd>, <kbd class="kbd">F10</kbd> and <kbd class="kbd">Alt+F</kbd>,
+<kbd class="kbd">Alt+E</kbd>, <kbd class="kbd">Alt+V</kbd>. The Shortcuts page is a desktop one; a
+phone has no keyboard to bind.
+
+The tables below are the keys Concat ships with.
 
 ## Project and window
 
@@ -28,6 +48,9 @@ platform you are on.
 | Undo                          | <kbd class="kbd">⌘Z</kbd>                                                       | <kbd class="kbd">Ctrl+Z</kbd>                                                               |
 | Redo                          | <kbd class="kbd">⇧⌘Z</kbd>                                                      | <kbd class="kbd">Ctrl+Shift+Z</kbd> or <kbd class="kbd">Ctrl+Y</kbd>                        |
 | Split at playhead             | <kbd class="kbd">⌘B</kbd>                                                       | <kbd class="kbd">Ctrl+B</kbd>                                                               |
+| Delete left (0.2.8)           | <kbd class="kbd">Q</kbd>                                                        | <kbd class="kbd">Q</kbd>                                                                    |
+| Delete right (0.2.8)          | <kbd class="kbd">W</kbd>                                                        | <kbd class="kbd">W</kbd>                                                                    |
+| Freeze frame (0.2.8)          | <kbd class="kbd">F</kbd>                                                        | <kbd class="kbd">F</kbd>                                                                    |
 | Split tool (razor) on and off | <kbd class="kbd">B</kbd>                                                        | <kbd class="kbd">B</kbd>                                                                    |
 | Select all                    | <kbd class="kbd">⌘A</kbd>                                                       | <kbd class="kbd">Ctrl+A</kbd>                                                               |
 | Copy, paste, duplicate        | <kbd class="kbd">⌘C</kbd>, <kbd class="kbd">⌘V</kbd>, <kbd class="kbd">⌘D</kbd> | <kbd class="kbd">Ctrl+C</kbd>, <kbd class="kbd">Ctrl+V</kbd>, <kbd class="kbd">Ctrl+D</kbd> |
@@ -35,6 +58,13 @@ platform you are on.
 | Ripple delete (close the gap) | <kbd class="kbd">⇧⌫</kbd>                                                       | <kbd class="kbd">Shift+Del</kbd>                                                            |
 | Mute the selected clip        | <kbd class="kbd">M</kbd>                                                        | <kbd class="kbd">M</kbd>                                                                    |
 | Add to the selection          | <kbd class="kbd">⇧</kbd> or <kbd class="kbd">⌘</kbd> click                      | <kbd class="kbd">Shift</kbd> or <kbd class="kbd">Ctrl</kbd> click                           |
+
+Rows marked 0.2.8 are new in 0.2.8, coming in the next release. **Split at playhead** cuts every
+clip under the playhead in 0.2.7; from 0.2.8 it cuts the selected clips, and every clip under the
+playhead only when nothing is selected. **Delete left** and **Delete right** are CapCut's keys
+for the same thing: they cut the selected clip from its start to the playhead, or from the
+playhead to its end, and close the gap on a magnetic timeline. See
+[cut on the timeline](/guides/cut-on-the-timeline#delete-left-and-right).
 
 ## Playback and the lanes
 
@@ -57,6 +87,9 @@ platform you are on.
 | Pan the view        | <kbd class="kbd">⌥</kbd> drag, or middle drag | <kbd class="kbd">Alt</kbd> drag, or middle drag |
 | Zoom the view       | <kbd class="kbd">⌘</kbd> + wheel              | <kbd class="kbd">Ctrl</kbd> + wheel             |
 | Fit                 | double-click the ground                       | double-click the ground                         |
+
+From 0.2.8, <kbd class="kbd">Escape</kbd> closes the sheet or dialog on top (Settings, Export,
+New project, Captions and the rest), except one busy with a job.
 
 Shortcuts keep working with Caps Lock on. There is no J, K, L shuttle and no I and O for in and
 out points yet.

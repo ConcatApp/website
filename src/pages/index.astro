@@ -62,8 +62,8 @@ const facts = [
     label: 'Downloads from GitHub Releases',
   },
   { icon: Star, value: formatCount(stats.stars), label: 'Stars on GitHub' },
-  { icon: WandSparkles, value: '170+', label: 'Effects, filters, transitions and text animations' },
-  { icon: Languages, value: '14', label: 'Languages in the app' },
+  { icon: WandSparkles, value: '100', label: 'Effects, filters and transitions' },
+  { icon: Languages, value: '25', label: 'Languages in the app' },
 ];
 
 const tour: Step[] = [
@@ -173,9 +173,13 @@ const sides = [
       {
         icon: Braces,
         term: 'API',
-        text: 'JSON-RPC over stdin or a socket, gRPC over HTTP/2, and MCP for AI agents.',
+        text: 'JSON-RPC from the open app, for scripts and AI agents. A build from source adds gRPC; an MCP server is planned.',
       },
-      { icon: Terminal, term: 'CLI', text: 'Create, import, edit and export from a shell.' },
+      {
+        icon: Terminal,
+        term: 'CLI',
+        text: 'Create, import, edit and export from a shell, with a build from source.',
+      },
       {
         icon: AudioLines,
         term: 'Same engine',
@@ -309,7 +313,7 @@ const ld = {
 
     <section aria-label="What Concat does" class="overflow-hidden py-12 lg:py-20">
       <div class="relative left-1/2 w-[max(100%,1100px)] -translate-x-1/2">
-        <Ribbon text="Auto-captions ✦ Text to speech ✦ Voice cloning ✦ Background removal ✦ Keyframes ✦ 170+ effects ✦ 4K export ✦ No watermark" />
+        <Ribbon text="Auto-captions ✦ Text to speech ✦ Voice cloning ✦ Background removal ✦ Keyframes ✦ 100 effects ✦ 4K export ✦ No watermark" />
       </div>
     </section>
 
@@ -378,8 +382,8 @@ const ld = {
         ))}
       </ul>
       <p class="mt-8 text-sm text-fg-muted" data-reveal>
-        Also: 170+ effects, filters, transitions and text animations, chroma key, colour wheels and
-        curves, one-switch voice cleanup, multi-timeline projects, stickers and shapes.{' '}
+        Also: 100 effects, filters and transitions, chroma key, colour wheels and curves, one-switch
+        voice cleanup, multi-timeline projects, stickers and shapes.{' '}
         <a
           href={`${REPO_URL}#highlights`}
           class="font-medium text-accent-ink underline underline-offset-4"

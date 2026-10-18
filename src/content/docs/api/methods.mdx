@@ -60,7 +60,7 @@ What this build serves. **Call it first.**
 ```json
 {
   "apiVersion": "0.2",
-  "concat": "0.2.6",
+  "concat": "0.2.7",
   "dirs": {
     "config": "/Users/ada/Library/Application Support/app.concat.editor",
     "data": "/Users/ada/Library/Application Support/app.concat.editor"
@@ -581,6 +581,9 @@ Rules:
   240 a second, `crf` at most 63: anything larger is `invalid`.
 - `cutout.progress` only appears for clips with an automatic cutout whose
   masks are not cached yet. `fetching` is true while the model downloads.
+- From 0.2.8 (coming in the next release), `stabilize.progress` appears for
+  each stabilized clip's media whose camera movement is not measured yet; the
+  export measures it before rendering. `export.cancel` stops that phase too.
 - Event shapes are in [Types → Events](/docs/api/types#events). The job model is
   in the [overview](/docs/api/overview#jobs-and-events).
 

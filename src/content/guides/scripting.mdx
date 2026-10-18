@@ -5,19 +5,19 @@ section: 'Reference'
 order: 6
 ---
 
-Concat has a JSON-RPC, gRPC and MCP API, plus a CLI, so scripts and AI agents can cut video with
-it too. The [developer docs](/docs) are the reference. This page is the short version for people
+Concat serves a JSON-RPC API, so scripts and AI agents can cut video with it too. A build from
+source adds gRPC and a command-line tool, `concat-cli`. The [developer docs](/docs) are the reference. This page is the short version for people
 who have never opened them.
 
 ## Three ways in
 
-| Transport              | How you reach it                                                                                                                           |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| **JSON-RPC 2.0 lines** | `concat-cli api` on stdin, `concat-cli serve` on a TCP or Unix socket, or the window's **Settings › Remote** page while the editor is open |
-| **gRPC** over HTTP/2   | `concat-cli serve --grpc`, in a build with the `grpc` feature                                                                              |
-| **MCP**                | An MCP server exposing the API as tools. See [MCP](/docs/transports/mcp) for what exists today                                             |
+| Transport              | How you reach it                                                                                                                                                                        |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **JSON-RPC 2.0 lines** | In every release: the window's **Settings › Remote** page (**Automation** from 0.2.8) serves it over TCP while the editor is open. From source: `concat-cli api` and `concat-cli serve` |
+| **gRPC** over HTTP/2   | Build from source only: `concat-cli serve --grpc`, with the `grpc` feature. No release ships it                                                                                         |
+| **MCP**                | Not shipped. An MCP server is being built ([#337](https://github.com/jub0t/Concat/issues/337)); [MCP](/docs/transports/mcp) says how to bridge today                                    |
 
-All three carry the same methods, payloads and errors.
+JSON-RPC and gRPC carry the same methods, payloads and errors.
 
 ## Five things to know
 

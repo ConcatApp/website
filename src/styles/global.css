@@ -8,8 +8,10 @@
    --color-bg -> bg-bg, --font-sans -> font-sans, --ease-out-expo -> ease-out-expo ...
    ------------------------------------------------------------------ */
 @theme {
-  /* Typography: Mona Sans is self-hosted via Astro's Fonts API (astro.config.mjs). */
+  /* Typography: Mona Sans (body) and Bricolage Grotesque (headings) are self-hosted via Astro's Fonts API (astro.config.mjs). */
   --font-sans: var(--font-mona), system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-heading:
+    var(--font-bricolage), var(--font-mona), system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'JetBrains Mono', Menlo, monospace;
 
   /* The hero headline: big, medium-heavy, tight. */
@@ -109,6 +111,19 @@
   body {
     min-height: 100dvh;
     overflow-x: clip;
+  }
+
+  /* Bricolage Grotesque for headings and the display sizes; paragraphs and small text stay in
+     Mona Sans. The display utilities are named here so a large number in a <p> or <span> gets the
+     heading face too. */
+  h1,
+  h2,
+  h3,
+  .text-display,
+  .text-display-sm,
+  .text-title,
+  .text-stat {
+    font-family: var(--font-heading);
   }
 
   h1,

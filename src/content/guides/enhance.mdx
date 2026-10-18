@@ -1,0 +1,47 @@
+---
+title: 'Enhance'
+description: 'Restore and enlarge a clip’s picture with a small local model, into a copy the clip then shows. The original is kept.'
+section: 'Picture'
+order: 7
+---
+
+Enhance runs a small model (5 MB, downloaded the first time; see
+[the AI models](/guides/offline-models)) over a video or a still, restoring detail and, if you
+ask, enlarging it. The result is a copy in the project; the clip shows the copy, and the original
+stays in the bin so you can switch back at any time. It runs on your machine, one clip at a time.
+
+Select a video or image clip and open the Inspector's **Video** tab, **Enhance** page. A clip's
+right-click menu has **Enhance** too.
+
+## In 0.2.7
+
+Tick **Enhance** in the section's header to start. The run goes in the background and the row
+reads "Enhancing… N%". Untick to show the original again; tick again to show the copy.
+
+## Size, Strength and a preview
+
+> [!NOTE]
+> **New in 0.2.8 (coming in the next release).** Everything in this section is on the app's
+> main branch and not in 0.2.7.
+
+The tick no longer starts anything. It turns the section on, and the controls under it come
+alive:
+
+| Control                | What it does                                                                                                                                                                                                    |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Size**               | **Auto** (what 0.2.7 did), **1x** (restore only, same size), **2x** or **4x**. A size that would pass 4096 pixels on the longest side is greyed, with a note saying why                                         |
+| **Strength**           | 0 to 100%, starting at 75%. How much of the model's work is kept; the rest is the original, enlarged plainly. Lower keeps more real texture, so faces look less waxen                                           |
+| **Preview this frame** | Runs the model on the middle of the frame under the playhead, in seconds, and shows it as Before and After. Dragging Strength updates the preview at once. It also estimates how long the whole file would take |
+| **Enhance**            | Runs the whole file in the background. It reads **Enhance again** once a copy exists, and **Terminate** while this clip's run is going                                                                          |
+
+A typical pass: tick the section on, park the playhead on a face or some fine detail, press
+**Preview this frame**, set Strength by eye, then press **Enhance**.
+
+**Terminate** cancels the run, deletes the partial files and leaves the clip as it was.
+Unticking during a run stops it too. **Enhance again** always starts from the original, with the
+current settings, never from an earlier copy.
+
+Unticking a clip that has a copy shows the original and keeps the copy in the bin and the cache,
+so ticking again shows it at once.
+
+On a phone, **Enhance** on the clip's strip opens a sheet with the same panel.

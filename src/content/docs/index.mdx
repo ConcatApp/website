@@ -21,6 +21,12 @@ order: 0
 
 ## Quick start
 
+> [!IMPORTANT]
+> What ships: every release build serves **JSON-RPC** from the window's **Settings › Remote** page
+> (**Automation** from 0.2.8) while the editor is open. `concat-cli` and **gRPC** come only with a
+> build from source; no release ships them. There is no MCP server yet: it is being built
+> ([#337](https://github.com/jub0t/Concat/issues/337)).
+
 **1. Run one call.** From a source checkout:
 
 ```sh
@@ -34,7 +40,7 @@ cargo run -p concat-cli -- api '{"method":"version"}'
   "id": null,
   "result": {
     "apiVersion": "0.2",
-    "concat": "0.2.6",
+    "concat": "0.2.7",
     "dirs": { "config": "…", "data": "…" },
     "capabilities": ["events"]
   }
@@ -63,19 +69,20 @@ reports as events until it is done:
 
 > [!TIP]
 > The same lines work over a socket. `concat-cli serve` listens on
-> `127.0.0.1:7420`, and the window's **Settings › Remote** page serves the
-> same API while the editor is open. See [JSON-RPC](/docs/transports/json-rpc).
+> `127.0.0.1:7420`, and the window's **Settings › Remote** page (**Automation**
+> from 0.2.8) serves the same API while the editor is open, in every release
+> build. See [JSON-RPC](/docs/transports/json-rpc).
 
 ## The three ways in
 
-| Transport              | How you reach it                                                                            | Status                                                                                             |
-| ---------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| **JSON-RPC 2.0 lines** | `concat-cli api` (stdin), `concat-cli serve` (TCP or Unix socket), the window's Remote page | Shipped                                                                                            |
-| **gRPC** over HTTP/2   | `concat-cli serve --grpc`, in a build with the `grpc` feature                               | Shipped, behind a feature                                                                          |
-| **MCP**                | An MCP server exposing the API as tools                                                     | Not in this tree as of 0.2.6. [MCP](/docs/transports/mcp) says what exists and how to bridge today |
+| Transport              | How you reach it                                                                                                                    | Status                                                                                                                                                |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **JSON-RPC 2.0 lines** | The window's Remote page (Automation from 0.2.8); from source, `concat-cli api` (stdin) and `concat-cli serve` (TCP or Unix socket) | In every release, from the window. The CLI needs a build from source                                                                                  |
+| **gRPC** over HTTP/2   | `concat-cli serve --grpc`, in a build with the `grpc` feature                                                                       | Build from source only                                                                                                                                |
+| **MCP**                | An MCP server exposing the API as tools                                                                                             | Not shipped, on 0.2.7 or main. Being built ([#337](https://github.com/jub0t/Concat/issues/337)). [MCP](/docs/transports/mcp) says how to bridge today |
 
-All three carry the **same methods, payloads and errors**. A method added
-to the API reaches every transport without a change to any of them.
+JSON-RPC and gRPC carry the **same methods, payloads and errors**. A method
+added to the API reaches every transport without a change to any of them.
 
 ## Five things to know
 

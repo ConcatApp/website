@@ -17,15 +17,26 @@ Concat is in beta: it works, and it still has edges.
 
 ## Windows
 
-A setup program or an MSI package, for x64 and ARM64 machines. Run it and follow the prompts.
+A setup program or an MSI package, for x64 (Intel and AMD) machines. Run it and follow the
+prompts. There is no Windows on ARM build: it is paused since 0.2.7, whose ARM program crashed at
+start ([#326](https://github.com/jub0t/Concat/issues/326)).
 
 The builds are not code-signed, so SmartScreen may stop the first launch. Click **More info**,
 then **Run anyway**. An MSI install updates itself from the next MSI; the setup program updates
 from inside the app (see [Update Concat](/guides/update)).
 
+If the window closes in its first seconds, the graphics driver is the usual cause. See
+[report a problem](/guides/report-a-problem#the-window-closes-or-draws-garbage) for the
+workaround; from 0.2.8 Concat falls back to drawing in software by itself after such a launch.
+
 ## macOS
 
-A disk image for Apple Silicon and for Intel. Open it and drag Concat to Applications.
+A disk image for Apple Silicon and for Intel. Open it and drag Concat to Applications. Apple
+Silicon Macs need macOS 12 or later.
+
+The 0.2.7 Intel build closes at launch on macOS 12: it needs macOS 13.4. From 0.2.8 Intel Macs
+open on macOS 12 again, and only the AI features that use ONNX Runtime (background removal, the
+smart brush, Enhance and Chatterbox) need 13.4; on 12 they say so and the rest of the app works.
 
 The builds are unsigned, so macOS may say the app is damaged or cannot be opened. Clear the
 quarantine flag once, in Terminal:
@@ -47,16 +58,28 @@ AppImage, `.deb`, `.rpm` and an Arch package, for x86_64 and ARM64.
 
 Dropped files, the frameless window's edge resize and the dock entry all work on native Wayland.
 
+Two 0.2.7 problems fixed in 0.2.8: the AppImage can crash as its window opens under X11
+([#379](https://github.com/jub0t/Concat/issues/379)); use the `.deb`, `.rpm` or Arch package
+meanwhile. And on GNOME a folder dialog (Browse in New project, Export or Open) can hang on a
+first run, because the default `Concat` folder on the Desktop does not exist yet; create
+`~/Desktop/Concat` first.
+
 ## Android
 
-An APK for phones and tablets. Android asks you to allow installs from this source the first
-time. The phone layout is its own editor, not a shrunken desktop: see
+An APK for 64-bit ARM phones and tablets, Android 8.0 or later. Android asks you to allow
+installs from this source the first time. In 0.2.7 a device with no Vulkan driver closes the app
+as it opens; 0.2.8 falls back to OpenGL ES. The phone layout is its own editor, not a shrunken desktop: see
 [Concat on a phone](/guides/phone).
 
 ## iOS and iPadOS
 
-An IPA for iPhone and iPad, in beta. It is not on the App Store: install it by sideloading with
-the tool you already use for that (AltStore, Sideloadly and the like).
+An IPA for iPhone and iPad (iOS and iPadOS 15 or later), in beta. It is not on the App Store:
+install it by sideloading with the tool you already use for that (AltStore, Sideloadly and the
+like).
+
+> [!WARNING]
+> In 0.2.7, **Import media** on an iPhone or iPad does nothing, so the app cannot bring in a
+> clip. 0.2.8 fixes it: Import asks Photos or Files.
 
 ## Checking a download
 
@@ -64,7 +87,7 @@ Every release ships a `SHA256SUMS` file next to the binaries, and the download p
 checksum of the file it points to. Compare the two if you want to verify what you downloaded:
 
 ```sh
-shasum -a 256 Concat-0.2.6-macos-arm64.dmg
+shasum -a 256 Concat-0.2.7-macos-arm64.dmg
 ```
 
 ## First launch
