@@ -7,7 +7,6 @@ import fallbackManifest from '@/data/release-manifest.json';
 
 export const REPO_URL = 'https://github.com/jub0t/Concat';
 export const RELEASES_URL = `${REPO_URL}/releases`;
-export const CHECKSUMS_URL = `${REPO_URL}/releases/latest/download/SHA256SUMS`;
 export const DISCORD_URL = 'https://discord.gg/DVuPfpXfqP';
 export const ISSUES_URL = `${REPO_URL}/issues`;
 export const FLATPARK_URL = 'https://flatpark.org/apps/app.concat.editor/';
@@ -55,6 +54,16 @@ export interface PlatformModel {
   arches: ArchOption[];
 }
 
+/**
+ * The SHA256SUMS of the release the manifest describes, never `latest`: the download links come
+ * from this manifest, so the checksums must too. A build made before a new release (or one that
+ * fell back to the snapshot) would otherwise link the new release's sums beside the old files.
+ */
+export function checksumsUrl(manifest: Manifest): string {
+  const tag = manifest.tag || `v${manifest.version}`;
+  return `${RELEASES_URL}/download/${encodeURIComponent(tag)}/SHA256SUMS`;
+}
+
 export async function getManifest(): Promise<{ manifest: Manifest; live: boolean }> {
   try {
     const res = await fetch(MANIFEST_URL, {
@@ -95,9 +104,10 @@ const SPEC: Array<Omit<PlatformModel, 'arches'> & { arches: ArchSpec[] }> = [
   {
     id: 'windows',
     name: 'Windows',
-    // Worked out from the architectures the manifest ships (ARM64 is paused since 0.2.7).
+    // Worked out from the architectures the manifest ships (ARM64 is paused since 0.2.7, #326).
     summary: '',
     archPrompt: 'Processor',
+    note: 'The build is not code-signed yet. If SmartScreen stops it, click More info, then Run anyway.',
     arches: [
       { id: 'x86_64', label: 'x64', hint: 'Intel and AMD', formats: DESKTOP_WINDOWS },
       {

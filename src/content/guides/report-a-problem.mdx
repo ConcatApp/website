@@ -30,22 +30,20 @@ A portable build with a `portable` folder beside the program keeps them in that 
 Set **Log level** in Settings › General (or `CONCAT_LOG` in the environment for one run) to
 Debug when a report asks for more.
 
-From 0.2.8 every log starts with the build's commit, the system and the processor with the
-instruction sets it has, and a crash that is not a panic (a driver, a missing instruction) still
-writes one line saying what it was and in which module.
+Every log starts with the build's commit, the system and the processor with the instruction sets
+it has, and a crash that is not a panic (a driver, a missing instruction) still writes one line
+saying what it was and in which module.
 
 ## The window closes or draws garbage
 
 A graphics driver is the usual cause of a window that closes in its first seconds, or draws as
 coloured dots.
 
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).** On Windows and Linux, start Concat with
-> `CONCAT_GPU=software` in the environment to draw the window on the software rasteriser (WARP
-> on Windows, lavapipe on Linux). If that fixes it, the driver is the problem. Concat also does
-> this by itself: a launch that closes while starting is followed by one that draws in software,
-> with a note on the start screen, until you turn **Settings › General › Draw on the GPU** back
-> on.
+On Windows and Linux, start Concat with `CONCAT_GPU=software` in the environment to draw the
+window on the software rasteriser (WARP on Windows, lavapipe on Linux). If that fixes it, the
+driver is the problem. Concat also does this by itself: a launch that closes while starting is
+followed by one that draws in software, with a note on the home page, until you turn
+**Settings › General › Draw on the GPU** back on.
 
 On Windows, open a Command Prompt, run `set CONCAT_GPU=software`, then start `Concat.exe` from
 that same window by its full path. On Linux, `CONCAT_GPU=software ./Concat-*.AppImage`. Include

@@ -18,29 +18,24 @@ cut. When a hardware encoder will be used, the encoding reads "· hardware".
 
 ## Output
 
-| Row               | Choices                                                                                                                                                                                      | Leave it at                                                        |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| **Resolution**    | The timeline's own size (marked "Timeline"), which is the size the file is written at. The other sizes on the ladder are shown for scale and cannot be picked; a 9:16 edit reads 1080 × 1920 | The timeline's own                                                 |
-| **Frame rate**    | The timeline's own first, then every other rate                                                                                                                                              | The timeline's own                                                 |
-| **Codec**         | **H.264** ("Plays everywhere"), **HEVC** ("Half the size"), **AV1** ("Smallest"). An encoder the machine lacks reads "Not on this device"                                                    | H.264 for anything you will upload or send; HEVC to halve the file |
-| **10-bit colour** | On or off                                                                                                                                                                                    | Off, unless the footage is 10-bit or HDR                           |
-| **Color**         | Only on an HDR timeline: HDR (HLG or PQ, "As the timeline") or SDR ("Tone-mapped, plays anywhere")                                                                                           | SDR unless you know the player does HDR                            |
+| Row               | Choices                                                                                                                                                          | Leave it at                                                        |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| **Resolution**    | A plain label: the timeline's own size, which is the size the file is written at. A 9:16 edit reads 1080 × 1920. Change it with the timeline's **Modify** button | The timeline's own                                                 |
+| **Frame rate**    | The timeline's own first, then every other rate                                                                                                                  | The timeline's own                                                 |
+| **Codec**         | **H.264** ("Plays everywhere"), **HEVC** ("Half the size"), **AV1** ("Smallest"). An encoder the machine lacks reads "Not on this device"                        | H.264 for anything you will upload or send; HEVC to halve the file |
+| **10-bit colour** | On or off                                                                                                                                                        | Off, unless the footage is 10-bit or HDR                           |
+| **Color**         | Only on an HDR timeline: HDR (HLG or PQ, "As the timeline") or SDR ("Tone-mapped, plays anywhere")                                                               | SDR unless you know the player does HDR                            |
+| **Bitrate**       | A number in Mbps: drag it, step it or type one                                                                                                                   | What it starts at                                                  |
 
-## Quality
+## Bitrate
 
-Three cards, each with an estimated file size: **High** (Master), **Balanced** (Recommended),
-**Small** (Share). Balanced is right for YouTube, TikTok and anything that gets re-encoded on
-upload, which is everything.
-
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).** The Quality cards and the Advanced section are
-> gone. The **Output** group has a **Bitrate** row instead: a number in Mbps that starts at the
-> rate YouTube asks uploads at for the frame and frame rate (5 Mbps at 720p, 8 at 1080p, 16 at
-> 1440p, 40 at 4K, half again above 30 fps; less for HEVC and AV1, a quarter more at 10-bit) and
-> follows them until you drag, step or type another. Every encoder, hardware ones included, keeps
-> to it as an average, so the size on the Export button is close to the size written. The
-> resolution is a plain label, files are always written in video (limited) range, and there is
-> no CBR.
+The **Bitrate** starts at the rate YouTube asks uploads at for the frame and frame rate (5 Mbps
+at 720p, 8 at 1080p, 16 at 1440p, 40 at 4K, half again above 30 fps; less for HEVC and AV1, a
+quarter more at 10-bit) and follows them until you drag, step or type another. Every encoder,
+hardware ones included, keeps to it as an average, so the size on the Export button is close to
+the size written. That rate is right for YouTube, TikTok and anything that gets re-encoded on
+upload, which is everything. Files are always written in video (limited) range; there are no
+quality cards, no CBR and no colour range switch.
 
 ## Destination
 
@@ -49,18 +44,8 @@ path under them. The file is always an `.mp4`. If one with that name is already 
 sheet asks before replacing it, and a name that cannot be a file name is refused.
 
 On a phone there is no Browse. Android puts the finished file in the phone's **Movies** folder,
-where the gallery shows it. From 0.2.8 an iPhone adds it to Photos and keeps a copy in the app's
+where the gallery shows it. An iPhone adds it to Photos and keeps a copy in the app's
 **Exports** folder, which the Files app shows.
-
-## Advanced
-
-0.2.7 only. Hidden on small windows behind **Show advanced options**:
-
-- **Bitrate**: **VBR** (the default) or **CBR** with a **Target bitrate**. Hardware encoders
-  always run VBR.
-- **Colour range**: **Limited** ("Video, YouTube") or **Full** ("Screen content"). Limited is
-  what every video player expects; Full is for screen recordings that must keep pure black and
-  white exact.
 
 ## Run it
 

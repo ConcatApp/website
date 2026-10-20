@@ -1,31 +1,26 @@
 ---
 title: 'Your first edit'
-description: 'From the start screen to an exported file in five steps: new project, import, cut, a title, export.'
+description: 'From the home page to an exported file in five steps: new project, import, cut, a title, export.'
 section: 'Start'
 order: 2
 ---
 
 import Figure from '@/components/Figure.astro';
-import start from '@/assets/guides/start.png';
 import editor from '@/assets/guides/editor.png';
 import tray from '@/assets/guides/tray.png';
 
 ## 1. Make a project
 
-Concat opens on the start screen. Click **New project** on the left, or the first card.
+Concat opens on its home page. Click **New project** at the top. **Open project** next to it opens
+a project folder from this machine, and your recent projects are listed under both, with a search
+and a Recent or Name sort once there are more than eight. You can also drop footage onto the
+window: the New project sheet opens with the files waiting to go in once the project is made.
 
-<Figure
-  src={start}
-  alt="The Concat start screen: a New project button on the left rail, a Projects grid with a New project card and the recent projects"
->
-  The start screen. Everything you have opened on this machine is listed under Projects.
-</Figure>
-
-The New project sheet asks for a **name**, a **location** (a `Concat` folder on your Desktop by
-default), the **shape** of the frame (16:9, 9:16, 1:1 or 4:3), the **size** (720p to 4K, or
-Custom) and the **frame rate**. Sizes are the short edge, so 9:16 at 1080p is 1080 by 1920, a
-vertical video. Click **Create**. The project is a folder, and the edit autosaves into it from
-now on.
+The New project sheet asks for a **name**, a **location** (a `Concat` folder on your Desktop the
+first time, then wherever you last made one), the **shape** of the frame (16:9, 9:16, 1:1 or
+4:3), the **size** (720p to 4K, or Custom) and the **frame rate**. Sizes are the short edge, so
+9:16 at 1080p is 1080 by 1920, a vertical video. Click **Create**. The project is a folder, and
+the edit autosaves into it from now on.
 
 > [!TIP]
 > Frame and rate can be changed later per timeline from the Inspector's **Modify** button, so
@@ -33,9 +28,9 @@ now on.
 
 ## 2. Bring footage in
 
-The editor opens with the **Library** on the left, the **Preview** in the middle, the
-**Inspector** on the right and the **Timeline** underneath. (From 0.2.8 the Inspector runs the
-full height of the right side; see [where everything is](/guides/the-window#the-layout).)
+The editor opens with the **Library** at the top left, the **Preview** beside it, the
+**Inspector** down the whole right side and the **Timeline** underneath the first two; see
+[where everything is](/guides/the-window#the-layout).
 
 <Figure
   src={editor}
@@ -44,14 +39,14 @@ full height of the right side; see [where everything is](/guides/the-window#the-
   The editor. Nothing is selected, so the Inspector shows the project's details.
 </Figure>
 
-Click **Import** at the top of the Library (or press <kbd class="kbd">⌘I</kbd> on a Mac,
-
-<kbd class="kbd">Ctrl+I</kbd> elsewhere), or drag files from your desktop onto the Library. Video,
+Click **Import** at the top of the Library (or press <kbd class="kbd">⌘I</kbd> on a Mac, or <kbd class="kbd">Ctrl+I</kbd>
+elsewhere), or drag files from your desktop onto the Library. Video,
 audio and pictures all land in the bin under **All media**.
 
 To get a file onto the timeline, **double-click** its card: it lands at the playhead. Or drag the
 card onto a lane to put it exactly where you want. A single click only previews the file in the
-monitor.
+monitor. Several selected cards dragged or added together go down one after another on one lane,
+in the bin's order.
 
 ## 3. Cut
 
@@ -64,15 +59,15 @@ The tray above the lanes holds the editing tools.
 >
   The tray, left to right: add a track, undo and redo, split at playhead, the razor, merge, delete,
   the freeze and rotate menu, the pan tool, trim follow, snap, the magnetic switch, Generate
-  Captions and Text to Speech.
+  Captions and Text to Speech. This capture is from 0.2.7; 0.2.8 adds Delete left and Delete right
+  after the razor, and a level meters button at the end of the tray.
 </Figure>
 
 - Scrub by dragging on the ruler, or press <kbd class="kbd">Space</kbd> to play.
 - Put the playhead where you want the cut and press <kbd class="kbd">⌘B</kbd>
-  (<kbd class="kbd">Ctrl+B</kbd>): every clip under the playhead splits. From 0.2.8 it splits
-  the selected clips, or everything under the playhead when nothing is selected, and
-  <kbd class="kbd">Q</kbd> and <kbd class="kbd">W</kbd> delete the part of a clip left or right of
-  the playhead.
+  (<kbd class="kbd">Ctrl+B</kbd>): the selected clips split, or every clip under the playhead
+  when nothing is selected. <kbd class="kbd">Q</kbd> and <kbd class="kbd">W</kbd> delete the part
+  of a clip left or right of the playhead.
 - Or press <kbd class="kbd">B</kbd> for the razor and click a clip where you want it cut.
 - Drag a clip's edge to trim it. Drag the clip itself to move it.
 - Select a clip and press <kbd class="kbd">Delete</kbd>. With the **Magnetic timeline** switch
@@ -94,11 +89,9 @@ button away on the tray. Want the words that are already spoken on screen?
 
 ## 5. Export
 
-Click the blue **Export** button at the top right of the window (or press
-
-<kbd class="kbd">⌘E</kbd>). The sheet starts at the timeline's own size and rate with **Balanced**
-quality, which is right for almost everything (from 0.2.8, a recommended **Bitrate** in its place).
-Pick a name, click **Export**, and the file goes to your Movies folder. The [export
-guide](/guides/export) has the rest: codecs, 10-bit, bitrate.
+Click the blue **Export** button at the top right of the window (or press <kbd class="kbd">⌘E</kbd>).
+The sheet starts at the timeline's own size and rate with a recommended
+**Bitrate**, which is right for almost everything. Pick a name, click **Export**, and the file goes
+to your Movies folder. The [export guide](/guides/export) has the rest: codecs, 10-bit, bitrate.
 
 That is the whole loop. Everything else on these pages is a detail of one of these five steps.

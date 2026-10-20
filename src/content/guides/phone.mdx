@@ -12,73 +12,66 @@ rather than a shrunken desktop. Same engine, same project files, same AI feature
 
 Top to bottom: a **top bar** (close project on the left, the project's name in the middle, the
 Settings gear and **Export** on the right), the **monitor**, a row with Fit, **Undo** and
-**Redo**, a round **Play** button, the **lanes** with a centred playhead (drag the lanes to
-scrub), Zoom out and in, and the **bottom strip** of tools.
+**Redo**, a round **Play** button with a frame back and a frame on either side (hold one to keep
+stepping; the timecode shows the frame you are on), the **lanes** with a centred playhead, Zoom
+out and in, and the **bottom strip** of tools.
+
+The lanes are made for a thumb. Drag them to scrub; a flick carries on after your finger lifts and
+slows to a stop. Pinch to zoom, with the same limits as the zoom buttons, centred on the playhead.
+A tap on a clip selects it and leaves the playhead where it was.
 
 ## The bottom strip
 
-With nothing selected: **Media**, **Text**, **Effects**, **Filters**, **Transitions**,
-**Captions**, **Speak**, **Project**. Each opens a sheet that slides up; swipe down to close it.
+With nothing selected: **Media**, **Audio**, **Text**, **Effects**, **Filters**, **Adjustments**,
+**Transitions**, **Captions**, **Speak**, **Voiceover**, **Canvas**, **Project**. Each opens a
+sheet that slides up; swipe down to close it.
 
 - **Media**: an **Import media** button and the bin. Tap a file to put it on the timeline at
   the playhead.
+- **Audio**: your own sounds and voices; see [your sounds and voices](/guides/sounds-and-voices).
 - **Text**: **Add a title**, or a title in one of the looks.
 - **Effects**, **Filters**, **Transitions**: a search field and the catalogue. Effects and
   transitions go on the selected clip, so select one first.
-- **Captions** and **Speak**: the same Captions and Text to speech sheets as the desktop. See
-  [auto-captions](/guides/auto-captions) and [text to speech](/guides/text-to-speech).
+- **Adjustments**: **Add adjustment layer**, **Import a LUT** and your LUTs, each laid at the
+  playhead. See [Adjustments](/guides/library#adjustments).
+- **Captions** and **Speak**: the same Captions and Text to speech panels as the desktop, as
+  sheets. See [auto-captions](/guides/auto-captions) and [text to speech](/guides/text-to-speech).
+  The Captions sheet can pick and write `.srt` files.
+- **Voiceover**: the [Voiceover panel](/guides/record-a-voiceover) as a sheet.
+- **Canvas**: the [background and Fit or Fill](/guides/vertical-video).
 - **Project**: the project's facts and a **Modify** button for the frame and rate.
 
 With a clip selected the strip changes to **Back**, **Split**, **Delete**, then the tools for
-that kind of clip: **Edit** (transform, blend, remove background), **Text**, **Filter**,
-**Speed**, **Audio**, **Adjust**, **Effects**, **Transitions**, **Duplicate**, **Freeze**,
+that kind of clip: **Edit** (transform, blend, remove background), **Canvas**, **Text**,
+**Filter**, **Adjust**, **Effects**, **Speed**, **Audio**, **Audio effects**, **Mask** (see
+[mask a clip](/guides/mask)), **Enhance**, **Transitions**, **Duplicate**, **Freeze**,
 **Reverse**, **Mirror**, **Rotate**, **Captions**, **Speak**, and **More** for the rest of the
-clip menu.
+clip menu. A selected filter or adjustment layer gets the colour and effects sheets a picture clip
+has, beside its strength.
 
 ## What is different
 
 - Split cuts the selected clip at the playhead; there is no razor.
 - Undo and Redo are the two buttons beside the monitor.
-- Settings has no Remote (Automation) and no Version page, and from 0.2.8 no Shortcuts or Scale.
-  Updates come from the APK or IPA on GitHub Releases.
-- The start screen has no Open project and no location picker on Android: projects live where
+- Settings fills the screen, with its pages as tabs and every model row whole. It has no
+  Automation, no Version, no Shortcuts and no Scale page or row. Updates come from the APK or IPA
+  on GitHub Releases.
+- The home page has no Open project and New project asks for no location: projects live where
   the app puts them.
-- Export has no Browse: on Android the file goes to the phone's Movies folder, where the gallery
-  shows it.
-
-## Known problems in 0.2.7
-
-- **iPhone and iPad: Import media does nothing**, so no clip can be brought in. Fixed in 0.2.8.
-- **Android phones without Vulkan**: the app closes as it opens. 0.2.8 falls back to OpenGL ES.
-- **Android**: switching dark mode, the font size or the language while the app is open closes
-  it. Fixed in 0.2.8.
-- **Titles in Thai, Arabic, Persian, Urdu, Hindi, Bengali or Korean** draw as boxes on phones.
-  Fixed in 0.2.8.
-
-## New in 0.2.8
-
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).** Everything in this section is on the app's
-> main branch and not in 0.2.7.
-
-- **The lanes glide.** A flick along the lanes carries on after your finger lifts and slows to a
-  stop, as other lists on the phone do.
-- **Pinch to zoom** the lanes, with the same limits as the zoom buttons. The zoom stays centred
-  on the playhead.
-- **A tap selects without seeking.** Tapping a clip selects it and leaves the playhead where it
-  was, so the clip no longer jumps away from your thumb.
-- **Frame step buttons** either side of Play step one frame back or on; hold one to keep
-  stepping. The timecode shows the frame you are on.
-- **New tools on the strip**: **Voiceover** (the [Voiceover panel](/guides/record-a-voiceover)
-  as a sheet) and **Canvas** (the [background and Fit or Fill](/guides/vertical-video)) on the
-  main strip; **Canvas**, **Audio effects** and **Enhance** on a clip's strip.
+- Export has no Browse. On Android the file goes to the phone's Movies folder, where the gallery
+  shows it. On an iPhone or iPad it is added to Photos and kept in the app's **Exports** folder.
 - **Import on iPhone and iPad** asks **Photos** or **Files**. What you pick is copied into the
-  app's Documents, which the Files app now shows (projects, Imported and Exports). A finished
-  export goes into Photos and stays in Exports.
-- **Captions**: the Captions sheet can pick and write `.srt` files on a phone. See
-  [auto-captions](/guides/auto-captions#import-and-export-srt).
-- **Settings** fills the screen, with its pages as tabs and every model row whole. New project
-  asks a phone for no location, and the Export sheet stays inside the system's bars.
+  app's Documents, which the Files app shows (projects, Imported and Exports).
+- On Android, video decodes on the phone's hardware decoder (MediaCodec) for 8-bit H.264, HEVC,
+  VP9 and AV1; ten-bit HEVC and anything the decoder refuses fall back to the processor.
+
+## Known problems
+
+- **Android**: no automated check has started the arm64 APK, since the release's emulators are
+  x86_64. A phone with no Vulkan driver opens the app on OpenGL ES, which has only run on an
+  emulator so far. If the app does not open, [say so](https://github.com/jub0t/Concat/issues)
+  with your phone's model.
+- **iOS and iPadOS** is a beta, installed by sideloading.
 
 ## Install
 

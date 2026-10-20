@@ -97,12 +97,13 @@ A request that would take long runs as a **job**. Today that is
 3. Progress arrives as **events**, each carrying `job` and `path`.
 4. The job ends with exactly one of `export.done` or `export.failed`.
 
-| Event             | When                                                                                        |
-| ----------------- | ------------------------------------------------------------------------------------------- |
-| `cutout.progress` | masks for an automatic cutout are being found before the render; a model may download first |
-| `export.progress` | `frame` of `total`, in stage `video`, `audio` or `mux`                                      |
-| `export.done`     | the file was written                                                                        |
-| `export.failed`   | the file was not written; `error.code` is `cancelled` if you cancelled it                   |
+| Event                | When                                                                                        |
+| -------------------- | ------------------------------------------------------------------------------------------- |
+| `cutout.progress`    | masks for an automatic cutout are being found before the render; a model may download first |
+| `stabilize.progress` | a stabilized clip's camera shake is being measured before the render                        |
+| `export.progress`    | `frame` of `total`, in stage `video`, `audio` or `mux`                                      |
+| `export.done`        | the file was written                                                                        |
+| `export.failed`      | the file was not written; `error.code` is `cancelled` if you cancelled it                   |
 
 Rules:
 
@@ -111,6 +112,8 @@ Rules:
 - On a socket, events go to **every** connected caller. Filter by `job`.
 - On stdin, the process waits for running jobs before it exits, so a job
   begun on the last line still finishes.
+- Missed the events? `export.status` says how a job stands, or how it
+  ended; the last 32 finished jobs are remembered.
 
 ---
 
@@ -118,17 +121,17 @@ Rules:
 
 An error has a `code` you branch on and a `message` you can show a person.
 
-| Code           | JSON-RPC number | Meaning                                                                                                   |
-| -------------- | --------------- | --------------------------------------------------------------------------------------------------------- |
-| `parse`        | -32700          | The line was not JSON                                                                                     |
-| `invalid`      | -32600          | Not a request: unknown method, missing or ill-typed field, value out of range                             |
-| `notOpen`      | -32001          | That project folder is not open                                                                           |
-| `notFound`     | -32002          | That job, template or package does not exist                                                              |
-| `refused`      | -32003          | The edit layer said no. Nothing changed. The message is the window's own sentence                         |
-| `busy`         | -32004          | A one-at-a-time job is already running. The socket server also answers it when all 64 seats are taken     |
-| `cancelled`    | -32005          | The job was stopped by `export.cancel`. Only ever inside `export.failed`                                  |
-| `unauthorized` | -32006          | Wrong or missing token. Raised by the socket transports, never by the API itself                          |
-| `failed`       | -32000          | Everything else: a file that would not read or write, a decode that failed, a model that did not download |
+| Code           | JSON-RPC number | Meaning                                                                                                                                              |
+| -------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `parse`        | -32700          | The line was not JSON                                                                                                                                |
+| `invalid`      | -32600          | Not a request: unknown method, missing or ill-typed field, value out of range                                                                        |
+| `notOpen`      | -32001          | That project folder is not open                                                                                                                      |
+| `notFound`     | -32002          | That job, template or package does not exist                                                                                                         |
+| `refused`      | -32003          | The edit layer said no. Nothing changed. The message is the window's own sentence                                                                    |
+| `busy`         | -32004          | A one-at-a-time job is already running. The socket server also answers it when all 64 seats are taken, or 32 callers already wait to present a token |
+| `cancelled`    | -32005          | The job was stopped by `export.cancel`. Only ever inside `export.failed`                                                                             |
+| `unauthorized` | -32006          | Wrong or missing token. Raised by the socket transports, never by the API itself                                                                     |
+| `failed`       | -32000          | Everything else: a file that would not read or write, a decode that failed, a model that did not download                                            |
 
 In the JSON-RPC envelope the number is `error.code` and the name is
 `error.data.code`. Over gRPC both are fields of the `Error` message.
@@ -212,7 +215,7 @@ api.finish(); // wait for running jobs before dropping it
 | Calling the served API from the same process        | `Server::hub()`                                  |
 
 `Api` is not `Send`: it lives on one thread. The event sink is called from
-job threads, so it must be `Send + Sync`. The window's Remote page is a
+job threads, so it must be `Send + Sync`. The window's Automation page is a
 `Server::start` from the settings sheet.
 
 ---

@@ -1,6 +1,6 @@
 ---
 title: 'Developer docs'
-description: 'Anything the Concat window can do to a project, your program can do through the Concat API, over JSON-RPC or gRPC.'
+description: 'Anything the Concat window can do to a project, your program can do through the Concat API, over JSON-RPC, MCP or gRPC.'
 section: 'Start'
 order: 0
 ---
@@ -22,10 +22,10 @@ order: 0
 ## Quick start
 
 > [!IMPORTANT]
-> What ships: every release build serves **JSON-RPC** from the window's **Settings › Remote** page
-> (**Automation** from 0.2.8) while the editor is open. `concat-cli` and **gRPC** come only with a
-> build from source; no release ships them. There is no MCP server yet: it is being built
-> ([#337](https://github.com/jub0t/Concat/issues/337)).
+> What ships: every desktop release serves **JSON-RPC** from the window's **Settings ›
+> Automation** page while the editor is open, and is an **MCP** server for AI agents when started
+> as `concat --mcp`. `concat-cli` and **gRPC** come only with a build from source; no release
+> ships them.
 
 **1. Run one call.** From a source checkout:
 
@@ -40,7 +40,7 @@ cargo run -p concat-cli -- api '{"method":"version"}'
   "id": null,
   "result": {
     "apiVersion": "0.2",
-    "concat": "0.2.7",
+    "concat": "0.2.8",
     "dirs": { "config": "…", "data": "…" },
     "capabilities": ["events"]
   }
@@ -69,20 +69,22 @@ reports as events until it is done:
 
 > [!TIP]
 > The same lines work over a socket. `concat-cli serve` listens on
-> `127.0.0.1:7420`, and the window's **Settings › Remote** page (**Automation**
-> from 0.2.8) serves the same API while the editor is open, in every release
-> build. See [JSON-RPC](/docs/transports/json-rpc).
+> `127.0.0.1:7420`, and the window's **Settings › Automation** page serves the
+> same API while the editor is open, in every desktop release. See
+> [JSON-RPC](/docs/transports/json-rpc).
 
 ## The three ways in
 
-| Transport              | How you reach it                                                                                                                    | Status                                                                                                                                                |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **JSON-RPC 2.0 lines** | The window's Remote page (Automation from 0.2.8); from source, `concat-cli api` (stdin) and `concat-cli serve` (TCP or Unix socket) | In every release, from the window. The CLI needs a build from source                                                                                  |
-| **gRPC** over HTTP/2   | `concat-cli serve --grpc`, in a build with the `grpc` feature                                                                       | Build from source only                                                                                                                                |
-| **MCP**                | An MCP server exposing the API as tools                                                                                             | Not shipped, on 0.2.7 or main. Being built ([#337](https://github.com/jub0t/Concat/issues/337)). [MCP](/docs/transports/mcp) says how to bridge today |
+| Transport              | How you reach it                                                                                                | Status                                                                       |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **JSON-RPC 2.0 lines** | The window's Automation page; from source, `concat-cli api` (stdin) and `concat-cli serve` (TCP or Unix socket) | In every desktop release, from the window. The CLI needs a build from source |
+| **MCP** over stdio     | `concat --mcp`: the app as an MCP server, its tools generated from the API's types                              | In every desktop release, since 0.2.8. See [MCP](/docs/transports/mcp)       |
+| **gRPC** over HTTP/2   | `concat-cli serve --grpc`, in a build with the `grpc` feature                                                   | Build from source only                                                       |
 
 JSON-RPC and gRPC carry the **same methods, payloads and errors**. A method
-added to the API reaches every transport without a change to any of them.
+added to the API reaches every transport without a change to any of them. The
+MCP server's tools are the same methods and edit commands, with schemas
+generated from the API's types.
 
 ## Five things to know
 
@@ -105,6 +107,7 @@ added to the API reaches every transport without a change to any of them.
 | The dispatcher that runs them                                                              | `src/crates/concat-api/src/lib.rs`              |
 | The JSON-RPC envelope                                                                      | `src/crates/concat-api/src/rpc.rs`              |
 | The socket server: JSON-RPC lines, gRPC, tokens                                            | `src/crates/concat-server/`                     |
+| The MCP server behind `concat --mcp`                                                       | `src/crates/concat-mcp/`                        |
 | The gRPC service definition                                                                | `src/crates/concat-server/proto/concat.proto`   |
 | The CLI: `api` and `serve`, plus the engine tools `probe`, `render`, `preview` and `check` | `src/crates/concat-cli/src/main.rs`             |
 | The edit commands                                                                          | `src/crates/concat-project/src/commands/mod.rs` |

@@ -10,7 +10,7 @@ import tray from '@/assets/guides/tray.png';
 import header from '@/assets/guides/track-header.png';
 
 <Figure src={tray} alt="The timeline tray" width="48rem">
-  The tray. On Windows and Linux read Ctrl for ⌘ throughout this page.
+  The tray, as 0.2.7 drew it. On Windows and Linux read Ctrl for ⌘ throughout this page.
 </Figure>
 
 ## Get around
@@ -38,29 +38,21 @@ selection, on the lanes and on the monitor alike. Drag on empty floor to draw a 
 
 ## Split
 
-- <kbd class="kbd">⌘B</kbd>, or **Split at playhead** on the tray, cuts at the playhead. In 0.2.7
-  the key and the Edit menu cut every clip under the playhead, titles and music included, while the
-  tray button and the clip menu cut only the selection. From 0.2.8 all of them cut the selected
-  clips, and everything under the playhead only when nothing is selected.
+- <kbd class="kbd">⌘B</kbd>, the Edit menu's **Split at playhead**, the tray button and the clip
+  menu all cut the selected clips at the playhead, and every clip under the playhead only when
+  nothing is selected.
 - <kbd class="kbd">B</kbd> turns on the **razor**: a hairline follows the pointer, and a click on a
   clip cuts it on that frame. Press <kbd class="kbd">B</kbd> again to put it away.
-- **Merge selected** joins two pieces of the same file that meet back into one clip.
-
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).** **Merge selected clips** renders two or more
-> video clips on the same track, in any order and from any files, into one new clip that replaces
-> them, gaps included. It runs in the background; click the button again ("Cancel merging (N%)")
-> to stop, and undo brings the original clips back.
+- **Merge selected clips** renders two or more video clips on the same track, in any order and
+  from any files, into one new clip that replaces them, gaps included. It runs in the background;
+  click the button again ("Cancel merging (N%)") to stop, and undo brings the original clips back.
 
 ## Delete left and right
 
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).**
-
 CapCut's two fastest cuts. Put the playhead inside a clip and:
 
-- <kbd class="kbd">Q</kbd>, or **Delete left** on the tray beside Split, removes the clip from its
-  start up to the playhead.
+- <kbd class="kbd">Q</kbd>, or **Delete left** on the tray after the razor, removes the clip from
+  its start up to the playhead.
 - <kbd class="kbd">W</kbd>, or **Delete right**, removes it from the playhead to its end.
 
 They cut the selected clips the playhead is over, on every lane at once, as one undo step. With
@@ -73,7 +65,9 @@ keys can be changed in Settings › Shortcuts.
 ## Trim and move
 
 Drag a clip's left or right edge to trim it; drag the clip to move it. **Snap to edges**
-(<kbd class="kbd">N</kbd>, on by default) makes edges and the playhead stick to each other.
+(<kbd class="kbd">N</kbd>, on by default) makes edges and the playhead stick to each other: a
+dragged clip snaps by its end as well as its start, to the playhead, the start of the timeline and
+the edges of the clips that are not moving.
 **Trim follow** on the tray makes the playhead ride the edge you trim, so the monitor shows the
 new in or out point while you drag.
 
@@ -93,7 +87,7 @@ timeline** switch on the tray (also in Settings › General):
 The menu after Delete on the tray acts on the selected clip:
 
 - **Freeze**: park the playhead inside a picture clip and the frame under it becomes a still.
-  From 0.2.8 <kbd class="kbd">F</kbd> does it from the keyboard.
+  <kbd class="kbd">F</kbd> does it from the keyboard.
 - **Reverse**: the clip is rendered backwards into the project cache; the clip then shows the
   copy. One at a time.
 - **Mirror** flips horizontally. **Rotate** turns a quarter clockwise. Both can be keyframed
@@ -114,20 +108,15 @@ pitch with speed** decides whether a sped-up voice goes up in pitch (off by defa
 - **Save Audio As…** in the same menu renders the clip's sound, with its treatments, to a WAV
   and files it under Generated › Processed.
 - <kbd class="kbd">M</kbd> mutes the selected clip.
-- Several clips with sound selected: from 0.2.8 the Inspector sets their volume together. See
+- Several clips with sound selected: the Inspector sets their volume together. See
   [clean up a voice](/guides/clean-up-a-voice#the-volume-of-several-clips-at-once).
 
 ## Level meters
 
-In 0.2.7 the VU meters are a pane of their own beside the timeline, showing how loud the timeline
-plays, left and right, with a clip light that turns red when the mix reaches full scale (click
-it to clear) and a peak readout. Add it from **Add a panel** if it is not on screen.
-
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).** The meters are a slim column at the timeline's
-> right edge, the height of the lanes, instead of a pane. A meter button at the end of the tray
-> shows or hides them; the choice is remembered, and shown is the default. The bars light green,
-> then yellow past -18 dB and red past -6 dB, and the scale numbers only what fits.
+The VU meters show how loud the timeline plays, left and right. They are a slim column at the
+timeline's right edge, the height of the lanes. A meter button at the end of the tray shows or
+hides them; the choice is remembered, and shown is the default. The bars light green, then yellow
+past -18 dB and red past -6 dB, and the scale numbers only what fits.
 
 ## Tracks
 
@@ -150,7 +139,5 @@ whichever is active.
 ## Copy, paste, duplicate
 
 <kbd class="kbd">⌘C</kbd>, <kbd class="kbd">⌘V</kbd> and <kbd class="kbd">⌘D</kbd> work on clips,
-including across timelines. A paste lands at the playhead and is one undo step.
-
-In 0.2.7 a copy or duplicate of the second half of a split clip can show the wrong frames
-(usually the file's opening ones). 0.2.8 fixes it.
+including across timelines. A paste lands at the playhead and is one undo step. A copy of either
+half of a split clip shows the frames it was copied from.

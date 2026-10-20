@@ -7,14 +7,9 @@ order: 5
 
 Make the project 9:16 (the New project sheet's **Shape**, or the Inspector's **Modify** button
 for an existing timeline) and a 16:9 clip sits in the middle of the frame with black above and
-below it. In 0.2.7 the way to fill those bars is by hand: put a second copy of the clip on a lane
-below, scale it up and give it a blur effect. The canvas below does it in one step.
+below it. The canvas fills those bars in one step.
 
 ## The canvas
-
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).** Everything on this page from here on is on the
-> app's main branch and not in 0.2.7.
 
 Select a video or still on the **main lane**, the lowest lane that holds a picture, and open the
 Inspector's **Video** tab, **Basic** page. The **Canvas** section sets what fills the frame where
@@ -33,6 +28,10 @@ The background is drawn behind the main lane only, where CapCut has its main tra
 shapes and pictures on the lanes above sit on top of a frame that is already filled. It travels
 with its clip through fades, dissolves and wipes, and a picture that already covers the frame
 gets none. The monitor and the export draw it the same way.
+
+> [!NOTE]
+> On Windows, the **Blur** background has only been tested on Windows' software renderer so far,
+> not on a real graphics card. If it draws wrong, [say so](https://github.com/jub0t/Concat/issues).
 
 On a phone, **Canvas** on the bottom strip (and on a picture's strip) opens a sheet of tiles:
 four softness steps and twelve colour swatches, with Fit and Fill at its head for a

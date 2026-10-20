@@ -11,24 +11,42 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../timeline` or `CONCAT_
 - Features the README claims, and nothing else: auto-captions (local Whisper), text-to-speech and voice cloning,
   background removal, keyframes with a curve editor, 100 effects, filters and transitions (not "170+ ... and
   text animations", which the README dropped on 2026-10-15), multi-track and multi-timeline editing, titles,
-  one-switch voice cleanup, export in H.264, HEVC and AV1 up to 4K 60 10-bit, 25 languages.
-- API: every release build serves JSON-RPC over TCP from the window (Settings › Remote in 0.2.7, renamed
-  Automation on main). gRPC and `concat-cli` need a build from source; no release ships them. There is no MCP
-  server on 0.2.7 or main (being built in jub0t/Concat#337): describe MCP as planned until it lands on main.
-- Platforms shown on the site are whatever the release manifest ships. 0.2.7: Windows (x64 only; ARM64 is
-  paused, #326), macOS (Apple Silicon, Intel, unsigned; macOS 12, but the 0.2.7 Intel build needs 13.4),
-  Linux (AppImage/deb/rpm/Arch, x86_64 and aarch64), Android (arm64 APK, Android 8.0+), iOS (arm64 IPA, beta,
-  sideload, iOS 15+). The picker builds its list from the manifest, so a paused architecture drops out by
-  itself; the Windows card's summary is worked out from the architectures shipped.
+  one-switch voice cleanup, export in H.264, HEVC and AV1 up to 4K 60 10-bit, 25 languages, and (0.2.8) a
+  built-in MCP server for AI agents.
+- The current release is 0.2.8 (tag v0.2.8, commit 79116bd, published 2026-10-20). Describe what that tag
+  ships, checked with `git show v0.2.8:<path>` in the app repo, never what is only on its main branch. Its
+  release notes' line "Q and E cut the selected clip" is wrong: Q and W are Delete left and Delete right,
+  and E is unbound; do not repeat it. The Audio page's Concat sounds shelf says "Sound library coming
+  soon" in 0.2.8, because the sound list is not published yet.
+- API: every desktop release serves JSON-RPC over TCP from the window (Settings › Automation, the "Scripts
+  and apps" switch; called Remote up to 0.2.7) and, from 0.2.8, is an MCP server over stdio when started as
+  `concat --mcp` (through the window's server when Automation is on, headless otherwise; the app repo's
+  `docs/MCP.md`). Live mode, an agent on the project open in the window, is still planned (#337). gRPC and
+  `concat-cli` need a build from source; no release ships them. No release check launches `concat --mcp`
+  from a packaged build yet; CI tests the server built from source.
+- Platforms shown on the site are whatever the release manifest ships. 0.2.8: Windows (x64 only; ARM64 is
+  paused, #326; not code-signed, so SmartScreen asks and Smart App Control refuses), macOS (Apple Silicon,
+  Intel, unsigned; macOS 12, and on Intel the ONNX Runtime features need 13.4), Linux (AppImage/deb/rpm/Arch,
+  x86_64 and aarch64), Android (arm64 APK, Android 8.0+; no CI run has launched the arm64 APK, and the
+  OpenGL ES path for phones without Vulkan has only run on an emulator), iOS (arm64 IPA, beta, sideload,
+  iOS 15+). The picker builds its list from the manifest, so a paused architecture drops out by itself; the
+  Windows card's summary is worked out from the architectures shipped.
 - Distribution is GitHub Releases. Linux also has an Arch package in the manifest and a community Flatpak
-  on Flatpark (linked as text in the picker note). 0.2.6 shipped to the Microsoft Store; 0.2.7 does not, and
-  the site has no store link. Not on the App Store or Google Play; never show store badges.
+  on Flatpark (linked as text in the picker note). 0.2.6 shipped to the Microsoft Store; 0.2.7 and 0.2.8 do
+  not, and the site has no store link. Not on the App Store or Google Play; never show store badges.
 - Each release ships `manifest.json` with per-platform URLs, sizes and sha256. `src/lib/releases.ts` fetches
-  it at build time and falls back to `src/data/release-manifest.json`. Refresh that snapshot occasionally.
+  the latest one at build time and falls back to `src/data/release-manifest.json` (refreshed to 0.2.8 on
+  2026-10-20; refresh it with each release). The SHA256SUMS link is `checksumsUrl(manifest)`, the
+  `releases/download/<tag>/SHA256SUMS` of the same release as the download links; never point it at
+  `releases/latest`, which a stale build would pair with an older release's files.
+- The app links into this site: the 0.2.8 home page opens `https://concat.standalones.org/guides/`,
+  `/guides/first-edit/` and `/guides/report-a-problem/` (`src/crates/concat/src/panes/start.rs`). Keep those
+  pages at those paths.
 - The stats row uses real numbers only: `src/lib/stats.ts` fetches GitHub stars and the download total across
-  every release at build time, falling back to `src/data/github-stats.json`. `GITHUB_TOKEN` in the build
-  environment lifts the API rate limit (the Pages workflow passes it). "100 effects, filters and
-  transitions" and "25 languages" are the README's own figures.
+  every release at build time (every asset but `SHA256SUMS` and `manifest.json`), falling back to
+  `src/data/github-stats.json`. `GITHUB_TOKEN` in the build environment lifts the API rate limit (the Pages
+  workflow passes it). "100 effects, filters and transitions" and "25 languages" are the README's own
+  figures.
 - The app mark is a white two-C glyph on a blue tile. The blue, `#0568fd`, is the app's primary color and
   the site accent (see Design rules). The app repo draws the mark as SVG (`assets/new_concat_logo_512_*.svg`,
   since 2026-09-28); the asset script copies the rounded light tile to `src/assets/mark.svg`, which the header
@@ -96,14 +114,17 @@ Path alias: `@/` maps to `src/`.
 
 ## Docs and guides
 
-- Guides describe the shipping release (0.2.7, 13 October 2026). Features that exist only on the app's main
-  branch are marked with a `> [!NOTE]` callout that opens "**New in 0.2.8 (coming in the next release).**"
-  (or a "(0.2.8)" tag in a table row), and 0.2.7 behaviour stays described beside them. As of 2026-10-18 that
-  covers the Voiceover panel, floating Captions and Text to speech panels, SRT import/export, Stabilize, the
-  Canvas (background, Fit/Fill), Enhance's Size/Strength/preview, Delete left/right (Q/W), Settings ›
-  Shortcuts, Scale, Proxies, Draw on the GPU, Automation, the bitrate export sheet, the new default layout,
-  the meters at the timeline's edge, batch volume and the phone changes. Masks, Android hardware decoding and
-  MCP are not on main yet: do not document them. When 0.2.8 ships, drop the marks and the 0.2.7-only text.
+- Guides describe the shipping release (0.2.8, 20 October 2026), with no version marks: the 0.2.8 marks and
+  the 0.2.7-only text were dropped on 2026-10-20. When the app's main branch has something no release has,
+  mark it with a `> [!NOTE]` callout that opens "**New in 0.2.9 (coming in the next release).**" (or a
+  "(0.2.9)" tag in a table row), keep the shipping behaviour described beside it, and drop the marks when it
+  ships. As of 2026-10-20 main has, beyond 0.2.8, transitions' own knobs, the phone's shelf pills, effect
+  cards shipped with the app, the Windows "Concat (safe graphics)" entry and `concat --software`, File ›
+  Open closing the open project first, the Direct3D 12 FXC pin and 16 KB Android pages; none is documented.
+- Many guide screenshots are still 0.2.7 captures (the start screen, editor layout, tray, Library tabs,
+  Captions and Text to speech sheets, Audio tab). Their captions say so; retake them on 0.2.8 in the dark
+  theme and drop those caption notes. `src/assets/guides/start.png` is the 0.2.7 start screen and is no
+  longer used.
 - `/docs` is the developer reference (API, transports, recipes). It was migrated from the app repository's
   `docs/` folder on 2026-09-28 and that folder is gone, so these pages are the source of truth: a change to a
   method, command, event, error or transport in the app updates the page here. `/guides` is for people using
@@ -121,7 +142,10 @@ Path alias: `@/` maps to `src/`.
 ## Metadata and search
 
 - `site` in `astro.config.mjs` is `https://concat.standalones.org` (the domain since 2026-10-10; the Pages
-  and Workers hostnames serve the same build). Canonical URLs, absolute Open Graph image URLs and the
+  and Workers hostnames serve the same build). That domain is a custom domain on the Cloudflare Worker
+  `concatenate` (its responses carry the Workers headers, not the Pages ones), so it follows the Workers
+  Builds deploy of this repo; the jub0t/standalones repo's `website/` is a separate Next.js site with
+  nothing for Concat in it. Canonical URLs, absolute Open Graph image URLs and the
   sitemap (`@astrojs/sitemap`, linked from `public/robots.txt`) derive from it.
 - `Base.astro` takes `title`, `description`, `image`, `imageAlt`, `type` and `noindex`. The default image is
   `public/og.png`. The landing page adds JSON-LD (`SoftwareApplication`) through the `head` slot; docs and

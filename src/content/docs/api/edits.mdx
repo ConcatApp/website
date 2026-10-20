@@ -19,53 +19,54 @@ edit; `createdId` names what the command made, if anything.
 
 ## Cheat sheet
 
-| Op                                                                                                                                                                                          | Does                                                                  | Makes           |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | --------------- |
-| **Media**                                                                                                                                                                                   |                                                                       |                 |
-| [`addMedia`](#addmedia)                                                                                                                                                                     | file into the bin                                                     | `m…`            |
-| [`removeMedia`](#removemedia)                                                                                                                                                               | bin item and every clip of it, out                                    |                 |
-| [`updateMediaPath`](#updatemediapath)                                                                                                                                                       | relink a file                                                         |                 |
-| [`setMediaColorRange`](#setmediacolorrange)                                                                                                                                                 | say whether a file is really limited or full range                    |                 |
-| [`replaceClipMedia`](#replaceclipmedia)                                                                                                                                                     | point a clip at another file                                          | `m…` if new     |
-| **Placing clips**                                                                                                                                                                           |                                                                       |                 |
-| [`addClip`](#addclip)                                                                                                                                                                       | media on a named track                                                | `c…`            |
-| [`addClipAtFirstFree`](#addclipatfirstfree)                                                                                                                                                 | media on the first free track                                         | `c…`            |
-| [`addTextClip`](#addtextclip)                                                                                                                                                               | a title                                                               | `c…`            |
-| [`addShapeClip`](#addshapeclip)                                                                                                                                                             | a shape drawn over the picture                                        | `c…`            |
-| [`addLayerClip`](#addlayerclip)                                                                                                                                                             | an effect layer over everything beneath                               | `c…`            |
-| [`freezeFrame`](#freezeframe)                                                                                                                                                               | a held still, cut into a clip                                         | `c…`            |
-| **Moving and cutting**                                                                                                                                                                      |                                                                       |                 |
-| [`moveClips`](#moveclips)                                                                                                                                                                   | reposition any number of clips                                        |                 |
-| [`trimClip`](#trimclip)                                                                                                                                                                     | drag one edge                                                         |                 |
-| [`splitClips`](#splitclips)                                                                                                                                                                 | cut at a time                                                         | `c…` (the tail) |
-| [`consolidateClips`](#consolidateclips) (0.2.8)                                                                                                                                             | render several video clips into one                                   |                 |
-| [`mergeClips`](#mergeclips)                                                                                                                                                                 | rejoin split pieces                                                   |                 |
-| [`removeClips`](#removeclips)                                                                                                                                                               | delete                                                                |                 |
-| **Changing a clip**                                                                                                                                                                         |                                                                       |                 |
-| [`updateClip`](#updateclip)                                                                                                                                                                 | patch: name, volume, fades, opacity, effects, transition, text, crop… |                 |
-| [`setClipTransform`](#setcliptransform)                                                                                                                                                     | scale, offset, rotation, stretch                                      |                 |
-| [`frameClip`](#frameclip) (0.2.8)                                                                                                                                                           | fit or fill the frame                                                 |                 |
-| [`setClipStabilize`](#setclipstabilize) (0.2.8)                                                                                                                                             | steady a shaky clip                                                   |                 |
-| [`setClipSpeed`](#setclipspeed)                                                                                                                                                             | playback rate                                                         |                 |
-| [`setClipSpeedCurve`](#setclipspeedcurve)                                                                                                                                                   | speed over time                                                       |                 |
-| [`setClipEnhanced`](#setclipenhanced)                                                                                                                                                       | show a clip's enhanced copy, or its original                          |                 |
-| [`setClipKey`](#setclipkey) · [`clearClipKey`](#clearclipkey) · [`clearClipKeys`](#clearclipkeys)                                                                                           | keyframes on scale, offset, rotation, opacity, volume                 |                 |
-| [`setEffectKey`](#seteffectkey) · [`clearEffectKey`](#cleareffectkey) · [`clearEffectKeys`](#cleareffectkeys)                                                                               | keyframes on an effect parameter                                      |                 |
-| [`setClipCutout`](#setclipcutout) · [`addCutoutStroke`](#addcutoutstroke)                                                                                                                   | background removal and brush corrections                              |                 |
-| [`detachAudio`](#detachaudio) · [`reattachAudio`](#reattachaudio)                                                                                                                           | a video's sound as its own clip, and back                             | `c…`            |
-| **Tracks**                                                                                                                                                                                  |                                                                       |                 |
-| [`addTrack`](#addtrack)                                                                                                                                                                     | a new lane, on top or at the bottom                                   | `t…`            |
-| [`removeTrack`](#removetrack)                                                                                                                                                               | a lane and its clips, out                                             |                 |
-| [`setTrackFlag`](#settrackflag)                                                                                                                                                             | visible / muted                                                       |                 |
-| **Timelines**                                                                                                                                                                               |                                                                       |                 |
-| [`addTimeline`](#addtimeline)                                                                                                                                                               | a new timeline, made active                                           | `tl…`           |
-| [`removeTimeline`](#removetimeline) · [`renameTimeline`](#renametimeline) · [`selectTimeline`](#selecttimeline) · [`moveTimeline`](#movetimeline) · [`setTimelineVideo`](#settimelinevideo) | manage timelines                                                      |                 |
-| [`setTimelineBackground`](#settimelinebackground) (0.2.8)                                                                                                                                   | what fills the frame behind the main lane                             |                 |
-| **Templates and fonts**                                                                                                                                                                     |                                                                       |                 |
-| [`setMediaPlaceholder`](#setmediaplaceholder) · [`fillSlot`](#fillslot)                                                                                                                     | template slots                                                        |                 |
-| [`addFont`](#addfont) · [`removeFont`](#removefont)                                                                                                                                         | fonts for titles                                                      |                 |
-| **Grouping**                                                                                                                                                                                |                                                                       |                 |
-| [`batch`](#batch)                                                                                                                                                                           | several commands as one undo step                                     | last id inside  |
+| Op                                                                                                                                                                                          | Does                                                                        | Makes            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ---------------- |
+| **Media**                                                                                                                                                                                   |                                                                             |                  |
+| [`addMedia`](#addmedia)                                                                                                                                                                     | file into the bin                                                           | `m…`             |
+| [`removeMedia`](#removemedia)                                                                                                                                                               | bin item and every clip of it, out                                          |                  |
+| [`updateMediaPath`](#updatemediapath)                                                                                                                                                       | relink a file                                                               |                  |
+| [`setMediaColorRange`](#setmediacolorrange)                                                                                                                                                 | say whether a file is really limited or full range                          |                  |
+| [`replaceClipMedia`](#replaceclipmedia)                                                                                                                                                     | point a clip at another file                                                | `m…` if new      |
+| **Placing clips**                                                                                                                                                                           |                                                                             |                  |
+| [`addClip`](#addclip)                                                                                                                                                                       | media on a named track                                                      | `c…`             |
+| [`addClipAtFirstFree`](#addclipatfirstfree)                                                                                                                                                 | media on the first free track                                               | `c…`             |
+| [`addClipsInSequence`](#addclipsinsequence)                                                                                                                                                 | several bin items end to end on one lane                                    | `c…` (the first) |
+| [`addTextClip`](#addtextclip)                                                                                                                                                               | a title                                                                     | `c…`             |
+| [`addShapeClip`](#addshapeclip)                                                                                                                                                             | a shape drawn over the picture                                              | `c…`             |
+| [`addLayerClip`](#addlayerclip)                                                                                                                                                             | an effect layer over everything beneath                                     | `c…`             |
+| [`freezeFrame`](#freezeframe)                                                                                                                                                               | a held still, cut into a clip                                               | `c…`             |
+| **Moving and cutting**                                                                                                                                                                      |                                                                             |                  |
+| [`moveClips`](#moveclips)                                                                                                                                                                   | reposition any number of clips                                              |                  |
+| [`trimClip`](#trimclip)                                                                                                                                                                     | drag one edge                                                               |                  |
+| [`splitClips`](#splitclips)                                                                                                                                                                 | cut at a time                                                               | `c…` (the tail)  |
+| [`consolidateClips`](#consolidateclips)                                                                                                                                                     | render several video clips into one                                         |                  |
+| [`mergeClips`](#mergeclips)                                                                                                                                                                 | rejoin split pieces                                                         |                  |
+| [`removeClips`](#removeclips)                                                                                                                                                               | delete                                                                      |                  |
+| **Changing a clip**                                                                                                                                                                         |                                                                             |                  |
+| [`updateClip`](#updateclip)                                                                                                                                                                 | patch: name, volume, fades, opacity, effects, transition, text, crop, mask… |                  |
+| [`setClipTransform`](#setcliptransform)                                                                                                                                                     | scale, offset, rotation, stretch                                            |                  |
+| [`frameClip`](#frameclip)                                                                                                                                                                   | fit or fill the frame                                                       |                  |
+| [`setClipStabilize`](#setclipstabilize)                                                                                                                                                     | steady a shaky clip                                                         |                  |
+| [`setClipSpeed`](#setclipspeed)                                                                                                                                                             | playback rate                                                               |                  |
+| [`setClipSpeedCurve`](#setclipspeedcurve)                                                                                                                                                   | speed over time                                                             |                  |
+| [`setClipEnhanced`](#setclipenhanced)                                                                                                                                                       | show a clip's enhanced copy, or its original                                |                  |
+| [`setClipKey`](#setclipkey) · [`clearClipKey`](#clearclipkey) · [`clearClipKeys`](#clearclipkeys)                                                                                           | keyframes on scale, offset, rotation, opacity, volume, the mask             |                  |
+| [`setEffectKey`](#seteffectkey) · [`clearEffectKey`](#cleareffectkey) · [`clearEffectKeys`](#cleareffectkeys)                                                                               | keyframes on an effect parameter                                            |                  |
+| [`setClipCutout`](#setclipcutout) · [`addCutoutStroke`](#addcutoutstroke)                                                                                                                   | background removal and brush corrections                                    |                  |
+| [`detachAudio`](#detachaudio) · [`reattachAudio`](#reattachaudio)                                                                                                                           | a video's sound as its own clip, and back                                   | `c…`             |
+| **Tracks**                                                                                                                                                                                  |                                                                             |                  |
+| [`addTrack`](#addtrack)                                                                                                                                                                     | a new lane, on top or at the bottom                                         | `t…`             |
+| [`removeTrack`](#removetrack)                                                                                                                                                               | a lane and its clips, out                                                   |                  |
+| [`setTrackFlag`](#settrackflag)                                                                                                                                                             | visible / muted                                                             |                  |
+| **Timelines**                                                                                                                                                                               |                                                                             |                  |
+| [`addTimeline`](#addtimeline)                                                                                                                                                               | a new timeline, made active                                                 | `tl…`            |
+| [`removeTimeline`](#removetimeline) · [`renameTimeline`](#renametimeline) · [`selectTimeline`](#selecttimeline) · [`moveTimeline`](#movetimeline) · [`setTimelineVideo`](#settimelinevideo) | manage timelines                                                            |                  |
+| [`setTimelineBackground`](#settimelinebackground)                                                                                                                                           | what fills the frame behind the main lane                                   |                  |
+| **Templates and fonts**                                                                                                                                                                     |                                                                             |                  |
+| [`setMediaPlaceholder`](#setmediaplaceholder) · [`fillSlot`](#fillslot)                                                                                                                     | template slots                                                              |                  |
+| [`addFont`](#addfont) · [`removeFont`](#removefont)                                                                                                                                         | fonts for titles                                                            |                  |
+| **Grouping**                                                                                                                                                                                |                                                                             |                  |
+| [`batch`](#batch)                                                                                                                                                                           | several commands as one undo step                                           | last id inside   |
 
 ## Rules that apply to every command
 
@@ -202,6 +203,25 @@ the clip's span, or on the bottom track (overlapping) rather than refusing.
 | --------- | ------ | ------------------------------- |
 | `mediaId` | string | The bin item. Gone: **refused** |
 | `start`   | number | Seconds; floored at 0           |
+
+### `addClipsInSequence`
+
+Several bin items one after another on one lane, as one undo step: what a
+selection of cards dragged from the bin, or added at the playhead, lands
+as. Each clip starts where the one before it ends.
+
+| Field      | Type     | Meaning                                                                                                                     |
+| ---------- | -------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `mediaIds` | string[] | The bin items, in the order they are laid down. Any one gone: **refused**. Empty: nothing happens                           |
+| `trackId`  | string   | _optional_. The lane; a vanished one is **refused**. Absent: the lowest lane free for the whole run, a new one when none is |
+| `start`    | number   | Where the first clip starts, in seconds; floored at 0                                                                       |
+| `ripple`   | bool     | _optional_, default `false`. On a named lane, make room as a drop does (as `addClip` does) rather than take the nearest gap |
+
+`createdId` is the first clip's id.
+
+```json
+{ "op": "addClipsInSequence", "mediaIds": ["m1", "m2", "m3"], "start": 0 }
+```
 
 ### `addTextClip`
 
@@ -353,9 +373,6 @@ says which condition failed.
 
 ### `consolidateClips`
 
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).**
-
 Replaces two or more video clips on one track with a file the host has
 already rendered from them, as one undo step. The earliest clip keeps its
 id, track and span; properties baked into the render are reset. The window's
@@ -393,26 +410,27 @@ Applies a patch: only the fields present change.
 
 _ClipPatch_ fields (all optional):
 
-| Field               | Type                   | Clamp / meaning                                                                                                                                                  |
-| ------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`              | string                 | Taken verbatim                                                                                                                                                   |
-| `volume`            | number                 | Floored at 0; **not** capped at 1                                                                                                                                |
-| `fadeIn`, `fadeOut` | number                 | Seconds, floored at 0                                                                                                                                            |
-| `opacity`           | number                 | 0..=1                                                                                                                                                            |
-| `preservePitch`     | bool                   | Keep voices at pitch when speed ≠ 1                                                                                                                              |
-| `muted`             | bool                   | Silence the clip's own sound                                                                                                                                     |
-| `flipH`, `flipV`    | bool                   | Mirror                                                                                                                                                           |
-| `blend`             | string                 | `normal` (or empty), `multiply`, `screen`, `add`, `lighten`, `darken`                                                                                            |
-| `filters`           | _AppliedFilter_[]      | **Replaces** the whole audio chain                                                                                                                               |
-| `videoEffects`      | _AppliedFilter_[]      | **Replaces** the whole video chain                                                                                                                               |
-| `crop`              | _Crop_ or `null`       | See below                                                                                                                                                        |
-| `transitionIn`      | _Transition_ or `null` | The transition on the cut into the clip                                                                                                                          |
-| `text`              | _TextStyle_ or `null`  | Title styling; also renames the clip after its first line                                                                                                        |
-| `audioStream`       | integer or `null`      | Which of the media's audio streams to play; `null` means the file's first                                                                                        |
-| `background`        | _Background_ or `null` | 0.2.8. The clip's own canvas background over the timeline's; `null` goes back to following the timeline's. See [Framing and background](#framing-and-background) |
+| Field               | Type                   | Clamp / meaning                                                                                                                                             |
+| ------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`              | string                 | Taken verbatim                                                                                                                                              |
+| `volume`            | number                 | Floored at 0; **not** capped at 1                                                                                                                           |
+| `fadeIn`, `fadeOut` | number                 | Seconds, floored at 0                                                                                                                                       |
+| `opacity`           | number                 | 0..=1                                                                                                                                                       |
+| `preservePitch`     | bool                   | Keep voices at pitch when speed ≠ 1                                                                                                                         |
+| `muted`             | bool                   | Silence the clip's own sound                                                                                                                                |
+| `flipH`, `flipV`    | bool                   | Mirror                                                                                                                                                      |
+| `blend`             | string                 | `normal` (or empty), `multiply`, `screen`, `add`, `lighten`, `darken`                                                                                       |
+| `filters`           | _AppliedFilter_[]      | **Replaces** the whole audio chain                                                                                                                          |
+| `videoEffects`      | _AppliedFilter_[]      | **Replaces** the whole video chain                                                                                                                          |
+| `crop`              | _Crop_ or `null`       | See below                                                                                                                                                   |
+| `transitionIn`      | _Transition_ or `null` | The transition on the cut into the clip                                                                                                                     |
+| `text`              | _TextStyle_ or `null`  | Title styling; also renames the clip after its first line                                                                                                   |
+| `audioStream`       | integer or `null`      | Which of the media's audio streams to play; `null` means the file's first                                                                                   |
+| `background`        | _Background_ or `null` | The clip's own canvas background over the timeline's; `null` goes back to following the timeline's. See [Framing and background](#framing-and-background)   |
+| `mask`              | _ClipMask_ or `null`   | The shape of the picture the clip keeps; `null` takes it off. Its keys (`maskX` and on) stay when it is taken off. See [ClipMask](/docs/api/types#clipmask) |
 
 > [!IMPORTANT]
-> `crop`, `transitionIn`, `text` and `audioStream` have three states:
+> `crop`, `mask`, `background`, `transitionIn`, `text` and `audioStream` have three states:
 > **absent** leaves the value alone, **`null`** clears it, a **value**
 > replaces it.
 
@@ -444,9 +462,6 @@ Places the picture. Send only the fields you moved.
 
 ### `frameClip`
 
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).**
-
 Sizes a video or still to the frame in one step, centred and unstretched.
 
 | Field     | Type                | Meaning                                                                                              |
@@ -460,9 +475,6 @@ constant. A no-op for a clip that is not a picture, or whose media's size is
 unknown.
 
 ### `setClipStabilize`
-
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).**
 
 Turns stabilization on, changes its settings, or takes it off.
 
@@ -530,13 +542,13 @@ field ([Types](/docs/api/types#enhanced)) says which media it shows.
 
 Puts a keyframe on one property at one point of the clip.
 
-| Field      | Type                                                                       | Meaning                                                                                                                 |
-| ---------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `clipId`   | string                                                                     | The clip                                                                                                                |
-| `property` | `"scale"`, `"offsetX"`, `"offsetY"`, `"rotation"`, `"opacity"`, `"volume"` | Which property                                                                                                          |
-| `at`       | number                                                                     | Where in the clip, 0..=1                                                                                                |
-| `value`    | number                                                                     | The value there, in the property's own units                                                                            |
-| `ease`     | `[x1, y1, x2, y2]`                                                         | _optional_, default linear. A CSS-style cubic bezier; the names `"linear"`, `"in"`, `"out"`, `"inOut"` are accepted too |
+| Field      | Type                                                                                                                                                                                              | Meaning                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `clipId`   | string                                                                                                                                                                                            | The clip                                                                                                                |
+| `property` | `"scale"`, `"offsetX"`, `"offsetY"`, `"rotation"`, `"opacity"`, `"volume"`, or a mask's `"maskX"`, `"maskY"`, `"maskWidth"`, `"maskHeight"`, `"maskRotation"`, `"maskRoundness"`, `"maskFeather"` | Which property. A mask key's value is held to the range its field may hold                                              |
+| `at`       | number                                                                                                                                                                                            | Where in the clip, 0..=1                                                                                                |
+| `value`    | number                                                                                                                                                                                            | The value there, in the property's own units                                                                            |
+| `ease`     | `[x1, y1, x2, y2]`                                                                                                                                                                                | _optional_, default linear. A CSS-style cubic bezier; the names `"linear"`, `"in"`, `"out"`, `"inOut"` are accepted too |
 
 A key within 0.002 of `at` on the same property is replaced.
 
@@ -697,9 +709,6 @@ Deletes a timeline; the active tab moves to a neighbour if it was this one.
 **Refused** on the last timeline.
 
 ### `setTimelineBackground`
-
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).**
 
 Sets what fills a timeline's frame behind the pictures on its lowest picture
 lane, the main lane. A clip's own `background` ([`updateClip`](#updateclip))

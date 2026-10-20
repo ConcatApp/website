@@ -35,10 +35,10 @@ import {
 } from '@lucide/astro';
 import { siDiscord } from 'simple-icons';
 import {
-  CHECKSUMS_URL,
   DISCORD_URL,
   RELEASES_URL,
   REPO_URL,
+  checksumsUrl,
   getManifest,
   getPlatforms,
 } from '@/lib/releases';
@@ -69,12 +69,12 @@ const facts = [
 const tour: Step[] = [
   {
     title: 'One window, four panes.',
-    body: 'Library on the left, the monitor in the middle, the inspector on the right, the timeline underneath. Every pane can be swapped, split or dragged somewhere else.',
+    body: 'Library, monitor, inspector and timeline. Every pane can be swapped, split or dragged somewhere else.',
     region: [0, 0, 1, 1],
   },
   {
     title: 'The Library.',
-    body: 'Media, Titles, Stickers, Effects, Filters, Transitions and Templates as pages. Import footage, then single-click a filter to audition it on the monitor or drag it onto a lane.',
+    body: 'Media, Audio, Text, Stickers, Transitions, Effects, Filters, Adjustments and Templates as pages. Import footage, then single-click a filter to audition it on the monitor or drag it onto a lane.',
     region: [0.006, 0.045, 0.305, 0.56],
   },
   {
@@ -139,7 +139,7 @@ const features = [
   {
     icon: Film,
     title: '4K export, 10-bit, no watermark.',
-    body: 'H.264, HEVC and AV1 up to 4K 60. Hardware encoders where the machine has them. Presets for YouTube and for small files.',
+    body: 'H.264, HEVC and AV1 up to 4K 60. Hardware encoders where the machine has them. A bitrate that starts at what YouTube asks for, so the size shown is the size written.',
     href: '/guides/export',
     cta: 'Export a video',
   },
@@ -173,7 +173,7 @@ const sides = [
       {
         icon: Braces,
         term: 'API',
-        text: 'JSON-RPC from the open app, for scripts and AI agents. A build from source adds gRPC; an MCP server is planned.',
+        text: 'An MCP server built into the app for AI agents (concat --mcp), and JSON-RPC from the open window for scripts. A build from source adds gRPC.',
       },
       {
         icon: Terminal,
@@ -220,8 +220,13 @@ const faq = [
   },
   {
     q: 'Where is the text-to-speech button?',
-    a: 'On the timeline tray, the row of tools under the timeline tabs: the Text to Speech button opens the speech sheet. The first time, download a voice model from Settings › Speech.',
+    a: 'On the timeline tray, the row of tools under the timeline tabs: the Text to Speech button opens the speech panel. The first time, download a voice model from Settings › Speech.',
     link: { href: '/guides/text-to-speech', label: 'The text-to-speech guide' },
+  },
+  {
+    q: 'Windows SmartScreen stops the installer.',
+    a: 'The Windows builds are not code-signed yet, so SmartScreen asks before the first run: click More info, then Run anyway. Where Smart App Control is on, Windows refuses unsigned programs outright.',
+    link: { href: `${REPO_URL}/blob/main/CODE_SIGNING.md`, label: 'The code signing policy' },
   },
   {
     q: 'macOS says the app is damaged or cannot be opened.',
@@ -449,7 +454,7 @@ const ld = {
         </a>
         <span class="mx-2">/</span>
         <a
-          href={CHECKSUMS_URL}
+          href={checksumsUrl(manifest)}
           class="underline underline-offset-4 transition-colors duration-200 hover:text-accent-ink"
         >
           SHA256SUMS

@@ -5,19 +5,34 @@ section: 'Reference'
 order: 6
 ---
 
-Concat serves a JSON-RPC API, so scripts and AI agents can cut video with it too. A build from
-source adds gRPC and a command-line tool, `concat-cli`. The [developer docs](/docs) are the reference. This page is the short version for people
-who have never opened them.
+Concat serves its API to scripts over JSON-RPC and to AI agents over MCP, so both can cut video
+with it too. A build from source adds gRPC and a command-line tool, `concat-cli`. The
+[developer docs](/docs) are the reference. This page is the short version for people who have
+never opened them.
 
-## Three ways in
+## The ways in
 
-| Transport              | How you reach it                                                                                                                                                                        |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **JSON-RPC 2.0 lines** | In every release: the window's **Settings › Remote** page (**Automation** from 0.2.8) serves it over TCP while the editor is open. From source: `concat-cli api` and `concat-cli serve` |
-| **gRPC** over HTTP/2   | Build from source only: `concat-cli serve --grpc`, with the `grpc` feature. No release ships it                                                                                         |
-| **MCP**                | Not shipped. An MCP server is being built ([#337](https://github.com/jub0t/Concat/issues/337)); [MCP](/docs/transports/mcp) says how to bridge today                                    |
+| Transport              | How you reach it                                                                                                                                                                                          |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **JSON-RPC 2.0 lines** | In every desktop release: the window's **Settings › Automation** page (the **Scripts and apps** switch) serves it over TCP while the editor is open. From source: `concat-cli api` and `concat-cli serve` |
+| **MCP** over stdio     | In every desktop release: an agent starts the app as `concat --mcp`. See [MCP](/docs/transports/mcp)                                                                                                      |
+| **gRPC** over HTTP/2   | Build from source only: `concat-cli serve --grpc`, with the `grpc` feature. No release ships it                                                                                                           |
 
-JSON-RPC and gRPC carry the same methods, payloads and errors.
+JSON-RPC and gRPC carry the same methods, payloads and errors; the MCP server turns the same API
+into tools.
+
+## Connect an AI agent
+
+Point the agent at the Concat program with the one argument `--mcp`. For Claude Code on a Mac:
+
+```sh
+claude mcp add concat -- /Applications/Concat.app/Contents/MacOS/concat --mcp
+```
+
+The agent works on projects of its own, never the one on your screen. With **Scripts and apps**
+on in Settings › Automation it goes through the open window; otherwise it runs Concat's engine
+with no window. The [MCP page](/docs/transports/mcp) has the path on every system and the
+configuration for other clients.
 
 ## Five things to know
 

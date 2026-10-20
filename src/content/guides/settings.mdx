@@ -1,18 +1,17 @@
 ---
 title: 'Settings'
-description: 'The gear at the top right. General, Appearance, Transcriber, Speech, Remote (Automation from 0.2.8), Version and About, plus Shortcuts from 0.2.8. What each row does.'
+description: 'The gear at the top right. General, Appearance, Shortcuts, Transcriber, Speech, Automation, Version and About. What each row does.'
 section: 'Reference'
 order: 2
 ---
 
-Open Settings from the **gear** at the top right of the window (it is on the start screen too),
+Open Settings from the **gear** at the top right of the window (it is on the home page too),
 with <kbd class="kbd">⌘,</kbd> (<kbd class="kbd">Ctrl+,</kbd>), or from File › Settings. The
 pages run down the left side.
 
-In 0.2.7 the pages are **General**, **Appearance**, **Transcriber**, **Speech**, **Remote**,
-**Version** and **About**. 0.2.8 adds **Shortcuts** after Appearance and renames Remote to
-**Automation**. On a phone, or a window narrower than 600 pixels, 0.2.8 shows Settings full
-screen with its pages as a row of tabs.
+The pages are **General**, **Appearance**, **Shortcuts**, **Transcriber**, **Speech**,
+**Automation**, **Version** and **About**. On a phone, or a window narrower than 600 pixels,
+Settings fills the screen with its pages as a row of tabs.
 
 ## General
 
@@ -27,34 +26,24 @@ screen with its pages as a row of tabs.
   the tray.
 - **Playhead**: on, the playhead never leaves the content; off, a click on the ruler past the
   last clip lands it there.
-
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).** Two more switches, under the others:
->
-> - **Proxies**, off by default. Off, playback reads your files as they are. On, each video
->   larger than HD gets a smaller copy, made once in the background, and Half and Quarter play
->   from it. In 0.2.7 every video larger than HD gets a proxy as soon as it is imported.
-> - **Draw on the GPU** (Windows and Linux). Off, the window and the preview draw in software:
->   slower, but out of the way of a graphics driver that closes Concat. It takes effect the next
->   time Concat starts. If Concat closes while it is starting, the next launch turns it off by
->   itself and says so on the start screen; turn it back on here to try the graphics card again.
+- **Proxies**: off by default. Off, playback reads your files as they are. On, each video larger
+  than HD gets a smaller copy, made once in the background, and Half and Quarter play from it.
+- **Draw on the GPU** (Windows and Linux). Off, the window and the preview draw in software:
+  slower, but out of the way of a graphics driver that closes Concat. It takes effect the next
+  time Concat starts. If Concat closes while it is starting, the next launch turns it off by
+  itself and says so on the home page; turn it back on here to try the graphics card again.
 
 ## Appearance
 
 - **Theme**: Dark or Light. Dark is the default.
 - **Accent**: Lime, Sky, Violet, Rose, Amber, Mint, or a Custom colour.
 - **Playhead**: the colour of the line across the lanes.
-
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).** **Scale** draws the interface larger: System,
-> 100%, 110%, 125%, 150%, 175% or 200%. It multiplies the display's own scale, so 125% on a
-> Retina Mac or a Windows laptop at 150% makes everything a quarter larger than it already was,
-> and a window moved to a monitor of another scale follows. Desktop only.
+- **Scale**: draws the interface larger: System, 100%, 110%, 125%, 150%, 175% or 200%. It
+  multiplies the display's own scale, so 125% on a Retina Mac or a Windows laptop at 150% makes
+  everything a quarter larger than it already was, and a window moved to a monitor of another
+  scale follows. Desktop only.
 
 ## Shortcuts
-
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).**
 
 Every keyboard shortcut, with the keys it answers to. Click a row and press new keys to rebind
 it; **Reset** and **Reset all** put the shipped keys back. See
@@ -74,21 +63,25 @@ The voice models that text to speech uses: **Chatterbox Turbo (studio)**, **Pock
 (cloning)**, **Kokoro (compact)** and **Kokoro (full precision)**, with the same Download,
 Remove and In use controls.
 
-## Remote (Automation from 0.2.8)
+## Automation
 
 Serves the Concat API while the window is open, so a script or another program can create, edit
-and export projects of its own. In 0.2.7: a **Remote control** switch, an **Address** (127.0.0.1
-is this machine only; any other address is reachable from the network and needs the token), and
-a **Token** that a connection must present before its first call, with Show, Hide and New. The
-[developer docs](/docs) cover what to send it. Not on phones.
+and export projects of its own. Not on phones.
 
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).** The page is called **Automation** and its switch
-> **Scripts and apps**. A dot beside the server's status line is green while it listens, red when
-> it could not start and dim when it is off. The address and port are one field; an address past
-> this computer gets a warning that the network can reach it, with **This computer only** to put
-> 127.0.0.1 back. The token stays hidden until you show it, and **Copy the token** copies it
-> without showing it.
+- **Scripts and apps** is the switch. A dot beside the server's status line is green while it
+  listens, red when it could not start and dim when it is off.
+- **Address**: the address and port as one field, `127.0.0.1:7420` to start with. 127.0.0.1 is
+  this computer only; an address past it gets a warning that the network can reach it, with
+  **This computer only** to put 127.0.0.1 back.
+- **Token**: what a connection must present before its first call. It stays hidden until you
+  show it, **Copy the token** copies it without showing it, and **New token** makes one from the
+  system's randomness. A token you type needs at least 20 characters and no repeated pattern;
+  until it has them the status line says the server is waiting for a stronger one.
+
+While the switch is on, the window also lists its server for AI agents on this computer: an agent
+started as `concat --mcp` goes through it and leaves the project on your screen alone. The
+[developer docs](/docs) cover what to send the server, and [MCP](/docs/transports/mcp) how to
+connect an agent.
 
 ## Version
 
@@ -100,5 +93,5 @@ pick in this one's place. See [update Concat](/guides/update). Not on phones.
 
 The version, **Show the log** and **Copy system information**, then the facts a bug report
 needs: application, build, engine, operating system, processor, graphics, renderer, toolchain.
-From 0.2.8 an Intel Mac on macOS 12 also sees an **AI features** line saying they need macOS
-13.4. See [report a problem](/guides/report-a-problem).
+An Intel Mac on macOS 12 also sees an **AI features** line saying they need macOS 13.4. See
+[report a problem](/guides/report-a-problem).

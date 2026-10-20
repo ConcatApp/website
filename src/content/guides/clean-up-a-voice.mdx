@@ -8,23 +8,18 @@ order: 4
 import Figure from '@/components/Figure.astro';
 import audio from '@/assets/guides/inspector-audio.png';
 
-Select a clip with sound on the timeline and open the Inspector's **Audio** tab. Its **Sound**
-section runs top to bottom: **Volume**, **Fades**, **Pitch**, **Speed**, then **Treatments**
-and the audio effect chain.
+Select a clip with sound on the timeline and open the Inspector's **Audio** tab. It has two pages
+on a strip at its top, as the Video tab does: **Basic** (the level, the fades, a sound
+clip's speed and the three treatments) and **Audio effects** (the effect chain and its library).
+Applying an audio effect from the Library opens Audio effects. On a phone, **Audio effects** sits
+next to **Audio** on the clip's strip.
 
 <Figure
   src={audio}
   alt="The Inspector's Audio tab for an audio clip: Volume with a Level slider, Fades, Pitch and Speed sections"
 >
-  The Audio tab. Treatments and the effect chain are further down.
+  The Audio tab as 0.2.7 drew it, before it was split into Basic and Audio effects.
 </Figure>
-
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).** The Audio tab has two pages on a strip at its
-> top, as the Video tab does: **Basic** (the level, the fades, a sound clip's speed and the three
-> treatments) and **Audio effects** (the effect chain and its library). Applying an audio effect
-> from the Library opens Audio effects. On a phone, **Audio effects** sits next to **Audio** on
-> the clip's strip.
 
 ## The three treatments
 
@@ -45,9 +40,6 @@ the volume; it snaps at 100 percent and the drag is one undo step.
 
 ## The volume of several clips at once
 
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).**
-
 Select two or more clips that all have sound (audio clips, or videos with sound) and the
 Inspector shows only the **Audio** tab with the volume. Set it and every selected clip takes that
 level, as one undo step. A clip whose volume has keys keeps its ride: the whole ride moves by the
@@ -57,8 +49,9 @@ for the selection.
 
 ## The effect chain
 
-Under the treatments is the clip's **audio effect chain** and a library to pick from. The
-Library pane's **Effects** page lists the same ones under **Audio Effects**, grouped by category:
+The **Audio effects** page holds the clip's **audio effect chain** and a library to pick from.
+The Library pane's **Effects** page lists the same ones under **Audio Effects**, grouped by
+category:
 
 - **Voice**: Chipmunk, Deep, Robot, Telephone, Megaphone, Whisper, Sweet, Radio, Lo-fi, Vinyl,
   Underwater, Pitch.

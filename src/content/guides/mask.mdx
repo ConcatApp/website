@@ -1,0 +1,61 @@
+---
+title: 'Mask a clip'
+description: 'Keep part of a picture with a shape: a line, a mirror band, a circle, a rectangle, a heart or a star, feathered, inverted and keyframed.'
+section: 'Picture'
+order: 3.5
+---
+
+A mask keeps one shape of a clip's picture and lets the lanes below show through the rest. It is
+the clip's own setting, as in CapCut, not an effect, and it works on video and image clips.
+
+## Add a mask
+
+Select the clip and open the Inspector's **Video** tab, **Basic** page. The **Mask** section has a
+row of shapes:
+
+| Shape         | Keeps                                                          |
+| ------------- | -------------------------------------------------------------- |
+| **None**      | The whole picture. Picking it takes the mask off               |
+| **Linear**    | One side of a straight line                                    |
+| **Mirror**    | A band between two parallel lines; **Thickness** sets how wide |
+| **Circle**    | The inside of a circle or an ellipse                           |
+| **Rectangle** | The inside of a rectangle; **Roundness** rounds its corners    |
+| **Heart**     | The inside of a heart                                          |
+| **Star**      | The inside of a star                                           |
+
+**Invert** keeps the outside of the shape instead. Under the shapes, **Position X** and
+**Position Y** place it, **Width** and **Height** size it, **Rotation** turns it and **Feather**
+softens its edge.
+
+While the section is open, the monitor outlines the mask on the selected clip, with grips to move
+it, size it one way or both, turn it and soften it.
+
+## Animate it
+
+Every number in the section has a diamond, so a mask can move, grow, turn or soften over the clip
+like any other knob; see [keyframes](/guides/keyframes). While a clip has a mask, the Keyframes
+pane gets a row for each of its numbers.
+
+## What it covers
+
+The mask is cut from the picture as you see it: after the crop and, on a
+[stabilized](/guides/stabilize) clip, after the steadying, so it holds still with the steadied
+picture. It combines with a [background removal](/guides/remove-a-background), the crop, the
+clip's opacity and a wipe. The [canvas](/guides/vertical-video) behind a clip on the main lane
+is never masked: it shows through where the mask takes the picture away. The monitor and the
+export draw the mask the same way.
+
+A project from 0.2.4 that used the old Mask effects (Circle, Rectangle and Linear) opens with
+them turned into the clip's mask, knobs and keys carried over, and a notice says so.
+
+## On a phone
+
+**Mask** is on a selected clip's strip. Its sheet is the shapes as a row of tiles, then Invert,
+Feather, Rotation and, for a rectangle, Roundness. Where the mask sits and how big it is are
+dragged on the monitor with the same grips.
+
+## From a script
+
+`updateClip` sets or clears a clip's mask, and `setClipKey` keys its numbers (`maskX`, `maskWidth`
+and the rest). See [Edit commands](/docs/api/edits#updateclip) and
+[Types](/docs/api/types#clipmask).

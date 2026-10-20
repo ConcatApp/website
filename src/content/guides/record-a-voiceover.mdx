@@ -5,32 +5,22 @@ section: 'Captions and voices'
 order: 3
 ---
 
-**Record Voiceover** is the microphone button on the timeline tray, beside Text to Speech.
+**Record Voiceover** is the microphone button on the timeline tray, beside Text to Speech. It
+opens the **Voiceover** panel, and a second press puts it away (or stops a take that is running).
 
-## In 0.2.7
+## Record a take
 
 1. Put the playhead where the voiceover should start.
-2. Click **Record Voiceover**. The timeline's own sound is muted, playback starts from the
-   playhead, the button turns red and reads **Stop Recording**, and a level meter runs beside it.
+2. Click **Record Voiceover**, check the meter, and press **Record**.
 3. Talk.
-4. Click **Stop Recording**.
+4. Press **Stop**.
 
-The take is saved as a WAV in your project's `audio` folder, added to the Library, and placed as
-a clip on the first free lane at the point where recording began, nudged by the microphone's
-latency so it lines up. A toast says "Voiceover added to the timeline".
-
-There is no device picker in 0.2.7: Concat records from the system's default input. Change that
-in your operating system's sound settings before you press the button. On an iPhone, 0.2.7
-records silence; the fix is in the next release.
+The take is saved as a WAV in your project's `audio` folder, added to the Library, and placed as a
+clip where recording began, and a toast says "Voiceover added to the timeline".
 
 ## The Voiceover panel
 
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).** Everything in this section is on the app's
-> main branch and not in 0.2.7.
-
-**Record Voiceover** opens a **Voiceover** panel that floats over the editor without dimming it,
-so the picture, the lanes and the clips stay usable between takes. Drag it by its header. On a
+The panel floats over the editor without dimming it, so the picture, the lanes and the clips stay usable between takes. Drag it by its header. On a
 phone it is a sheet at the foot of the screen, opened from **Voiceover** on the bottom strip.
 
 The panel opens the microphone straight away, so its meter shows the room before you say a word:
@@ -67,5 +57,5 @@ again** once it is granted.
   **Normalize loudness**, **Reduce noise** or **Enhance voice**. See
   [clean up a voice](/guides/clean-up-a-voice).
 - Want captions for it: select the clip and click **Generate Captions**.
-- A flubbed line: put the playhead on it, press <kbd class="kbd">⌘B</kbd> to split, delete the
-  piece, record again. Or, from 0.2.8, press **Retake** in the panel.
+- A flubbed line: press **Retake** in the panel. Or put the playhead on it, press
+  <kbd class="kbd">⌘B</kbd> to split, delete the piece and record again.

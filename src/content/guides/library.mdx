@@ -1,24 +1,25 @@
 ---
 title: 'Effects, filters and transitions'
-description: 'The Library pages for looks and effects, and the one thing to know: a single click auditions, a double-click or the plus applies.'
+description: 'The Library pages for looks, adjustments and effects, and the one thing to know: a single click auditions, a double-click or the plus applies.'
 section: 'Picture'
 order: 2
 ---
 
 Concat ships 100 effects, filters and transitions, rendered on the GPU and shown live in the
-monitor. They live on three Library pages. What a click does differs by page,
-which is the thing that trips people up.
+monitor. They live on three Library pages, with your LUTs and the adjustment layer on a fourth.
+What a click does differs by page, which is the thing that trips people up.
 
 | Page            | Single click                                                  | Double-click or the card's plus               | Needs                                                                     |
 | --------------- | ------------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------- |
 | **Filters**     | Auditions the look over the whole picture, without placing it | Lays the look down as a layer at the playhead | Nothing selected                                                          |
+| **Adjustments** | Lays the adjustment layer, or a LUT, at the playhead          | Same                                          | Nothing; with a clip selected, a LUT goes on that clip instead            |
 | **Effects**     | Adds the effect to the selected clip                          | Same                                          | One selected video, image or text clip (audio effects: a clip with sound) |
 | **Transitions** | Puts the transition on the cut between two selected clips     | Same                                          | Two selected clips that meet on the same track                            |
 
 ## Filters
 
 Filters are colour looks: Everyday, Cinematic, Portrait, Food, Scenery, Retro, Film, Black &
-White, Vibe, Tone, Clean, Color, and an **Imported** shelf for your own LUTs.
+White, Vibe, Tone, Clean and Color. Your own LUTs are on the [Adjustments](#adjustments) page.
 
 Click a card and the look appears over the picture so you can compare; click it again to take
 it off. The first time, a toast explains: "Showing the look over the picture. Double-click the
@@ -26,18 +27,30 @@ card, or its plus, to lay it on the timeline."
 
 A laid-down filter is a **layer clip**: it treats everything under it for as long as it runs.
 Trim it on the timeline to change what it covers; stack two for a combined grade. Select the
-layer and its **Filter** tab has a **Strength** slider and a **Ramp in** and **Ramp out**.
+layer and its **Filter** tab's **Layer** section has a **Strength** slider and a **Ramp in** and
+**Ramp out**; its **Adjust** and **Effects** sections grade and treat what it covers further.
 
-**Import a LUT (.cube)**, on the Filters toolbar, reads a `.cube` table from Resolve or anywhere
-else and files it under Imported.
+## Adjustments
+
+The page beside Filters has two shelves:
+
+- **Adjustment layer**: a layer that grades everything beneath it for as long as it runs. Click
+  the card and it lands at the playhead, or drag it onto a lane. The Inspector opens on its
+  **Adjust** section (the wheels, curves and knobs a clip has); set the colour there, add filters
+  or LUTs to it, and trim it to the span it should cover. Its **Filter** tab also has the
+  **Layer** section (Strength and the ramps) and **Effects**, its own chain.
+- **LUTs**: every look made from a table. **Import a LUT (.cube)** reads a `.cube` file from
+  Resolve or any other grading tool. Click a LUT to put it on the selected clip; with nothing
+  selected, or dragged onto the timeline, it becomes a layer of its own.
 
 ## Effects
 
 The Effects page has two headings in its left column: **Video Effects** (Basic, Blur, Distort,
 Glitch, Light, Stylize and more) and **Audio Effects** (Voice, Space, Tone). Select a clip on
 the timeline first, then click a card. The Inspector jumps to the clip's **Effects** tab (or
-**Audio › Sound** for an audio effect; from 0.2.8, **Audio › Audio effects**), where the effect
-sits in the clip's chain with its knobs.
+**Audio › Audio effects** for an audio effect), where the effect sits in the clip's chain with its
+knobs. A selected filter or adjustment layer takes effects and LUTs onto its own chain the same
+way.
 
 The chain runs top to bottom. Reorder with the chevrons, bypass one with its eye, remove it with
 the cross. Any knob with a diamond can be keyframed; see [keyframes](/guides/keyframes). The
@@ -60,12 +73,10 @@ to change the duration, or select it and use the **Duration** knob in the Inspec
 **Remove** also lives. Both clips need at least a frame of handle; the app says so when there is
 no room.
 
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).** **Fade to Black** and **Fade to White** join
-> Dissolve on the Basic shelf: the outgoing shot fades to the colour by the middle of the cut and
-> the incoming one fades up out of it. And a transition now plays centred on the cut, half on
-> each side, as the timeline draws it; in 0.2.7 it runs entirely before the cut, so it looks
-> early. Where a clip has no footage past its end, its last frame is held under the incoming one.
+**Fade to Black** and **Fade to White** sit beside Dissolve on the Basic shelf: the outgoing shot
+fades to the colour by the middle of the cut and the incoming one fades up out of it. A transition
+plays centred on the cut, half on each side, as the timeline draws it. Where a clip has no footage
+past its end, its last frame is held under the incoming one.
 
 ## Your own effects
 

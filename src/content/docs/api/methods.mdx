@@ -28,6 +28,7 @@ order: 2
 | [`template.instantiate`](#templateinstantiate) | project from a template          | _EditorView_           |
 | [`template.save`](#templatesave)               | project into a template          | _TemplateInfo_         |
 | [`export.run`](#exportrun)                     | render to a file, as a job       | _Started_              |
+| [`export.status`](#exportstatus)               | how a job stands, or ended       | _JobStatus_            |
 | [`export.cancel`](#exportcancel)               | stop a job                       | `{}`                   |
 | [`preview.frame`](#previewframe)               | one frame as PNG                 | _Written_ or _Picture_ |
 
@@ -60,7 +61,7 @@ What this build serves. **Call it first.**
 ```json
 {
   "apiVersion": "0.2",
-  "concat": "0.2.7",
+  "concat": "0.2.8",
   "dirs": {
     "config": "/Users/ada/Library/Application Support/app.concat.editor",
     "data": "/Users/ada/Library/Application Support/app.concat.editor"
@@ -125,6 +126,12 @@ Good to know:
 
 - Opening a folder already open returns its state as it stands, edits and
   all. The history is untouched.
+- A folder another Concat process has open (a second window,
+  `concat --mcp`, `concat-cli`) is `refused`, naming that process: each
+  process locks the folders it opens with `concat.lock`. When the holder
+  is a window, the message says to go through it instead (Settings ›
+  Automation, then `concat --mcp window`). See
+  [One process per project](/docs/transports/json-rpc#one-process-per-project).
 
 ---
 
@@ -508,8 +515,8 @@ Packs an open project into a new template bundle in the library.
 ## `export.run`
 
 Renders the active timeline to a file, as a **job**. Exactly what the
-window's Export sheet does: cutouts analysed, titles painted, then the
-frame loop and the mix.
+window's Export sheet does: cutouts analysed, stabilized clips' camera
+shake measured, titles painted, then the frame loop and the mix.
 
 | Parameter    | Type    | Meaning                                                                                                                                                                                                                         |
 | ------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -565,8 +572,8 @@ or
 Rules:
 
 - **One export at a time.** A second is refused with `busy`. From the
-  window's Remote page the slot is the window's own, so an export begun
-  in the Export sheet counts.
+  window's Automation page the slot is the window's own, so an export
+  begun in the Export sheet counts.
 - An empty timeline is `refused`.
 - HDR follows the timeline. An HDR timeline exported with `hdr` on (the
   default) needs `hevc` or `av1`; `h264` is `invalid`, since H.264 does not
@@ -581,11 +588,48 @@ Rules:
   240 a second, `crf` at most 63: anything larger is `invalid`.
 - `cutout.progress` only appears for clips with an automatic cutout whose
   masks are not cached yet. `fetching` is true while the model downloads.
-- From 0.2.8 (coming in the next release), `stabilize.progress` appears for
-  each stabilized clip's media whose camera movement is not measured yet; the
-  export measures it before rendering. `export.cancel` stops that phase too.
+- `stabilize.progress` appears for each stabilized clip's media whose
+  camera movement is not measured yet; the export measures it before
+  rendering. `export.cancel` stops that phase too.
+- A caller that was not listening when the events came can ask
+  [`export.status`](#exportstatus) instead.
 - Event shapes are in [Types → Events](/docs/api/types#events). The job model is
   in the [overview](/docs/api/overview#jobs-and-events).
+
+---
+
+## `export.status`
+
+How a job stands: running and how far along, or how it ended. The same
+news the events carry, for a caller that was not listening when it came
+(a script that reconnected, an agent that asks in turns). The last 32
+finished jobs are remembered.
+
+| Parameter | Type   | Meaning                    |
+| --------- | ------ | -------------------------- |
+| `job`     | string | The job `export.run` named |
+
+```json
+{ "method": "export.status", "job": "j1" }
+```
+
+**Reply**, a _JobStatus_:
+
+```json
+{
+  "job": "j1",
+  "path": "/edits/Reel",
+  "output": "/edits/reel.mp4",
+  "state": "running",
+  "stage": "video",
+  "frame": 30,
+  "total": 150,
+  "fraction": 0.2
+}
+```
+
+A job that never ran, or ended long enough ago to be forgotten, is
+`notFound`.
 
 ---
 

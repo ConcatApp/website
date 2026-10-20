@@ -33,26 +33,26 @@ See [Captions, voices and cutout](/guides/offline-models) for what each one does
 
 ## Platforms
 
-| Platform       | Builds                                     | Needs                                                                             |
-| -------------- | ------------------------------------------ | --------------------------------------------------------------------------------- |
-| Windows        | x64 setup and MSI (ARM64 is paused)        | A 64-bit Intel or AMD processor                                                   |
-| macOS          | Apple Silicon and Intel disk images        | macOS 12. The 0.2.7 Intel build needs 13.4; from 0.2.8 only its AI features do    |
-| Linux          | x86_64 and ARM64: AppImage, deb, rpm, Arch |                                                                                   |
-| Android        | ARM64 APK                                  | Android 8.0. In 0.2.7, a Vulkan driver; 0.2.8 falls back to OpenGL ES without one |
-| iOS and iPadOS | IPA, beta, sideloaded                      | iOS 15                                                                            |
+| Platform       | Builds                                     | Needs                                                        |
+| -------------- | ------------------------------------------ | ------------------------------------------------------------ |
+| Windows        | x64 setup and MSI (ARM64 is paused)        | A 64-bit Intel or AMD processor                              |
+| macOS          | Apple Silicon and Intel disk images        | macOS 12. On Intel, cutout, Enhance and Chatterbox need 13.4 |
+| Linux          | x86_64 and ARM64: AppImage, deb, rpm, Arch |                                                              |
+| Android        | ARM64 APK                                  | Android 8.0. Vulkan, or OpenGL ES without it                 |
+| iOS and iPadOS | IPA, beta, sideloaded                      | iOS 15                                                       |
 
 Same app, same project files, in 25 languages.
 
 ## Older processors
 
-Concat runs on processors without AVX2, such as Intel's Sandy Bridge and Ivy Bridge. In 0.2.7
-the caption transcriber on Windows and Linux PCs is built for those older processors only, so it
-runs several times slower than it could on anything newer. 0.2.8 ships one version per processor
-generation and loads the fastest one the machine can run.
+Concat runs on processors without AVX2, such as Intel's Sandy Bridge and Ivy Bridge. On Windows
+and Linux PCs the caption transcriber ships one version per processor generation and loads the
+fastest one the machine can run, so a recent CPU transcribes at full speed and an old one still
+starts.
 
 ## Graphics
 
-Without a usable GPU the window and the monitor draw on the CPU. From 0.2.8, on Windows and
-Linux, a launch that closes while starting is followed by one that draws in software, and
+Without a usable GPU the window and the monitor draw on the CPU. On Windows and Linux, a launch
+that closes while starting is followed by one that draws in software, and
 **Settings › General › Draw on the GPU** turns it back on. See
 [report a problem](/guides/report-a-problem#the-window-closes-or-draws-garbage).

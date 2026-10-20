@@ -1,5 +1,6 @@
 /**
- * Numbers for the stats row: GitHub stars and the download total across every release. Fetched at
+ * Numbers for the stats row: GitHub stars and the download total across every release (the app's
+ * files only: SHA256SUMS and manifest.json are left out). Fetched at
  * build time from the GitHub API and falling back to the committed snapshot in src/data when the
  * network or the rate limit gets in the way. Set GITHUB_TOKEN in the build environment to avoid the
  * 60 requests an hour unauthenticated limit on shared build machines.
@@ -15,8 +16,11 @@ export interface GitHubStats {
 const API = 'https://api.github.com/repos/jub0t/Concat';
 
 interface Release {
-  assets?: Array<{ download_count?: number }>;
+  assets?: Array<{ name?: string; download_count?: number }>;
 }
+
+/** Release files that are not the app: fetched by scripts and checkers, not by people installing. */
+const NOT_DOWNLOADS = new Set(['SHA256SUMS', 'manifest.json']);
 
 export async function getStats(): Promise<{ stats: GitHubStats; live: boolean }> {
   try {
@@ -39,7 +43,11 @@ export async function getStats(): Promise<{ stats: GitHubStats; live: boolean }>
       const repo = (await repoRes.json()) as { stargazers_count?: number };
       const releases = (await releasesRes.json()) as Release[];
       const downloads = releases.reduce(
-        (sum, r) => sum + (r.assets ?? []).reduce((n, a) => n + (a.download_count ?? 0), 0),
+        (sum, r) =>
+          sum +
+          (r.assets ?? [])
+            .filter((a) => !NOT_DOWNLOADS.has(a.name ?? ''))
+            .reduce((n, a) => n + (a.download_count ?? 0), 0),
         0,
       );
       if (typeof repo.stargazers_count === 'number' && downloads > 0) {

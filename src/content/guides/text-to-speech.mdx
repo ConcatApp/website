@@ -11,9 +11,11 @@ import tray from '@/assets/guides/tray.png';
 
 ## Where the button is
 
-**Text to Speech** is the speaker button on the timeline tray, the last of the editing tools.
-It is also in the **File** menu as **Text to speech…**, and on a phone it is **Speak** on the
-bottom strip. There is no keyboard shortcut.
+**Text to Speech** is the speaker button on the timeline tray, after Generate Captions; a second
+press puts the panel away. It is also in the **File** menu as **Text to speech…**, and on a phone
+it is **Speak** on the bottom strip. A voice clicked on the Library's
+[Audio page](/guides/sounds-and-voices#voices) opens it on that voice. There is no keyboard
+shortcut.
 
 <Figure
   src={tray}
@@ -36,23 +38,21 @@ bottom strip. There is no keyboard shortcut.
   src={sheet}
   alt="The Text to speech sheet: a Script box, Expression tags, a Voice section with Model set to Chatterbox Turbo and Voice set to Bria, a Use sample voice switch and a Generate speech button"
 >
-  The sheet, with the selected title's words already in the script.
+  The panel as 0.2.7 drew it, with the selected title's words already in the script.
 </Figure>
 
-The sheet shows "Generating voice" with a percentage. When it is done, a toast says "Voice added
-to the timeline": the read is a WAV in your project's `audio` folder, it is in the Library under
+The bar names its stage ("Reading the voice recording", "Loading the voice model", then
+"Generating voice") and says how long is left. When it is done, a toast says "Voice added to the
+timeline": the read is a WAV in your project's `audio` folder, it is in the Library under
 **Generated › Speech**, and it sits as a clip on the first free lane at the playhead.
 
-> [!NOTE]
-> **New in 0.2.8 (coming in the next release).** On a desktop, Text to speech is a card that
-> floats over the editor instead of a sheet that dims and freezes it, like the
-> [Captions panel](/guides/auto-captions#the-floating-captions-panel): the timeline stays usable
-> under it, you drag it by its header, and closing it leaves a running read going. The bar names
-> its stage ("Reading the voice recording", "Loading the voice model", then the read) and says
-> how long is left. On a phone it stays a sheet.
+On a desktop, Text to speech is a card that floats over the editor rather than a sheet that dims
+and freezes it, like the [Captions panel](/guides/auto-captions#the-floating-captions-panel): the
+timeline stays usable under it, you drag it by its header, and closing it leaves a running read
+going. On a phone it is a sheet.
 
 > [!NOTE]
-> If the sheet says "Download a voice model in Settings › Speech first", open Settings from the
+> If the panel says "Download a voice model in Settings › Speech first", open Settings from the
 > gear at the top right, go to **Speech** and click **Download** on a model. Kokoro (compact,
 > 132 MB) is the quick one to start with.
 
@@ -68,20 +68,30 @@ The Model picker shows each one with a subtitle: "Built-in speakers · fast", "A
 recording", "Studio voice · slow". With Chatterbox picked, an **Expression** row under the script
 inserts the three tags at the cursor.
 
+The **Voice** list leads each name with a round picture or initial. For Pocket TTS and Chatterbox
+it lists your [saved voices](/guides/sounds-and-voices#voices) after the named ones and ends in
+**Clone from a sample…**, which turns on the sample voice below.
+
 ## Clone a voice
 
 Pocket TTS and Chatterbox can read in any voice they are given a few seconds of.
 
 1. Import a recording of the voice, or use a clip that is already in the bin. Ten seconds of
    clean speech is plenty.
-2. In the Text to speech sheet, pick **Pocket TTS** or **Chatterbox Turbo**.
-3. Turn on **Use sample voice**.
+2. In Text to speech, pick **Pocket TTS** or **Chatterbox Turbo**.
+3. Turn on **Use sample voice** (or pick **Clone from a sample…** at the end of the Voice list).
 4. Pick the recording under **Sample**, and drag **Voice from** to a point where the person is
    talking: the model listens to the ten seconds from there.
 5. Generate.
 
-If a clip with sound is selected on the timeline when you open the sheet, it is already the
-sample. The sheet refuses with "Pick a sample with a voice in it" when the clip is silent.
+If a clip with sound is selected on the timeline when you open the panel, it is already the
+sample. The panel refuses with "Pick a sample with a voice in it" when the clip is silent.
+
+To keep the voice for other projects, type a name under **Save this voice** and press **Save**: it
+joins the Voice list of every project and the Library's Audio page. See
+[your sounds and voices](/guides/sounds-and-voices#voices). A **Style** picked on the Audio page
+(Chipmunk, Robot and the rest) shows under the voice; the read lands with its effects on the
+clip.
 
 > [!TIP]
 > Chatterbox has no voice of its own. With Pocket TTS installed it borrows Bria; otherwise
