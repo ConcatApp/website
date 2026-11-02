@@ -2,13 +2,15 @@
 /**
  * Long-form page inside the gridline frame: section navigation on the left, the page in the
  * middle, an "On this page" list on the right from 1280px up. Below 1024px the navigation folds
- * into a disclosure above the page.
+ * into a disclosure above the page. The search dialog (Ctrl+K) covers both collections; Pagefind
+ * indexes only the article, so the menus, the footer and the neighbour links stay out of it.
  */
 import type { MarkdownHeading } from 'astro';
-import { ArrowLeft, ArrowRight, ChevronDown } from '@lucide/astro';
+import { ArrowLeft, ArrowRight, ChevronDown, Search } from '@lucide/astro';
 import Base from '@/layouts/Base.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
+import SearchDialog from '@/components/Search.astro';
 import { cn } from '@/lib/cn';
 import { LABEL, getNav, hrefFor, type Entry, type Kind } from '@/lib/docs';
 
@@ -37,6 +39,19 @@ const title = entry.id === 'index' ? LABEL[kind] : `${entry.data.title} · ${LAB
   <main class="pt-16">
     <div class="container-x py-10 lg:py-14">
       <div class="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-14 xl:grid-cols-[13rem_minmax(0,1fr)_11rem] xl:gap-16">
+        <div class="mb-3 lg:hidden">
+          <button
+            type="button"
+            class="flex h-10 w-full items-center gap-2.5 rounded-full border border-line-strong bg-bg-subtle px-4 text-sm text-fg-muted transition-colors duration-150 hover:bg-bg-overlay hover:text-fg"
+            data-search-open
+          >
+            <Search class="size-4" aria-hidden="true" />
+            Search
+            <kbd class="kbd ml-auto text-[11px] text-fg-subtle" data-search-key>
+              Ctrl K
+            </kbd>
+          </button>
+        </div>
         <details class="group mb-8 rounded-lg border border-line lg:hidden">
           <summary class="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-medium [&::-webkit-details-marker]:hidden">
             {LABEL[kind]}
@@ -74,6 +89,17 @@ const title = entry.id === 'index' ? LABEL[kind] : `${entry.data.title} · ${LAB
 
         <nav class="hidden lg:block" aria-label={`${LABEL[kind]} pages`}>
           <div class="sticky top-24 space-y-6">
+            <button
+              type="button"
+              class="flex h-10 w-full items-center gap-2.5 rounded-full border border-line-strong bg-bg-subtle px-4 text-sm text-fg-muted transition-colors duration-150 hover:bg-bg-overlay hover:text-fg"
+              data-search-open
+            >
+              <Search class="size-4" aria-hidden="true" />
+              Search
+              <kbd class="kbd ml-auto text-[11px] text-fg-subtle" data-search-key>
+                Ctrl K
+              </kbd>
+            </button>
             <p class="text-sm font-medium">{LABEL[kind]}</p>
             {groups.map((group) => (
               <div>
@@ -101,7 +127,7 @@ const title = entry.id === 'index' ? LABEL[kind] : `${entry.data.title} · ${LAB
           </div>
         </nav>
 
-        <article class="min-w-0">
+        <article class="min-w-0" data-pagefind-body data-pagefind-meta={`kind:${LABEL[kind]}`}>
           <p class="text-sm text-fg-subtle">
             {LABEL[kind]}
             {entry.id !== 'index' && entry.data.section !== LABEL[kind] && (
@@ -121,6 +147,7 @@ const title = entry.id === 'index' ? LABEL[kind] : `${entry.data.title} · ${LAB
           </div>
 
           <nav
+            data-pagefind-ignore
             class="mt-16 grid gap-4 border-t border-line pt-8 sm:grid-cols-2"
             aria-label="Neighbouring pages"
           >
@@ -149,7 +176,7 @@ const title = entry.id === 'index' ? LABEL[kind] : `${entry.data.title} · ${LAB
           </nav>
 
           {editUrl && (
-            <p class="mt-8 text-sm text-fg-subtle">
+            <p class="mt-8 text-sm text-fg-subtle" data-pagefind-ignore>
               <a
                 href={editUrl}
                 class="underline underline-offset-4 transition-colors duration-200 hover:text-accent-ink"
@@ -188,5 +215,6 @@ const title = entry.id === 'index' ? LABEL[kind] : `${entry.data.title} · ${LAB
     </div>
   </main>
 
+  <SearchDialog />
   <Footer />
 </Base>

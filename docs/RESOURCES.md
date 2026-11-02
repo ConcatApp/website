@@ -2,10 +2,11 @@
 
 Concat: the free, open-source CapCut replacement. Native Rust engine, 100% local, distributed via GitHub Releases.
 
-Curated from research on 2026-09-20; direction revised on 2026-09-27. Direction: light, premium,
-restrained, one blue accent. No cheap gradients, no purple, no template feel. The first dark version took its
-cues from [spline.design](https://spline.design/) and [diffusion.studio](https://diffusion.studio/); the light
-version takes them from linear.app, vercel.com, resend.com and stripe.com.
+Curated from research on 2026-09-20; direction revised on 2026-09-27, on 2026-10-10 (section 10) and on
+2026-11-02 (section 11). Current direction: dark, after meltkit.com, restrained, one blue. No purple, no
+template feel. The first dark version took its cues from [spline.design](https://spline.design/) and
+[diffusion.studio](https://diffusion.studio/); the light versions from linear.app, vercel.com, resend.com,
+stripe.com and the owner's offerwall-site.
 
 ## 1. Installed stack
 
@@ -23,6 +24,8 @@ version takes them from linear.app, vercel.com, resend.com and stripe.com.
 | clsx + tailwind-merge                                 |         | `cn()` helper in `src/lib/cn.ts`                                                                                       |                                                                  |
 | prettier + astro + tailwind plugins                   |         | Formatting and class sorting (`npm run format`)                                                                        |                                                                  |
 | @astrojs/check + typescript                           |         | `npm run check`                                                                                                        |                                                                  |
+| pagefind                                              | 1.6     | Static search for /docs and /guides: indexes `dist/` after the build, the dialog in `Search.astro` loads it on Ctrl+K  | https://pagefind.app/docs/                                       |
+| puppeteer-core                                        | 25      | Drives the local Chrome or Edge for `npm run shots` and `npm run og:image`                                             | https://pptr.dev                                                 |
 
 Wiring lives in `src/scripts/scroll.ts` (Lenis + GSAP ticker sync, Motion reveals, view-transition
 lifecycle) and `src/layouts/Base.astro`.
@@ -216,3 +219,27 @@ workflow used on 2026-10-10 on the owner's Mac:
 
 Known app quirk met on the way: quitting 0.2.6 with `osascript -e 'tell application "Concat" to quit'` ends
 in SIGABRT and a crash dialog on the next launch.
+
+## 11. The 2026-11-02 revamp: the meltkit.com look
+
+The owner asked for the style of [meltkit.com](https://meltkit.com/) so the page reads less like a template.
+Its stylesheet was read directly (`/assets/site.*.css`); what was taken, and where it lives here:
+
+| meltkit.com                                                      | Here                                                                  |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `#0b0b0b` page, `#1f1f1f` cards, 40px radius, no borders         | the tokens and the `card` utility in `global.css`                     |
+| Geist 500 everywhere, -0.02 to -0.03em tracking                  | Geist through the Fonts API; Bricolage and Mona Sans are gone         |
+| one light pill button (`#f4f4f4` on dark)                        | `Button` `primary`; `secondary` is the faint outlined pill            |
+| hero: app icon, two-line gradient headline, one line, one button | the hero in `index.astro`, blue gradients instead of pastels          |
+| handwritten "One time" aside with a curved arrow (Gamja Flower)  | "Free forever" by the download button, the same font                  |
+| full-width live-look band behind the window, with a hanging tab  | the `band` utility (static blue gradients plus SVG grain) and the tab |
+| three art cards, centred 14px copy                               | the feature cards: real crops, or an icon tile on the band            |
+| export tiles: big word top left, small line bottom left          | the fact tiles, with the blue edge glow on hover                      |
+| pricing band: a card on a live look                              | the download picker on the band                                       |
+| two-column FAQ with hairlines and a chevron                      | the FAQ section                                                       |
+| outro: a dark panel on the look, footer and the name cut out     | `Footer.astro`: the panel inside the band sheet, the name filled blue |
+| no header on the home page                                       | not taken: the docs need the menus, so the header is a plain bar      |
+| live WebGL looks, the launch film                                | not taken: the band is CSS, and there is no film yet                  |
+
+The section gap is wider than meltkit's 80px (112px, 160px on wide screens) at the owner's request, and the
+footer band starts on a clean rounded edge instead of fading in.

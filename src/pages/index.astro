@@ -30,6 +30,7 @@ import {
   DISCORD_URL,
   RELEASES_URL,
   REPO_URL,
+  X_URL,
   checksumsUrl,
   getManifest,
   getPlatforms,
@@ -48,12 +49,12 @@ const platforms = getPlatforms(manifest);
 const { stats } = await getStats();
 const macos = platforms.find((p) => p.id === 'macos');
 
-// Real numbers only: the two counts come from GitHub at build time, the third is the README's
-// own figure.
+// Real numbers only: the two counts come from GitHub at build time; "100s" (hundreds of) is the
+// owner's wording for the README's 100 effects, filters and transitions.
 const facts = [
   { value: formatCount(stats.downloads, { plus: true }), label: 'Downloads from GitHub Releases' },
   { value: formatCount(stats.stars), label: 'Stars on GitHub' },
-  { value: '100', label: 'Effects, filters and transitions' },
+  { value: '100s', label: 'Effects, filters and transitions' },
 ];
 
 const tour: Step[] = [
@@ -268,7 +269,7 @@ const ld = [
       'Built-in MCP server for AI agents',
     ],
     url: site,
-    sameAs: [REPO_URL, DISCORD_URL],
+    sameAs: [REPO_URL, DISCORD_URL, X_URL],
   },
   {
     '@context': 'https://schema.org',

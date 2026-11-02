@@ -8,6 +8,7 @@ import fallbackManifest from '@/data/release-manifest.json';
 export const REPO_URL = 'https://github.com/jub0t/Concat';
 export const RELEASES_URL = `${REPO_URL}/releases`;
 export const DISCORD_URL = 'https://discord.gg/DVuPfpXfqP';
+export const X_URL = 'https://x.com/AppConcat';
 export const ISSUES_URL = `${REPO_URL}/issues`;
 export const FLATPARK_URL = 'https://flatpark.org/apps/app.concat.editor/';
 const MANIFEST_URL = `${REPO_URL}/releases/latest/download/manifest.json`;

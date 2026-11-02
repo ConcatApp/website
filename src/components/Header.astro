@@ -7,7 +7,7 @@
  * click or focus leaving the menu closes it. Below the md breakpoint the menus fold into a sheet
  * behind the menu button.
  */
-import { siDiscord, siGithub } from 'simple-icons';
+import { siDiscord, siGithub, siX } from 'simple-icons';
 import {
   BookOpen,
   Braces,
@@ -21,7 +21,7 @@ import {
 import { Image } from 'astro:assets';
 import Button from '@/components/Button.astro';
 import mark from '@/assets/mark.png';
-import { DISCORD_URL, REPO_URL } from '@/lib/releases';
+import { DISCORD_URL, REPO_URL, X_URL } from '@/lib/releases';
 
 interface Item {
   href: string;
@@ -69,6 +69,13 @@ const menus: Array<{ label: string; items: Item[] }> = [
         label: 'Discord',
         hint: 'Join the server',
         brand: siDiscord.path,
+        external: true,
+      },
+      {
+        href: X_URL,
+        label: 'X',
+        hint: 'News and releases',
+        brand: siX.path,
         external: true,
       },
     ],
@@ -164,6 +171,17 @@ const menus: Array<{ label: string; items: Item[] }> = [
       >
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="size-[18px]">
           <path d={siDiscord.path}></path>
+        </svg>
+      </a>
+      <a
+        href={X_URL}
+        target="_blank"
+        rel="noopener"
+        aria-label="Concat on X"
+        class="flex size-9 items-center justify-center rounded-full text-fg-muted transition-colors duration-150 hover:text-fg max-sm:hidden"
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="size-4">
+          <path d={siX.path}></path>
         </svg>
       </a>
       <Button href="/#download" size="sm" class="ml-2">

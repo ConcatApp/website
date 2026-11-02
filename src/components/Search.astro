@@ -1,0 +1,211 @@
+---
+/**
+ * Search across the guides and the developer docs. Pagefind indexes the built pages after
+ * `astro build` (the `build` script runs it over dist/, and only the article of each docs or
+ * guides page is marked `data-pagefind-body`), and this dialog loads that index from
+ * /pagefind/ the first time it opens. Any element with `data-search-open` opens it; so do
+ * Ctrl+K and Cmd+K. Arrow keys move through the results, Enter opens one, Escape closes.
+ * Under `astro dev` there is no index yet, and the dialog says so.
+ */
+import { Search } from '@lucide/astro';
+---
+
+<dialog
+  class="search m-auto mt-[12vh] w-[min(40rem,calc(100%-2rem))] overflow-hidden rounded-[22px] bg-card p-0 text-fg shadow-frame ring-1 ring-line-strong backdrop:bg-black/60 backdrop:backdrop-blur-sm"
+  aria-label="Search the guides and docs"
+  data-search
+>
+  <div class="flex items-center gap-3 border-b border-line px-5">
+    <Search class="size-[18px] shrink-0 text-fg-muted" aria-hidden="true" />
+    <input
+      type="search"
+      class="h-14 w-full bg-transparent text-[16px] tracking-[-0.01em] text-fg outline-none placeholder:text-fg-subtle [&::-webkit-search-cancel-button]:hidden"
+      placeholder="Search the guides and docs"
+      autocomplete="off"
+      spellcheck="false"
+      aria-controls="search-results"
+      data-search-input
+    />
+    <kbd class="kbd shrink-0 text-fg-muted">Esc</kbd>
+  </div>
+  <ul
+    id="search-results"
+    class="max-h-[min(60vh,32rem)] overflow-y-auto p-2 empty:hidden"
+    role="listbox"
+    data-search-results
+  ></ul>
+  <p class="px-5 py-4 text-[14px] text-fg-muted" data-search-status>
+    Type to search every guide and every docs page.
+  </p>
+</dialog>
+
+<script>
+  type Result = {
+    url: string;
+    excerpt: string;
+    meta: { title?: string; kind?: string };
+  };
+  type Pagefind = {
+    init: () => Promise<void>;
+    debouncedSearch: (
+      q: string,
+    ) => Promise<{ results: Array<{ data: () => Promise<Result> }> } | null>;
+  };
+
+  let pagefind: Pagefind | null | undefined;
+  let active = -1;
+
+  const dialog = () => document.querySelector<HTMLDialogElement>('[data-search]');
+
+  async function load(): Promise<Pagefind | null> {
+    if (pagefind !== undefined) return pagefind;
+    try {
+      // Built by `pagefind --site dist` after the Astro build, so it is not part of the bundle.
+      const path = '/pagefind/pagefind.js';
+      pagefind = (await import(/* @vite-ignore */ path)) as Pagefind;
+      await pagefind.init();
+    } catch {
+      pagefind = null;
+    }
+    return pagefind;
+  }
+
+  function setStatus(root: HTMLDialogElement, text: string) {
+    const status = root.querySelector<HTMLElement>('[data-search-status]');
+    if (!status) return;
+    status.textContent = text;
+    status.hidden = text === '';
+  }
+
+  function highlight(root: HTMLDialogElement, index: number) {
+    const options = Array.from(root.querySelectorAll<HTMLElement>('[role="option"]'));
+    if (options.length === 0) return;
+    active = (index + options.length) % options.length;
+    options.forEach((o, i) => o.setAttribute('aria-selected', String(i === active)));
+    options[active]!.scrollIntoView({ block: 'nearest' });
+  }
+
+  async function run(root: HTMLDialogElement, query: string) {
+    const list = root.querySelector<HTMLElement>('[data-search-results]');
+    if (!list) return;
+    if (query.trim() === '') {
+      list.replaceChildren();
+      setStatus(root, 'Type to search every guide and every docs page.');
+      return;
+    }
+    const pf = await load();
+    if (!pf) {
+      setStatus(
+        root,
+        'The search index is built with the site. Run npm run build to try it locally.',
+      );
+      return;
+    }
+    const search = await pf.debouncedSearch(query);
+    if (!search) return; // a newer keystroke superseded this one
+    const results = await Promise.all(search.results.slice(0, 8).map((r) => r.data()));
+    list.replaceChildren(
+      ...results.map((r) => {
+        const li = document.createElement('li');
+        li.setAttribute('role', 'option');
+        li.setAttribute('aria-selected', 'false');
+        const a = document.createElement('a');
+        a.href = r.url.replace(/\.html$/, '').replace(/\/index$/, '/');
+        a.className =
+          'block rounded-[14px] px-3 py-2.5 transition-colors duration-150 hover:bg-bg-subtle';
+        const head = document.createElement('span');
+        head.className = 'flex items-baseline justify-between gap-4';
+        const title = document.createElement('span');
+        title.className = 'text-[15px] font-medium tracking-[-0.01em]';
+        title.textContent = r.meta.title ?? r.url;
+        const kind = document.createElement('span');
+        kind.className = 'shrink-0 text-xs text-fg-subtle';
+        kind.textContent = r.meta.kind ?? '';
+        head.append(title, kind);
+        const excerpt = document.createElement('span');
+        excerpt.className = 'search-excerpt mt-0.5 block text-[13.5px] leading-snug text-fg-muted';
+        // Pagefind's excerpt is text from our own pages with the matches wrapped in <mark>.
+        excerpt.innerHTML = r.excerpt;
+        a.append(head, excerpt);
+        li.append(a);
+        return li;
+      }),
+    );
+    active = -1;
+    if (results.length > 0) highlight(root, 0);
+    setStatus(root, results.length === 0 ? `Nothing found for "${query}".` : '');
+  }
+
+  function open() {
+    const root = dialog();
+    if (!root || root.open) return;
+    root.showModal();
+    const input = root.querySelector<HTMLInputElement>('[data-search-input]');
+    input?.focus();
+    input?.select();
+    void load();
+  }
+
+  // Document-level listeners are registered once; the dialog they act on is looked up live, so
+  // they survive Astro's client-side navigation without piling up.
+  document.addEventListener('keydown', (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+      if (!dialog()) return;
+      event.preventDefault();
+      const root = dialog()!;
+      if (root.open) root.close();
+      else open();
+    }
+  });
+  document.addEventListener('click', (event) => {
+    if ((event.target as Element).closest('[data-search-open]')) open();
+  });
+
+  document.addEventListener('astro:page-load', () => {
+    const root = dialog();
+    if (!root) return;
+    const input = root.querySelector<HTMLInputElement>('[data-search-input]');
+    input?.addEventListener('input', () => void run(root, input.value));
+    input?.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        highlight(root, active + (event.key === 'ArrowDown' ? 1 : -1));
+      } else if (event.key === 'Enter') {
+        const link = root.querySelectorAll<HTMLAnchorElement>('[role="option"] a')[active];
+        if (link) {
+          event.preventDefault();
+          root.close();
+          link.click();
+        }
+      }
+    });
+    // A click on the backdrop (outside the panel) closes the dialog; a click on a result too.
+    root.addEventListener('click', (event) => {
+      if (event.target === root || (event.target as Element).closest('a')) root.close();
+    });
+    // Ctrl+K hint on the triggers: the Mac key where there is one.
+    const mac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+    for (const k of document.querySelectorAll('[data-search-key]'))
+      k.textContent = mac ? '⌘K' : 'Ctrl K';
+  });
+</script>
+
+<style>
+  .search[open] {
+    animation: search-in 0.2s var(--ease-out-expo);
+  }
+  @keyframes search-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px) scale(0.99);
+    }
+  }
+  .search :global([role='option'][aria-selected='true'] > a) {
+    background: var(--color-bg-subtle);
+  }
+  .search :global(.search-excerpt mark) {
+    background: none;
+    color: var(--color-fg);
+    font-weight: 500;
+  }
+</style>
