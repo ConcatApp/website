@@ -7,6 +7,8 @@ import { unified } from '@astrojs/markdown-remark';
 import remarkAlerts from './src/lib/remark-alerts.mjs';
 
 import sitemap from '@astrojs/sitemap';
+import { fileURLToPath } from 'node:url';
+import { enrich } from './src/lib/sitemap.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -53,5 +55,13 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-  integrations: [mdx(), sitemap()],
+  // The sitemap gets each page's last commit date and its images (src/lib/sitemap.mjs). The 404
+  // page is left out: it is noindex.
+  integrations: [
+    mdx(),
+    sitemap({
+      filter: (page) => !/\/404\/?$/.test(page),
+      serialize: enrich(fileURLToPath(new URL('./dist/', import.meta.url))),
+    }),
+  ],
 });

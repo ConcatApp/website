@@ -32,7 +32,11 @@ jobs:
             exit 1
           fi
 
+      # Full history: the sitemap's lastmod is each page's last commit date (src/lib/sitemap.mjs),
+      # and a shallow clone has only one commit, so it would leave lastmod out.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:

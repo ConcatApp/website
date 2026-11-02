@@ -157,6 +157,15 @@ Path alias: `@/` maps to `src/`.
   Builds deploy of this repo; the jub0t/standalones repo's `website/` is a separate Next.js site with
   nothing for Concat in it. Canonical URLs, absolute Open Graph image URLs and the
   sitemap (`@astrojs/sitemap`, linked from `public/robots.txt`) derive from it.
+- The sitemap is for Google Search Console (submit `https://concat.standalones.org/sitemap-index.xml`).
+  `src/lib/sitemap.mjs` adds each page's `lastmod` (the last commit that touched its MDX file, or the
+  landing page and its components for `/`; left out on a shallow clone, which is why the Pages workflow
+  checks out with `fetch-depth: 0`) and an image entry for every picture in its `<main>`. No
+  `changefreq` or `priority`: Google ignores them. The 404 page is filtered out.
+- `public/robots.txt` blocks AI training crawlers and AI answer bots (GPTBot, ClaudeBot, CCBot,
+  Google-Extended, PerplexityBot, ChatGPT-User and the rest listed there) and `/pagefind/`, and allows
+  every other crawler. Never block Googlebot, Bingbot, `Mediapartners-Google` or `AdsBot-Google`: search
+  traffic and AdSense depend on them. `public/ads.txt` is the AdSense publisher line; keep it.
 - `Base.astro` takes `title`, `description`, `image`, `imageAlt`, `type` and `noindex`. The default image is
   `public/og.png`. The landing page adds JSON-LD through the `head` slot: `WebSite`, `SoftwareApplication`
   (with `featureList` from the README's claims and `sameAs` GitHub, Discord and X) and `FAQPage` built from
