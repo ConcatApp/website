@@ -85,7 +85,11 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../timeline` or `CONCAT_
   breadcrumb, prose column, "On this page", previous/next, edit link. Its article is the only
   `data-pagefind-body` on the site, so search covers docs and guides and nothing else
 - `src/layouts/Page.astro` standalone long-form page without a sidebar, the `layout` for MDX pages under
-  `src/pages/` (none at the moment: the roadmap page was removed on 2026-11-02, and nothing links to it)
+  `src/pages/`: `privacy.mdx` (the roadmap page was removed on 2026-11-02, and nothing links to it)
+- `src/pages/privacy.mdx` the privacy policy, linked from the footer. AdSense requires it. It states what the
+  code does: no cookies, storage or analytics of the site's own, search and OS detection in the browser,
+  self-hosted fonts, AdSense with Google's required cookie disclosures and opt-out links, Cloudflare
+  hosting, GitHub downloads. Update it and its date whenever a script, tracker or third party is added
 - `src/content.config.ts` the `docs` and `guides` collections (MDX or Markdown under `src/content/`)
 - `src/pages/docs/[...slug].astro`, `src/pages/guides/[...slug].astro` render the collections
 - `src/lib/docs.ts` sidebar sections, ordering and prev/next for both collections

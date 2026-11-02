@@ -45,7 +45,8 @@ function sourcesFor(pathname) {
     const base = `src/content/${kind}/${slug}`;
     return ['.mdx', '.md', '/index.mdx', '/index.md'].map((ext) => base + ext).filter(existsSync);
   }
-  return [];
+  // A standalone page such as /privacy/ (src/pages/privacy.mdx).
+  return ['.mdx', '.md', '.astro'].map((ext) => `src/pages/${path}${ext}`).filter(existsSync);
 }
 
 function lastmodFor(pathname) {
