@@ -62,8 +62,6 @@ const facts = [
     label: 'Downloads from GitHub Releases',
   },
   { icon: Star, value: formatCount(stats.stars), label: 'Stars on GitHub' },
-  { icon: WandSparkles, value: '100', label: 'Effects, filters and transitions' },
-  { icon: Languages, value: '25', label: 'Languages in the app' },
 ];
 
 const tour: Step[] = [
@@ -278,13 +276,6 @@ const ld = {
   <main>
     <section class="pt-28 sm:pt-36">
       <div class="container-x text-center">
-        <p
-          class="mx-auto inline-flex items-center gap-2 rounded-full border border-line bg-bg-subtle px-3.5 py-1.5 text-[13px] font-medium text-fg-muted"
-          data-reveal
-        >
-          <span class="size-1.5 rounded-full bg-accent" aria-hidden="true"></span>
-          Free and open source · {manifest.version} on GitHub Releases
-        </p>
         <h1 class="text-display mx-auto mt-7 max-w-5xl" data-reveal>
           The free, open-source <span class="text-accent-ink">CapCut</span> replacement.
         </h1>
@@ -328,15 +319,18 @@ const ld = {
       headerClass="max-w-3xl"
       bodyClass="pt-4 lg:pt-8"
     >
-      <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-reveal="stagger">
+      <ul class="w-full flex flex-wrap justify-center space-x-12" data-reveal="stagger">
         {facts.map(({ icon: Icon, ...f }) => (
-          <li class="card-glass grid h-full content-start gap-6 rounded-[20px] p-6">
-            <span class="flex size-11 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
-              <Icon class="size-5" stroke-width={2} aria-hidden="true" />
-            </span>
+          <li class="h-full content-start gap-6 rounded-[20px] p-6 flex flex-wrap text-center items-center justify-center">
+            <div class="w-full flex flex-wrap justify-center">
+              <span class="flex size-11 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
+                <Icon class="size-5" stroke-width={2} aria-hidden="true" />
+              </span>
+            </div>
+
             <div>
-              <p class="text-stat text-accent-ink">{f.value}</p>
-              <p class="mt-2 text-[14.5px] leading-snug text-fg-muted">{f.label}</p>
+              <p class="text-stat text-accent-ink text-center">{f.value}</p>
+              <p class="mt-2 text-[14.5px] leading-snug text-fg-muted text-center">{f.label}</p>
             </div>
           </li>
         ))}
