@@ -82,6 +82,10 @@ const ogImage = absolute(image);
     <ClientRouter />
     <slot name="head" />
 
+    <!-- Google Adsense -->
+    <script is:inline async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8181717251612842" crossorigin="anonymous"></script>
+    <meta name="google-adsense-account" content="ca-pub-8181717251612842">
+
     <!-- Marks JS availability before first paint so reveal targets can start hidden. -->
     <script is:inline>
       document.documentElement.classList.add('js');
