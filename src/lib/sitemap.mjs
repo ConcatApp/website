@@ -12,8 +12,9 @@
  * The serializer runs in `astro:build:done`, so the built HTML in dist/ is there to read.
  */
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { copyFileSync, existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 function git(args) {
   try {
@@ -75,6 +76,28 @@ function imagesFor(outDir, url) {
     images.push({ url: abs });
   }
   return images;
+}
+
+/**
+ * Writes /sitemap.xml, the address people and tools try first, next to the sitemap-index.xml and
+ * sitemap-N.xml that @astrojs/sitemap writes. While every page fits in one chunk it is that chunk,
+ * the full list of URLs; past one chunk it is the index. List it after sitemap() in
+ * `integrations`, so it runs once those files exist.
+ */
+export function sitemapXml() {
+  return {
+    name: 'concat:sitemap-xml',
+    hooks: {
+      'astro:build:done': ({ dir, logger }) => {
+        const out = fileURLToPath(dir);
+        const chunks = readdirSync(out).filter((f) => /^sitemap-\d+\.xml$/.test(f));
+        const from = chunks.length === 1 ? chunks[0] : 'sitemap-index.xml';
+        if (!existsSync(join(out, from))) return;
+        copyFileSync(join(out, from), join(out, 'sitemap.xml'));
+        logger.info(`sitemap.xml written from ${from}`);
+      },
+    },
+  };
 }
 
 /** The `serialize` hook for @astrojs/sitemap. `outDir` is the build's output folder. */

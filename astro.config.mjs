@@ -8,7 +8,7 @@ import remarkAlerts from './src/lib/remark-alerts.mjs';
 
 import sitemap from '@astrojs/sitemap';
 import { fileURLToPath } from 'node:url';
-import { enrich } from './src/lib/sitemap.mjs';
+import { enrich, sitemapXml } from './src/lib/sitemap.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -56,12 +56,15 @@ export default defineConfig({
   },
 
   // The sitemap gets each page's last commit date and its images (src/lib/sitemap.mjs). The 404
-  // page is left out: it is noindex.
+  // page is left out: it is noindex. sitemapXml() then writes /sitemap.xml from it. People get
+  // the HTML sitemap at /sitemap/ instead (src/pages/sitemap.astro): Chromium is removing XSLT,
+  // so a styled XML sitemap would show its visitors a warning.
   integrations: [
     mdx(),
     sitemap({
       filter: (page) => !/\/404\/?$/.test(page),
       serialize: enrich(fileURLToPath(new URL('./dist/', import.meta.url))),
     }),
+    sitemapXml(),
   ],
 });

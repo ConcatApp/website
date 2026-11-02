@@ -161,7 +161,11 @@ Path alias: `@/` maps to `src/`.
   Builds deploy of this repo; the jub0t/standalones repo's `website/` is a separate Next.js site with
   nothing for Concat in it. Canonical URLs, absolute Open Graph image URLs and the
   sitemap (`@astrojs/sitemap`, linked from `public/robots.txt`) derive from it.
-- The sitemap is for Google Search Console (submit `https://concat.standalones.org/sitemap-index.xml`).
+- The sitemap is for Google Search Console: submit `https://concat.standalones.org/sitemap.xml`, which
+  `sitemapXml()` in `src/lib/sitemap.mjs` writes from the integration's single chunk (the index once there
+  are several); `robots.txt` and the `<head>` link point at it, and `sitemap-index.xml` still exists. People
+  get the HTML sitemap at `/sitemap/` (`src/pages/sitemap.astro`, built from the docs navigation, linked from
+  the footer). No XSL stylesheet on the XML: Chromium is removing XSLT and warns visitors who open one.
   `src/lib/sitemap.mjs` adds each page's `lastmod` (the last commit that touched its MDX file, or the
   landing page and its components for `/`; left out on a shallow clone, which is why the Pages workflow
   checks out with `fetch-depth: 0`) and an image entry for every picture in its `<main>`. No

@@ -1,0 +1,99 @@
+---
+/**
+ * The sitemap for people: every page on the site, grouped the way the docs sidebar groups them,
+ * from the same navigation data, so a new guide or docs page shows up here on its own. Search
+ * engines read /sitemap.xml instead (src/lib/sitemap.mjs); this page also gives each guide and
+ * docs page one more internal link.
+ */
+import Base from '@/layouts/Base.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { LABEL, getNav, type Kind } from '@/lib/docs';
+
+const kinds: Kind[] = ['guides', 'docs'];
+// Each collection's landing page is its title link, so it is left out of the groups, and a group
+// with nothing else in it is dropped.
+const collections = await Promise.all(
+  kinds.map(async (kind) => {
+    const { groups } = await getNav(kind);
+    return {
+      kind,
+      label: LABEL[kind],
+      groups: groups
+        .map((g) => ({ ...g, items: g.items.filter((item) => item.href !== `/${kind}`) }))
+        .filter((g) => g.items.length > 0),
+    };
+  }),
+);
+const site = [
+  { href: '/', title: 'Home' },
+  { href: '/#download', title: 'Download' },
+  { href: '/#sponsor', title: 'Sponsor' },
+  { href: '/#contact', title: 'Contact' },
+  { href: '/#faq', title: 'Questions' },
+  { href: '/privacy', title: 'Privacy' },
+];
+---
+
+<Base
+  title="Sitemap · Concat"
+  description="Every page on the Concat website: the guides for people using the app, the developer docs, and the rest of the site."
+>
+  <Header />
+
+  <main class="pt-16">
+    <div class="container-x py-14 lg:py-20">
+      <h1 class="text-display-sm">Sitemap</h1>
+      <p class="text-lead mt-4 max-w-xl text-fg-muted">
+        Every page on this site. The same list for search engines:{' '}
+        <a href="/sitemap.xml" class="text-fg underline underline-offset-4" data-astro-reload>
+          sitemap.xml
+        </a>
+      </p>
+
+      <div class="mt-12 grid gap-2 lg:grid-cols-3">
+        <section class="card rounded-[28px] p-7 sm:rounded-[32px] sm:p-8">
+          <h2 class="text-[20px] tracking-[-0.02em]">Concat</h2>
+          <ul class="mt-4 grid gap-2 text-[15px]">
+            {site.map((page) => (
+              <li>
+                <a href={page.href} class="transition-colors duration-150 hover:text-accent-ink">
+                  {page.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {collections.map((c) => (
+          <section class="card rounded-[28px] p-7 sm:rounded-[32px] sm:p-8">
+            <h2 class="text-[20px] tracking-[-0.02em]">
+              <a href={`/${c.kind}`} class="transition-colors duration-150 hover:text-accent-ink">
+                {c.label}
+              </a>
+            </h2>
+            {c.groups.map((group) => (
+              <div class="mt-6">
+                <h3 class="eyebrow">{group.title}</h3>
+                <ul class="mt-3 grid gap-2 text-[15px]">
+                  {group.items.map((item) => (
+                    <li>
+                      <a
+                        href={item.href}
+                        class="text-fg-muted transition-colors duration-150 hover:text-fg"
+                      >
+                        {item.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </section>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Base>
