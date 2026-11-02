@@ -167,8 +167,9 @@ Path alias: `@/` maps to `src/`.
   get the HTML sitemap at `/sitemap/` (`src/pages/sitemap.astro`, built from the docs navigation, linked from
   the footer). No XSL stylesheet on the XML: Chromium is removing XSLT and warns visitors who open one.
   `src/lib/sitemap.mjs` adds each page's `lastmod` (the last commit that touched its MDX file, or the
-  landing page and its components for `/`; left out on a shallow clone, which is why the Pages workflow
-  checks out with `fetch-depth: 0`) and an image entry for every picture in its `<main>`. No
+  landing page and its components for `/`). Workers Builds clones shallow, so the first lookup runs
+  `git fetch --unshallow` (public repo, no credentials); if that fails lastmod is left out, never guessed.
+  The Pages workflow checks out with `fetch-depth: 0`) and an image entry for every picture in its `<main>`. No
   `changefreq` or `priority`: Google ignores them. The 404 page is filtered out.
 - `public/robots.txt` blocks AI training crawlers and AI answer bots (GPTBot, ClaudeBot, CCBot,
   Google-Extended, PerplexityBot, ChatGPT-User and the rest listed there) and `/pagefind/`, and allows

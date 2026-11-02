@@ -3,8 +3,10 @@
  *
  * - `lastmod`: the date of the last commit that touched the page's source (the MDX file for a
  *   guide or a docs page; the landing page and the components it is built from for `/`). Google
- *   uses lastmod to decide what to recrawl, but only while it stays truthful, so on a shallow
- *   clone, where every file would get the newest commit's date, it is left out instead.
+ *   uses lastmod to decide what to recrawl, but only while it stays truthful. Cloudflare's
+ *   Workers Builds checks out a shallow clone, where every file would get the newest commit's
+ *   date, so the first lookup fetches the rest of the history (the repository is public, so no
+ *   credentials are involved). If that fails, lastmod is left out rather than made up.
  * - `img`: the image sitemap extension, one entry per picture in the page's <main> (the guide
  *   screenshots, the hero window and the feature crops), so they are found for Google Images.
  *
@@ -21,13 +23,24 @@ function git(args) {
     return execFileSync('git', args, {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore'],
+      timeout: 120_000,
     }).trim();
   } catch {
     return '';
   }
 }
 
-const shallow = git(['rev-parse', '--is-shallow-repository']) !== 'false';
+const isShallow = () => git(['rev-parse', '--is-shallow-repository']) !== 'false';
+
+/** Whether commit dates can be trusted: checked once, unshallowing the clone first if needed. */
+let history;
+function hasHistory() {
+  if (history === undefined) {
+    if (isShallow()) git(['fetch', '--unshallow', '--quiet']);
+    history = !isShallow();
+  }
+  return history;
+}
 
 /** The source files a URL path is built from. */
 function sourcesFor(pathname) {
@@ -51,7 +64,7 @@ function sourcesFor(pathname) {
 }
 
 function lastmodFor(pathname) {
-  if (shallow) return undefined;
+  if (!hasHistory()) return undefined;
   const files = sourcesFor(pathname);
   if (files.length === 0) return undefined;
   const date = git(['log', '-1', '--format=%cI', '--', ...files]);
