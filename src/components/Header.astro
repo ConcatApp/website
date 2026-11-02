@@ -1,7 +1,8 @@
 ---
 /**
- * Floating glass bar over the page. The mark is the home link; three dropdown menus (Product,
- * Learn, Community) follow it on wide screens. On a pointer device a menu opens on hover; a
+ * A plain bar along the top of the page, after meltkit.com: the page colour, blurred, with a
+ * hairline under it. The mark and the name are the home link; two dropdown menus (Learn,
+ * Community) follow it on wide screens. On a pointer device a menu opens on hover; a
  * click (or Enter on the trigger) toggles it for touch and keyboard users, and Escape, an outside
  * click or focus leaving the menu closes it. Below the md breakpoint the menus fold into a sheet
  * behind the menu button.
@@ -11,17 +12,15 @@ import {
   BookOpen,
   Braces,
   ChevronDown,
-  CircleHelp,
-  Download,
+  CircleQuestionMark,
   Heart,
   Mail,
   Menu,
-  Milestone,
-  Sparkles,
   X,
 } from '@lucide/astro';
+import { Image } from 'astro:assets';
 import Button from '@/components/Button.astro';
-import Mark from '@/assets/mark.svg';
+import mark from '@/assets/mark.png';
 import { DISCORD_URL, REPO_URL } from '@/lib/releases';
 
 interface Item {
@@ -29,35 +28,12 @@ interface Item {
   label: string;
   hint: string;
   /** A Lucide component, or a Simple Icons path for a brand mark. */
-  icon?: typeof Download;
+  icon?: typeof BookOpen;
   brand?: string;
   external?: boolean;
 }
 
 const menus: Array<{ label: string; items: Item[] }> = [
-  {
-    label: 'Product',
-    items: [
-      {
-        href: '/#features',
-        label: 'Features',
-        hint: 'Captions, voices, titles and effects',
-        icon: Sparkles,
-      },
-      {
-        href: '/#download',
-        label: 'Download',
-        hint: 'Every platform, from GitHub Releases',
-        icon: Download,
-      },
-      {
-        href: '/roadmap',
-        label: 'Roadmap',
-        hint: 'What comes next and what it costs',
-        icon: Milestone,
-      },
-    ],
-  },
   {
     label: 'Learn',
     items: [
@@ -68,7 +44,7 @@ const menus: Array<{ label: string; items: Item[] }> = [
         icon: BookOpen,
       },
       { href: '/docs', label: 'Developer docs', hint: 'The API, JSON-RPC and gRPC', icon: Braces },
-      { href: '/#faq', label: 'FAQ', hint: 'Common questions', icon: CircleHelp },
+      { href: '/#faq', label: 'FAQ', hint: 'Common questions', icon: CircleQuestionMark },
     ],
   },
   {
@@ -100,15 +76,19 @@ const menus: Array<{ label: string; items: Item[] }> = [
 ];
 ---
 
-<header class="fixed inset-x-0 top-0 z-40 px-3 pt-3 sm:px-5 sm:pt-4" data-header>
-  <nav
-    class="glass mx-auto flex h-14 max-w-[1100px] items-center justify-between gap-4 rounded-[18px] pr-2 pl-4 sm:pl-5"
-    aria-label="Main"
-  >
-    <div class="flex items-center gap-5">
+<header class="glass fixed inset-x-0 top-0 z-40" data-header>
+  <nav class="container-x flex h-16 items-center justify-between gap-4" aria-label="Main">
+    <div class="flex items-center gap-6">
       <a href="/" aria-label="Concat home" class="flex items-center gap-2.5">
-        <Mark class="size-7" aria-hidden="true" />
-        <span class="text-[0.9375rem] font-semibold tracking-tight max-sm:sr-only">Concat</span>
+        <Image
+          src={mark}
+          alt=""
+          width={56}
+          height={56}
+          loading="eager"
+          class="size-7 rounded-[18.5%] ring-1 ring-white/12"
+        />
+        <span class="text-[15px] font-medium tracking-[-0.01em] max-sm:sr-only">Concat</span>
       </a>
 
       <ul class="hidden items-center gap-0.5 md:flex">
@@ -116,7 +96,7 @@ const menus: Array<{ label: string; items: Item[] }> = [
           <li class="group relative" data-menu>
             <button
               type="button"
-              class="flex h-9 items-center gap-1 rounded-full px-3 text-[14px] font-medium text-fg-muted transition-colors duration-200 group-hover:text-fg group-data-[open]:bg-bg-subtle group-data-[open]:text-fg hover:bg-bg-subtle"
+              class="flex h-9 items-center gap-1 rounded-full px-3 text-[14px] text-fg-muted transition-colors duration-150 group-hover:text-fg group-data-[open]:text-fg"
               aria-haspopup="true"
               aria-expanded="false"
             >
@@ -127,16 +107,16 @@ const menus: Array<{ label: string; items: Item[] }> = [
               />
             </button>
             <div class="absolute top-full left-0 hidden pt-3 group-hover:block group-data-[open]:block">
-              <ul class="card-glass w-72 rounded-xl p-1.5">
+              <ul class="card w-72 rounded-[22px] p-1.5 shadow-frame ring-1 ring-line">
                 {menu.items.map(({ icon: Icon, ...item }) => (
                   <li>
                     <a
                       href={item.href}
-                      class="group/item flex items-start gap-3 rounded-lg px-3 py-2 transition-colors duration-200 hover:bg-bg-subtle"
+                      class="group/item flex items-start gap-3 rounded-[16px] px-3 py-2.5 transition-colors duration-150 hover:bg-bg-subtle"
                       target={item.external ? '_blank' : undefined}
                       rel={item.external ? 'noopener' : undefined}
                     >
-                      <span class="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
+                      <span class="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-bg-overlay text-fg">
                         {Icon && <Icon class="size-4" aria-hidden="true" />}
                         {item.brand && (
                           <svg
@@ -169,7 +149,7 @@ const menus: Array<{ label: string; items: Item[] }> = [
         target="_blank"
         rel="noopener"
         aria-label="Concat on GitHub"
-        class="flex size-9 items-center justify-center rounded-full text-fg-muted transition-colors duration-200 hover:bg-bg-subtle hover:text-fg max-sm:hidden"
+        class="flex size-9 items-center justify-center rounded-full text-fg-muted transition-colors duration-150 hover:text-fg max-sm:hidden"
       >
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="size-[18px]">
           <path d={siGithub.path}></path>
@@ -180,18 +160,18 @@ const menus: Array<{ label: string; items: Item[] }> = [
         target="_blank"
         rel="noopener"
         aria-label="Concat on Discord"
-        class="flex size-9 items-center justify-center rounded-full text-fg-muted transition-colors duration-200 hover:bg-bg-subtle hover:text-fg max-sm:hidden"
+        class="flex size-9 items-center justify-center rounded-full text-fg-muted transition-colors duration-150 hover:text-fg max-sm:hidden"
       >
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="size-[18px]">
           <path d={siDiscord.path}></path>
         </svg>
       </a>
-      <Button href="/#download" size="sm" class="ml-1 h-10 rounded-[12px] px-5">
+      <Button href="/#download" size="sm" class="ml-2">
         Download
       </Button>
       <button
         type="button"
-        class="flex size-10 items-center justify-center rounded-[12px] text-fg-muted transition-colors duration-200 hover:bg-bg-subtle hover:text-fg md:hidden"
+        class="flex size-10 items-center justify-center rounded-full text-fg-muted transition-colors duration-150 hover:bg-bg-subtle hover:text-fg md:hidden"
         aria-label="Open menu"
         aria-expanded="false"
         aria-controls="mobile-menu"
@@ -203,26 +183,20 @@ const menus: Array<{ label: string; items: Item[] }> = [
     </div>
   </nav>
 
-  <div
-    id="mobile-menu"
-    class="card-glass mx-auto mt-2 hidden max-w-[1100px] rounded-[18px] p-2 md:hidden"
-    data-mobile-menu
-  >
+  <div id="mobile-menu" class="card mx-3 mb-3 hidden rounded-[22px] p-2 md:hidden" data-mobile-menu>
     {menus.map((menu) => (
       <div class="p-2">
-        <p class="px-2 pb-1 text-xs font-semibold tracking-wide text-fg-subtle uppercase">
-          {menu.label}
-        </p>
+        <p class="px-2 pb-1 text-xs font-medium text-fg-subtle">{menu.label}</p>
         <ul>
           {menu.items.map(({ icon: Icon, ...item }) => (
             <li>
               <a
                 href={item.href}
-                class="flex items-center gap-3 rounded-lg px-2 py-2 text-[0.9375rem] font-medium hover:bg-bg-subtle"
+                class="flex items-center gap-3 rounded-[14px] px-2 py-2 text-[15px] font-medium hover:bg-bg-subtle"
                 target={item.external ? '_blank' : undefined}
                 rel={item.external ? 'noopener' : undefined}
               >
-                <span class="flex size-7 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
+                <span class="flex size-7 items-center justify-center rounded-full bg-bg-overlay text-fg">
                   {Icon && <Icon class="size-3.5" aria-hidden="true" />}
                   {item.brand && (
                     <svg

@@ -10,14 +10,12 @@ import { formatBytes, type PlatformModel } from '@/lib/releases';
 
 interface Props {
   platforms: PlatformModel[];
-  /** `inverse` is the white button on the accent block. */
-  variant?: 'primary' | 'inverse';
   /** Show the secondary "All platforms" link next to it. */
   all?: boolean;
   class?: string;
 }
 
-const { platforms, variant = 'primary', all = true, class: className } = Astro.props;
+const { platforms, all = true, class: className } = Astro.props;
 
 type Entry = { url: string; size: string };
 const map = Object.fromEntries(
@@ -40,16 +38,12 @@ const initialFile = initial ? initial.arches[initial.defaultArch] : undefined;
 ---
 
 <div class:list={['flex flex-wrap items-center gap-3', className]} data-download>
-  <Button href={initialFile?.url ?? '#download'} size="lg" variant={variant} data-download-primary>
+  <Button href={initialFile?.url ?? '#download'} size="lg" data-download-primary>
     <Download class="size-[18px]" aria-hidden="true" />
     <span data-download-label>Download{initial ? ` for ${initial.name}` : ''}</span>
   </Button>
   {all && (
-    <Button
-      href="#download"
-      variant={variant === 'inverse' ? 'outline-inverse' : 'secondary'}
-      size="lg"
-    >
+    <Button href="#download" variant="secondary" size="lg">
       All platforms
     </Button>
   )}

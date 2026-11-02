@@ -1,9 +1,16 @@
 ---
-import Container from '@/components/Container.astro';
-import Mark from '@/assets/mark.svg';
+/**
+ * The outro, after meltkit.com: one rounded dark panel inside the blue band, holding the
+ * links, the legal line and the name as wide as the column, filled with the band. The landing
+ * page puts its last call to action at the top of the panel through the `cta` slot; every other
+ * page shows the panel without it.
+ */
+import { Image } from 'astro:assets';
+import mark from '@/assets/mark.png';
 import { DISCORD_URL, RELEASES_URL, REPO_URL } from '@/lib/releases';
 
 const year = new Date().getFullYear();
+const hasCta = Astro.slots.has('cta');
 const columns = [
   {
     title: 'Product',
@@ -12,7 +19,6 @@ const columns = [
       { href: '/guides', label: 'Guides' },
       { href: '/docs', label: 'Developer docs' },
       { href: RELEASES_URL, label: 'Releases', external: true },
-      { href: '/roadmap', label: 'Roadmap' },
     ],
   },
   {
@@ -36,41 +42,86 @@ const columns = [
 ];
 ---
 
-<footer class="border-t border-line">
-  <Container class="py-14 lg:py-20">
-    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-      <div>
-        <p class="flex items-center gap-2.5 text-[0.9375rem] font-semibold">
-          <Mark class="size-6" aria-hidden="true" />
-          Concat
-        </p>
-        <p class="mt-3 max-w-xs text-sm leading-relaxed text-fg-muted">
-          The free, open-source CapCut replacement. Runs entirely on your machine.
-        </p>
-      </div>
-      {columns.map((col) => (
-        <div>
-          <p class="text-sm font-medium">{col.title}</p>
-          <ul class="mt-4 space-y-2.5 text-sm text-fg-muted">
-            {col.links.map((link) => (
-              <li>
-                <a
-                  href={link.href}
-                  class="transition-colors duration-200 hover:text-fg"
-                  target={link.external ? '_blank' : undefined}
-                  rel={link.external ? 'noopener' : undefined}
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
+<footer class="band mt-28 rounded-t-[28px] pt-[clamp(16px,3vw,32px)] pb-[clamp(16px,3vw,32px)] sm:rounded-t-[40px] lg:mt-40">
+  <!-- The band is the whole footer, a sheet with a clean rounded top edge against the page; the
+       panel stands inside it with the band showing on every side. -->
+  <div class="container-x">
+    <div
+      class:list={[
+        'rounded-[28px] bg-card px-[clamp(24px,5vw,64px)] pb-[clamp(28px,4vw,44px)] sm:rounded-[40px]',
+        hasCta ? 'pt-[clamp(64px,8vw,110px)]' : 'pt-[clamp(28px,4vw,44px)]',
+      ]}
+    >
+      {hasCta && (
+        <div class="pb-[clamp(64px,8vw,100px)] text-center">
+          <slot name="cta" />
         </div>
-      ))}
+      )}
+      <div
+        class:list={[
+          'grid gap-8 text-[14px] tracking-[-0.02em] sm:grid-cols-2 md:grid-cols-[1.6fr_1fr_1fr_1fr] md:gap-10',
+          hasCta && 'border-t border-line pt-10',
+        ]}
+      >
+        <div>
+          <a href="/" class="flex w-fit items-center gap-2.5 font-medium">
+            <Image
+              src={mark}
+              alt=""
+              width={56}
+              height={56}
+              class="size-7 rounded-[18.5%] ring-1 ring-white/12"
+            />
+            Concat
+          </a>
+          <p class="mt-4 max-w-[300px] text-fg-muted">
+            The free, open-source CapCut replacement. A video editor that runs entirely on your
+            machine.
+          </p>
+        </div>
+        {columns.map((col) => (
+          <nav aria-label={col.title} class="grid content-start justify-items-start gap-3">
+            <p class="mb-1 font-medium text-fg-muted">{col.title}</p>
+            {col.links.map((link) => (
+              <a
+                href={link.href}
+                class="transition-colors duration-150 hover:text-fg-muted"
+                target={link.external ? '_blank' : undefined}
+                rel={link.external ? 'noopener' : undefined}
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+        ))}
+      </div>
+      <div class="mt-10 flex flex-wrap justify-between gap-x-6 gap-y-2 border-t border-line pt-6 text-[13px] text-fg-muted">
+        <p>&copy; {year} Concat. Free and open source under AGPL-3.0.</p>
+        <p>Not affiliated with CapCut or ByteDance.</p>
+      </div>
+      <div class="wordmark-box mt-[clamp(32px,5vw,56px)]" aria-hidden="true">
+        <p class="wordmark band">Concat</p>
+      </div>
     </div>
-    <div class="mt-12 flex flex-col gap-2 border-t border-line pt-6 text-sm text-fg-subtle sm:flex-row sm:items-center sm:justify-between">
-      <p>&copy; {year} Concat. Free and open source under AGPL-3.0.</p>
-      <p>Not affiliated with CapCut or ByteDance.</p>
-    </div>
-  </Container>
+  </div>
 </footer>
+
+<style>
+  /* The name as wide as the panel's column: the font size follows the box's width. */
+  .wordmark-box {
+    container-type: inline-size;
+  }
+  .wordmark {
+    font-size: 34.5cqw;
+    font-weight: 500;
+    letter-spacing: -0.06em;
+    line-height: 0.8;
+    padding-bottom: 0.06em;
+    white-space: nowrap;
+    user-select: none;
+    margin-left: -0.04em;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+</style>

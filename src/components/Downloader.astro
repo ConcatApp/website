@@ -19,7 +19,7 @@ interface Props {
 const { platforms } = Astro.props;
 ---
 
-<div data-downloader class="rounded-xl border border-line bg-bg p-6 md:p-10">
+<div data-downloader class="rounded-[22px] bg-bg p-5 sm:p-8 md:p-9">
   <div>
     <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
       <p class="text-sm text-fg-muted">Operating system</p>
@@ -36,7 +36,7 @@ const { platforms } = Astro.props;
           role="radio"
           aria-checked="false"
           data-os={p.id}
-          class="group flex cursor-pointer flex-col items-start gap-4 rounded-lg border border-line bg-bg p-4 text-left transition-[border-color,background-color] duration-200 ease-out-expo hover:border-line-strong aria-checked:border-accent aria-checked:bg-accent-soft"
+          class="group flex cursor-pointer flex-col items-start gap-4 rounded-[18px] border border-transparent bg-card p-4 text-left transition-[border-color,background-color] duration-200 ease-out-expo hover:bg-card-hover aria-checked:border-accent aria-checked:bg-accent-soft"
         >
           <OsIcon
             platform={p.id}
@@ -87,7 +87,7 @@ const { platforms } = Astro.props;
             <Button href={f.binary.url} variant={i === 0 ? 'primary' : 'secondary'}>
               <Download class="size-4" aria-hidden="true" />
               {f.label}
-              <span class={i === 0 ? 'font-normal text-accent-fg' : 'text-fg-subtle'}>
+              <span class={i === 0 ? 'font-normal opacity-60' : 'text-fg-subtle'}>
                 {formatBytes(f.binary.bytes)}
               </span>
             </Button>
@@ -107,7 +107,7 @@ const { platforms } = Astro.props;
           <p class="mt-6 max-w-2xl text-sm leading-relaxed text-fg-muted">
             {p.note}
             {p.command && (
-              <code class="mt-2 block w-fit rounded-md border border-line bg-bg-subtle px-3 py-2 font-mono text-xs text-fg select-all">
+              <code class="mt-2 block w-fit rounded-md border border-line bg-card px-3 py-2 font-mono text-xs text-fg select-all">
                 {p.command}
               </code>
             )}

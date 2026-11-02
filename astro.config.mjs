@@ -11,10 +11,10 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   // Docs and guides are MDX. The unified processor (rather than Astro 7's default Sätteri) so the
-  // remark plugin for GitHub-style alerts runs; MDX inherits it. Shiki in a light theme.
+  // remark plugin for GitHub-style alerts runs; MDX inherits it. Shiki in a dark theme, like the page.
   markdown: {
     processor: unified({ remarkPlugins: [remarkAlerts] }),
-    shikiConfig: { theme: 'github-light' },
+    shikiConfig: { theme: 'github-dark-default' },
   },
 
   // Production origin: canonical URLs, absolute Open Graph image URLs and the sitemap all derive
@@ -24,28 +24,27 @@ export default defineConfig({
   prefetch: true,
 
   // Fonts are downloaded at build time and self-hosted (no runtime request to Google).
-  // Exposed as CSS variables; Tailwind maps them to `font-sans` and `font-heading` in global.css.
+  // Exposed as CSS variables; Tailwind maps them to `font-sans` and `font-hand` in global.css.
   fonts: [
     {
       provider: fontProviders.google(),
-      name: 'Mona Sans',
-      cssVariable: '--font-mona',
-      weights: ['200 900'],
+      name: 'Geist',
+      cssVariable: '--font-geist',
+      weights: ['100 900'],
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['system-ui', 'Segoe UI', 'Helvetica', 'Arial', 'sans-serif'],
       display: 'swap',
     },
-    // Headings and display sizes (h1 to h3, section titles, stat numbers); Mona Sans stays the
-    // body face. Tailwind maps it to `font-heading` in src/styles/global.css.
+    // The one handwritten aside next to the hero button.
     {
       provider: fontProviders.google(),
-      name: 'Bricolage Grotesque',
-      cssVariable: '--font-bricolage',
-      weights: ['200 800'],
+      name: 'Gamja Flower',
+      cssVariable: '--font-gamja',
+      weights: ['400'],
       styles: ['normal'],
       subsets: ['latin'],
-      fallbacks: ['system-ui', 'Segoe UI', 'Helvetica', 'Arial', 'sans-serif'],
+      fallbacks: ['Segoe Print', 'cursive'],
       display: 'swap',
     },
   ],

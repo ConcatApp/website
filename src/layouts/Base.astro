@@ -2,7 +2,7 @@
 /**
  * Document shell: metadata for search engines and link previews (Open Graph and Twitter cards,
  * which Discord, Slack, iMessage and the rest read too), the font, the client router and the
- * scroll script. Absolute URLs come from `site` in astro.config.mjs. Pages can add tags through
+ * scroll script. The page is dark only. Absolute URLs come from `site` in astro.config.mjs. Pages can add tags through
  * the `head` slot (the landing page adds JSON-LD there).
  */
 import '@/styles/global.css';
@@ -48,8 +48,8 @@ const ogImage = absolute(image);
     <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
     <meta name="application-name" content={SITE_NAME} />
     <meta name="apple-mobile-web-app-title" content={SITE_NAME} />
-    <meta name="theme-color" content="#ffffff" />
-    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#0b0b0b" />
+    <meta name="color-scheme" content="dark" />
 
     <meta property="og:type" content={type} />
     <meta property="og:site_name" content={SITE_NAME} />
@@ -70,21 +70,25 @@ const ogImage = absolute(image);
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={imageAlt} />
 
-    <link rel="icon" href="/favicon.ico" sizes="32x32" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" href="/favicon.png" sizes="64x64" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="generator" content={Astro.generator} />
 
-    <Font cssVariable="--font-mona" preload />
-    <Font cssVariable="--font-bricolage" preload />
+    <Font cssVariable="--font-geist" preload />
+    <Font cssVariable="--font-gamja" />
     <ClientRouter />
     <slot name="head" />
 
     <!-- Google Adsense -->
-    <script is:inline async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8181717251612842" crossorigin="anonymous"></script>
-    <meta name="google-adsense-account" content="ca-pub-8181717251612842">
+    <script
+      is:inline
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8181717251612842"
+      crossorigin="anonymous"
+    ></script>
+    <meta name="google-adsense-account" content="ca-pub-8181717251612842" />
 
     <!-- Marks JS availability before first paint so reveal targets can start hidden. -->
     <script is:inline>

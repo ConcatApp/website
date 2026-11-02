@@ -1,6 +1,6 @@
 /**
- * Numbers for the stats row: GitHub stars and the download total across every release (the app's
- * files only: SHA256SUMS and manifest.json are left out). Fetched at
+ * Numbers for the stats row: GitHub stars and the download total across every asset of every
+ * release, the same total GitHub and the README's Downloads badge show. Fetched at
  * build time from the GitHub API and falling back to the committed snapshot in src/data when the
  * network or the rate limit gets in the way. Set GITHUB_TOKEN in the build environment to avoid the
  * 60 requests an hour unauthenticated limit on shared build machines.
@@ -18,9 +18,6 @@ const API = 'https://api.github.com/repos/jub0t/Concat';
 interface Release {
   assets?: Array<{ name?: string; download_count?: number }>;
 }
-
-/** Release files that are not the app: fetched by scripts and checkers, not by people installing. */
-const NOT_DOWNLOADS = new Set(['SHA256SUMS', 'manifest.json']);
 
 export async function getStats(): Promise<{ stats: GitHubStats; live: boolean }> {
   try {
@@ -43,11 +40,7 @@ export async function getStats(): Promise<{ stats: GitHubStats; live: boolean }>
       const repo = (await repoRes.json()) as { stargazers_count?: number };
       const releases = (await releasesRes.json()) as Release[];
       const downloads = releases.reduce(
-        (sum, r) =>
-          sum +
-          (r.assets ?? [])
-            .filter((a) => !NOT_DOWNLOADS.has(a.name ?? ''))
-            .reduce((n, a) => n + (a.download_count ?? 0), 0),
+        (sum, r) => sum + (r.assets ?? []).reduce((n, a) => n + (a.download_count ?? 0), 0),
         0,
       );
       if (typeof repo.stargazers_count === 'number' && downloads > 0) {
@@ -63,11 +56,12 @@ export async function getStats(): Promise<{ stats: GitHubStats; live: boolean }>
   return { stats: fallback, live: false };
 }
 
-/** 23157 -> "23K+", 3813 -> "3.8K", 640 -> "640". */
+/** 395210 -> "395K+", 13846 -> "13.8K", 640 -> "640". Rounds down, so a figure never overstates. */
 export function formatCount(n: number, { plus = false }: { plus?: boolean } = {}): string {
   const suffix = plus ? '+' : '';
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, '')}M${suffix}`;
-  if (n >= 10_000) return `${Math.floor(n / 1000)}K${suffix}`;
-  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, '')}K${suffix}`;
+  const trim = (x: number) => x.toFixed(1).replace(/\.0$/, '');
+  if (n >= 1_000_000) return `${trim(Math.floor(n / 100_000) / 10)}M${suffix}`;
+  if (n >= 100_000) return `${Math.floor(n / 1000)}K${suffix}`;
+  if (n >= 1000) return `${trim(Math.floor(n / 100) / 10)}K${suffix}`;
   return `${n}${suffix}`;
 }

@@ -13,24 +13,22 @@
  *   src/assets/feature-timeline.png   the timeline: text, effect, video and speech tracks (feature row)
  *   src/assets/feature-library.png    the Library pane: page tabs, Media filters, Import, the bin
  *   src/assets/sponsors/proxyon.png   the current paid sponsor's logo (README lists it)
- *   src/assets/mark.svg               the app mark (white two-C glyph on the rounded blue tile),
- *                                     inlined by the header and footer
- *   public/favicon.svg                the same file
- *   public/favicon.png                64px, rendered from the rounded tile
- *   public/apple-touch-icon.png       180px, rendered from the square tile (iOS rounds it itself)
- *   public/favicon.ico                the app's own, 16 to 256px frames
+ *   src/assets/mark.png               the app mark (the waving cat on the rounded dark tile, as the
+ *                                     README shows it), 512px; the header, hero and footer resize it
+ *   public/favicon.png                64px, from the same mark
+ *   public/favicon.ico                16, 32 and 48px frames of the same mark
+ *   public/apple-touch-icon.png       180px, from the square dark tile (iOS rounds it itself)
  */
 import sharp from 'sharp';
-import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
 const CDN = 'https://cdn.jsdelivr.net/gh/jub0t/Concat@main/assets';
 const FILES = [
   'editor-light.png',
-  'new_concat_logo_512_rounded_light_theme.svg',
-  'new_concat_logo_512_square_light_theme.svg',
-  'icons/concat.ico',
+  'concat-mark-dark.png',
+  'new_concat_logo_512_square_dark_theme.svg',
   'proxyon_sponsor_logo.png',
 ];
 
@@ -38,7 +36,7 @@ async function findAssets() {
   const local = resolve(process.env.CONCAT_REPO ?? '../timeline', 'assets');
   if (existsSync(local)) return local;
   const dir = join(tmpdir(), 'concat-assets');
-  mkdirSync(join(dir, 'icons'), { recursive: true });
+  mkdirSync(dir, { recursive: true });
   for (const file of FILES) {
     const res = await fetch(`${CDN}/${file}`);
     if (!res.ok) {
@@ -142,28 +140,41 @@ for (const [file, [source, x, y, w, h]] of Object.entries(crops)) {
   }
 }
 
-// The mark. The app draws it as SVG (a white two-C glyph on the #0568fd tile, since 2026-09-28),
-// so the site inlines the rounded tile and renders each favicon from it at its own size instead
-// of downscaling a raster. The Apple touch icon comes from the square tile because iOS applies
-// its own corner radius.
-const rounded = resolve(ASSETS, 'new_concat_logo_512_rounded_light_theme.svg');
-const square = resolve(ASSETS, 'new_concat_logo_512_square_light_theme.svg');
-// Since 2026-10 the app's SVGs embed a PNG of the glyph (a 40 kB data URI). The site inlines the
-// mark twice per page and uses it as the favicon, so those are kept at the last clean vector in
-// git until the upstream file is a vector again.
-const isVector = (f) => existsSync(f) && !readFileSync(f, 'utf8').includes('data:image');
-if (!isVector(rounded))
-  console.warn('mark: upstream SVG embeds a raster, keeping src/assets/mark.svg');
-if (isVector(rounded)) {
-  copyFileSync(rounded, 'src/assets/mark.svg');
-  copyFileSync(rounded, 'public/favicon.svg');
-  await sharp(rounded).resize(64, 64).png().toFile('public/favicon.png');
+// The mark: the waving cat on the dark tile, at the top of every README since 2026-10-13
+// (assets/concat-mark-dark.png). The app's SVGs only wrap a PNG of the cat, so the site works from
+// the raster: astro:assets resizes src/assets/mark.png wherever the page shows it, and each favicon
+// is resized from the same file. The Apple touch icon comes from the square tile because iOS
+// applies its own corner radius.
+const mark = resolve(ASSETS, 'concat-mark-dark.png');
+const square = resolve(ASSETS, 'new_concat_logo_512_square_dark_theme.svg');
+if (existsSync(mark)) {
+  await sharp(mark).resize(512, 512).png({ compressionLevel: 9 }).toFile('src/assets/mark.png');
+  await sharp(mark).resize(64, 64).png().toFile('public/favicon.png');
+  // An .ico is a directory of PNG frames: a 6-byte header, a 16-byte entry per frame, the data.
+  const frames = await Promise.all(
+    [16, 32, 48].map(async (size) => ({
+      size,
+      data: await sharp(mark).resize(size, size).png().toBuffer(),
+    })),
+  );
+  const head = Buffer.alloc(6 + 16 * frames.length);
+  head.writeUInt16LE(1, 2);
+  head.writeUInt16LE(frames.length, 4);
+  let offset = head.length;
+  frames.forEach(({ size, data }, i) => {
+    const at = 6 + 16 * i;
+    head.writeUInt8(size, at);
+    head.writeUInt8(size, at + 1);
+    head.writeUInt16LE(1, at + 4);
+    head.writeUInt16LE(32, at + 6);
+    head.writeUInt32LE(data.length, at + 8);
+    head.writeUInt32LE(offset, at + 12);
+    offset += data.length;
+  });
+  writeFileSync('public/favicon.ico', Buffer.concat([head, ...frames.map((f) => f.data)]));
 }
-if (isVector(square)) {
+if (existsSync(square)) {
   await sharp(square).resize(180, 180).png().toFile('public/apple-touch-icon.png');
-}
-if (existsSync(resolve(ASSETS, 'icons/concat.ico'))) {
-  copyFileSync(resolve(ASSETS, 'icons/concat.ico'), 'public/favicon.ico');
 }
 
 // Sponsor logos, as the README ships them.

@@ -18,17 +18,14 @@ const byHref = new Map(entries.map((e) => [e.id === 'index' ? '/guides' : `/guid
     if (items.length === 0) return null;
     return (
       <section>
-        <h2 class="text-xs font-semibold tracking-wide text-fg-subtle uppercase">{group.title}</h2>
+        <h2 class="eyebrow">{group.title}</h2>
         <ul class="mt-4 grid gap-4 sm:grid-cols-2">
           {items.map((item) => {
             const entry = byHref.get(item.href);
             return (
               <li>
-                <a
-                  href={item.href}
-                  class="card-glass group flex h-full flex-col rounded-[20px] p-5"
-                >
-                  <p class="text-[1.0625rem] font-semibold tracking-tight">{item.title}</p>
+                <a href={item.href} class="card group flex h-full flex-col rounded-[22px] p-6">
+                  <p class="text-[1.0625rem] font-medium tracking-[-0.02em]">{item.title}</p>
                   {entry?.data.description && (
                     <p class="mt-1.5 text-sm leading-relaxed text-fg-muted">
                       {entry.data.description}

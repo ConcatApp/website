@@ -2,7 +2,7 @@
 import type { HTMLAttributes } from 'astro/types';
 import { cn } from '@/lib/cn';
 
-type Variant = 'primary' | 'secondary' | 'ghost' | 'inverse' | 'outline-inverse';
+type Variant = 'primary' | 'secondary' | 'ghost';
 type Size = 'sm' | 'md' | 'lg';
 
 interface Props extends Omit<HTMLAttributes<'a'>, 'type'> {
@@ -28,25 +28,21 @@ const Tag = href ? 'a' : 'button';
 
 const base =
   'inline-flex items-center justify-center gap-2 font-medium whitespace-nowrap select-none ' +
-  'transition-[background-color,color,border-color,box-shadow] duration-200 ease-out-expo ' +
+  'transition-[background-color,color,border-color,transform] duration-150 active:translate-y-px ' +
   'disabled:pointer-events-none disabled:opacity-50';
 
 const variants: Record<Variant, string> = {
-  // Solid blue with white text: the one place the accent fills a control.
-  primary: 'bg-accent text-accent-fg hover:bg-accent-hover',
-  // Gray fill with a hairline, like a secondary control in a product UI.
-  secondary: 'bg-bg-subtle text-fg border border-line hover:border-line-strong hover:bg-bg-overlay',
+  // The light pill with dark text: the main action, one per view.
+  primary: 'bg-primary text-primary-fg hover:bg-primary-hover',
+  // A faint wash inside a hairline.
+  secondary: 'border border-line-strong bg-bg-subtle text-fg hover:bg-bg-overlay',
   ghost: 'text-fg-muted hover:text-fg hover:bg-bg-subtle',
-  // White on the accent block.
-  inverse: 'bg-bg text-fg hover:bg-bg/90',
-  'outline-inverse':
-    'border border-white/40 bg-transparent text-accent-fg hover:border-white hover:bg-white/10',
 };
 
 const sizes: Record<Size, string> = {
-  sm: 'h-9 rounded-md px-3.5 text-sm',
-  md: 'h-10 rounded-md px-5 text-[0.9375rem]',
-  lg: 'h-12 rounded-[0.75rem] px-6 text-base',
+  sm: 'h-[34px] rounded-full px-3.5 text-[13px]',
+  md: 'h-11 rounded-full px-5 text-[15px] tracking-[-0.01em]',
+  lg: 'h-[50px] rounded-[17px] px-5 text-[17px] tracking-[-0.02em]',
 };
 ---
 

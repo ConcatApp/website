@@ -23,7 +23,7 @@ const { src, alt, width } = Astro.props;
     alt={alt}
     widths={[640, 960, 1280, 1600]}
     sizes="(min-width: 1024px) 720px, 100vw"
-    class="block h-auto w-full rounded-lg border border-line shadow-card"
+    class="block h-auto w-full rounded-[14px] border border-line-strong shadow-card"
   />
   {Astro.slots.has('default') && (
     <figcaption class="mt-3 text-sm leading-relaxed text-fg-muted">

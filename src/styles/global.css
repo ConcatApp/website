@@ -3,91 +3,101 @@
 
 /* ------------------------------------------------------------------
    Design tokens (Tailwind v4 CSS-first config)
-   Light only. A white canvas, one warm-neutral gray for bands and secondary controls, hairline
-   borders, soft deep shadows on cards, and one blue accent. Every token here becomes a utility:
-   --color-bg -> bg-bg, --font-sans -> font-sans, --ease-out-expo -> ease-out-expo ...
+   Dark only, after meltkit.com: a near-black page, flat true-neutral cards with very round
+   corners and no borders or shadows, one light pill for the main action, and Concat's blue as
+   the one colour, mostly as the grainy band behind product shots. Every token here becomes a
+   utility: --color-bg -> bg-bg, --font-sans -> font-sans, --ease-out-expo -> ease-out-expo ...
    ------------------------------------------------------------------ */
 @theme {
-  /* Typography: Mona Sans (body) and Bricolage Grotesque (headings) are self-hosted via Astro's Fonts API (astro.config.mjs). */
-  --font-sans: var(--font-mona), system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
-  --font-heading:
-    var(--font-bricolage), var(--font-mona), system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
+  /* Typography: Geist for everything, self-hosted via Astro's Fonts API (astro.config.mjs).
+     `font-heading` is kept as an alias so headings can be named on their own. Gamja Flower is
+     the one handwritten aside by the hero button. */
+  --font-sans: var(--font-geist), system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-heading: var(--font-sans);
+  --font-hand: var(--font-gamja), 'Segoe Print', cursive;
   --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'JetBrains Mono', Menlo, monospace;
 
-  /* The hero headline: big, medium-heavy, tight. */
-  --text-display: clamp(2.75rem, 1.3rem + 5vw, 5.5rem);
-  --text-display--line-height: 0.98;
+  /* The hero headline: 40 to 64px, medium weight, tight. */
+  --text-display: clamp(2.5rem, 1.2rem + 3.6vw, 4rem);
+  --text-display--line-height: 1.016;
   --text-display--letter-spacing: -0.03em;
-  --text-display--font-weight: 600;
+  --text-display--font-weight: 500;
 
-  /* Section titles. */
-  --text-display-sm: clamp(2rem, 1.3rem + 2.8vw, 3.5rem);
-  --text-display-sm--line-height: 1.02;
-  --text-display-sm--letter-spacing: -0.022em;
+  /* Section titles: 34 to 48px. */
+  --text-display-sm: clamp(2.125rem, 1.4rem + 1.9vw, 3rem);
+  --text-display-sm--line-height: 1;
+  --text-display-sm--letter-spacing: -0.02em;
   --text-display-sm--font-weight: 500;
 
-  /* Card titles and the big number on a fact card. */
-  --text-title: clamp(1.375rem, 1.1rem + 0.9vw, 1.75rem);
+  /* Big card titles and the number on a fact tile. */
+  --text-title: clamp(1.5rem, 1.2rem + 0.9vw, 2rem);
   --text-title--line-height: 1.05;
   --text-title--letter-spacing: -0.02em;
-  --text-title--font-weight: 600;
+  --text-title--font-weight: 500;
 
-  --text-stat: clamp(2rem, 1.5rem + 1.5vw, 2.75rem);
+  --text-stat: clamp(2rem, 1.5rem + 1.6vw, 3rem);
   --text-stat--line-height: 1;
   --text-stat--letter-spacing: -0.02em;
-  --text-stat--font-weight: 600;
+  --text-stat--font-weight: 500;
 
-  --text-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.1875rem);
+  /* The line under a headline: medium weight, muted, slightly tight. */
+  --text-lead: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
   --text-lead--line-height: 1.5;
+  --text-lead--letter-spacing: -0.02em;
+  --text-lead--font-weight: 500;
 
-  /* Surfaces: the page and cards are white. "subtle" is the gray band behind media and the fill
-     of secondary buttons; "overlay" is one step darker for hover and pressed states. */
-  --color-bg: oklch(100% 0 0);
-  --color-bg-subtle: oklch(97.4% 0.003 250);
-  --color-bg-overlay: oklch(95.2% 0.005 250);
+  /* Surfaces. The page is near-black; cards are one flat step up. "subtle" and "overlay" are
+     white washes, so they read the same on the page and on a card: insets, secondary buttons,
+     hover. */
+  --color-bg: #0b0b0b;
+  --color-card: #1f1f1f;
+  --color-card-hover: #252525;
+  --color-bg-subtle: color-mix(in oklab, white 5%, transparent);
+  --color-bg-overlay: color-mix(in oklab, white 9%, transparent);
 
-  /* Text: a cool near-black (never #000) and two gray steps that both clear 4.5:1 on white */
-  --color-fg: oklch(16% 0.012 262);
-  --color-fg-muted: oklch(45% 0.018 262);
-  --color-fg-subtle: oklch(53% 0.015 262);
+  /* Text: near-white and two grey steps. Both steps clear 4.5:1 on the page and on a card. */
+  --color-fg: #efefef;
+  --color-fg-muted: #a3a3a3;
+  --color-fg-subtle: #8b8b8b;
 
-  /* Rules: alpha ink so they read the same on white and on the gray band */
-  --color-line: color-mix(in oklch, var(--color-fg) 10%, transparent);
-  --color-line-strong: color-mix(in oklch, var(--color-fg) 18%, transparent);
+  /* Rules: alpha white, the same on the page and on a card */
+  --color-line: color-mix(in oklab, white 8%, transparent);
+  --color-line-strong: color-mix(in oklab, white 14%, transparent);
 
-  /* ONE accent: the app's primary blue, #0568fd, the tile behind its mark. It is a fill colour:
-     primary buttons (with white text, 4.8:1), the CTA block, selected borders. As text it only
-     reaches 4.4:1 on the gray band, so anything that is text (links, arrow links, stat numbers,
-     the focus ring) uses `accent-ink`, a deeper step of the same hue that clears 5.8:1 on white
-     and on the band. */
+  /* The main action is a light pill with dark text. */
+  --color-primary: #f4f4f4;
+  --color-primary-hover: #dedede;
+  --color-primary-fg: #0b0b0b;
+
+  /* ONE colour: the app's primary blue, #0568fd. A fill: the bands, selected borders and chips.
+     As text on this dark page it is too deep, so links and arrow links use `accent-ink`, a
+     lighter step of the same hue (7:1 on a card). `accent-soft` is the translucent wash for
+     selected chips and icon wells. */
   --color-accent: #0568fd;
-  --color-accent-hover: oklch(52% 0.236 261);
-  --color-accent-fg: oklch(100% 0 0);
-  --color-accent-ink: oklch(50% 0.22 261);
-  /* Pale blue for selected chips, icon wells and badges. The only surface the accent may tint. */
-  --color-accent-soft: color-mix(in oklch, #0568fd 10%, white);
+  --color-accent-hover: #2a7fff;
+  --color-accent-fg: #ffffff;
+  --color-accent-ink: #79adff;
+  --color-accent-soft: color-mix(in oklab, #0568fd 22%, transparent);
 
-  /* Radii: controls 10px, cards 20px, big cards 34px, the CTA block 36px. */
+  /* Radii: controls 10px, the large button 17px, window shots 19px, small cards 22px, cards 40px. */
   --radius-sm: 0.375rem;
   --radius-md: 0.625rem;
   --radius-lg: 0.875rem;
-  --radius-xl: 1.25rem;
-  --radius-2xl: 2.125rem;
-  --radius-3xl: 2.25rem;
+  --radius-xl: 1.1875rem;
+  --radius-2xl: 1.375rem;
+  --radius-3xl: 2.5rem;
 
-  /* Shadows: soft and deep, the lift a card gets over the page. */
-  --shadow-card: 0 18px 38px oklch(16% 0.012 262 / 0.06);
-  --shadow-card-hover: 0 24px 48px oklch(16% 0.012 262 / 0.09);
-  --shadow-frame: 0 32px 80px -24px oklch(16% 0.012 262 / 0.28);
+  /* Shadows only lift a window shot off a band or the page. */
+  --shadow-card: 0 2px 4px rgb(0 0 0 / 0.08), 0 30px 80px -24px rgb(0 0 0 / 0.45);
+  --shadow-frame: 0 2px 4px rgb(0 0 0 / 0.08), 0 30px 80px -24px rgb(0 0 0 / 0.45);
 
   /* Motion */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
-  --animate-marquee: marquee 48s linear infinite;
 
-  /* Layout: the content column is 75rem (1200px) between its gutters */
-  --container-content: 75rem;
+  /* Layout: the content column is 1080px between 24px gutters */
+  --container-content: 70.5rem;
   --container-prose: 40rem;
 }
 
@@ -96,11 +106,11 @@
    ------------------------------------------------------------------ */
 @layer base {
   html {
-    color-scheme: light;
+    color-scheme: dark;
     background-color: var(--color-bg);
     color: var(--color-fg);
     font-family: var(--font-sans);
-    font-optical-sizing: auto;
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -113,25 +123,12 @@
     overflow-x: clip;
   }
 
-  /* Bricolage Grotesque for headings and the display sizes; paragraphs and small text stay in
-     Mona Sans. The display utilities are named here so a large number in a <p> or <span> gets the
-     heading face too. */
-  h1,
-  h2,
-  h3,
-  .text-display,
-  .text-display-sm,
-  .text-title,
-  .text-stat {
-    font-family: var(--font-heading);
-  }
-
   h1,
   h2,
   h3,
   h4 {
     text-wrap: balance;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
     font-weight: 500;
   }
 
@@ -140,8 +137,8 @@
   }
 
   ::selection {
-    background: color-mix(in oklch, var(--color-accent) 22%, transparent);
-    color: var(--color-fg);
+    background: color-mix(in oklab, var(--color-accent) 55%, transparent);
+    color: white;
   }
 
   :focus-visible {
@@ -183,99 +180,96 @@
    Utilities
    ------------------------------------------------------------------ */
 
-/* Content column with responsive side gutters. */
+/* Content column: 1080px wide between 24px gutters, 16px on a phone. */
 @utility container-x {
   width: 100%;
   max-width: var(--container-content);
   margin-inline: auto;
-  padding-inline: --spacing(5);
-  @media (min-width: 40rem) {
-    padding-inline: --spacing(8);
-  }
-  @media (min-width: 64rem) {
-    padding-inline: --spacing(10);
+  padding-inline: --spacing(4);
+  @media (min-width: 35rem) {
+    padding-inline: --spacing(6);
   }
 }
 
-/* Vertical rhythm for page sections */
+/* Vertical rhythm: every landing section sits 112px under the one before it, 160px on a wide
+   screen. */
 @utility section-y {
-  padding-block: --spacing(16);
+  padding-top: --spacing(28);
   @media (min-width: 64rem) {
-    padding-block: --spacing(24);
+    padding-top: --spacing(40);
   }
 }
 
-/* Small uppercase label for metadata */
+/* Small label over a big card */
 @utility eyebrow {
   font-size: 0.8125rem;
   line-height: 1;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-fg-muted);
+  color: var(--color-fg-subtle);
 }
 
-/* Frosted bar: heavy blur and saturation for what shows through, a faint inner ring and one
-   bright top edge like a pane of glass, a soft shadow for lift. The floating header uses it. */
+/* The header bar: the page colour, mostly opaque, blurred, with a hairline underneath. */
 @utility glass {
-  background: color-mix(in oklab, var(--color-bg) 62%, transparent);
-  -webkit-backdrop-filter: blur(28px) saturate(1.8) brightness(1.04);
-  backdrop-filter: blur(28px) saturate(1.8) brightness(1.04);
-  border: 0;
-  box-shadow:
-    inset 0 0 0 1px oklch(0 0 0 / 0.06),
-    inset 0 1px 0 0 oklch(1 0 0 / 0.75),
-    0 12px 32px -16px oklch(0 0 0 / 0.3);
+  background: color-mix(in oklab, var(--color-bg) 78%, transparent);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  backdrop-filter: blur(20px) saturate(1.4);
+  box-shadow: inset 0 -1px 0 var(--color-line);
 }
 
-/* Card: a faint tint over white, a hairline border that darkens on hover, a soft deep shadow. */
-@utility card-glass {
+/* Card: one flat step up from the page, no border, no shadow. Links and buttons brighten. */
+@utility card {
   position: relative;
-  border: 1px solid color-mix(in oklch, var(--color-fg) 10%, transparent);
-  background:
-    radial-gradient(
-      circle at 18% 12%,
-      color-mix(in oklch, var(--color-fg) 3.5%, transparent),
-      transparent 40%
-    ),
-    linear-gradient(135deg, oklch(100% 0 0), oklch(98.6% 0.003 250));
-  box-shadow: var(--shadow-card);
-  transition:
-    border-color 0.2s var(--ease-out-expo),
-    box-shadow 0.2s var(--ease-out-expo);
-  &:hover {
-    border-color: color-mix(in oklch, var(--color-fg) 26%, transparent);
+  background: var(--color-card);
+  transition: background-color 0.2s var(--ease-out-expo);
+  &:is(a, button):hover {
+    background: var(--color-card-hover);
   }
 }
 
-/* Big cards get a second hairline ring inset by 8px. Set --ring-radius to the outer radius minus 8px. */
-@utility card-glass-ring {
+/* A window shot: 19px corners, a hairline drawn over the picture's edge, a deep soft shadow.
+   Give it `relative` (or `sticky`) so the hairline sits on it. */
+@utility frame {
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: #171717;
+  box-shadow: var(--shadow-frame);
   &::after {
     content: '';
     pointer-events: none;
     position: absolute;
-    inset: 8px;
-    border-radius: var(--ring-radius, 26px);
-    border: 1px solid color-mix(in oklch, var(--color-fg) 6%, transparent);
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px var(--color-line-strong);
   }
 }
 
-/* A window frame for product screenshots: hairline, big radius, deep shadow. */
-@utility frame {
+/* The band: Concat blue melted into a lighter and a deeper blue, with film grain over it. It stands
+   where meltkit.com runs its live looks: behind the hero shot, the download picker and the
+   footer panel. The grain is an SVG noise tile laid over the gradients in soft light. */
+@utility band {
+  position: relative;
+  isolation: isolate;
   overflow: hidden;
-  border-radius: var(--radius-xl);
-  border: 1px solid color-mix(in oklch, var(--color-fg) 12%, transparent);
-  background: var(--color-bg);
-  box-shadow: var(--shadow-frame);
-}
-
-/* Subtle dotted texture for the gray media bands */
-@utility bg-dots {
-  background-image: radial-gradient(
-    color-mix(in oklch, var(--color-fg) 9%, transparent) 1px,
-    transparent 1px
-  );
-  background-size: 20px 20px;
+  background-color: var(--color-accent);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.7'/%3E%3C/svg%3E"),
+    radial-gradient(60% 75% at 18% 16%, #4a90ff 0%, transparent 70%),
+    radial-gradient(50% 65% at 86% 18%, #2a7bff 0%, transparent 70%),
+    radial-gradient(70% 80% at 55% 60%, #0a5cf0 0%, transparent 75%),
+    radial-gradient(60% 75% at 86% 100%, #04268a 0%, transparent 70%),
+    radial-gradient(50% 65% at 8% 100%, #062f9c 0%, transparent 70%),
+    linear-gradient(170deg, #1a6dff, #0557e6 50%, #0438a8);
+  background-size:
+    220px 220px,
+    auto,
+    auto,
+    auto,
+    auto,
+    auto,
+    auto;
+  background-blend-mode: soft-light, normal, normal, normal, normal, normal, normal;
 }
 
 @utility no-scrollbar {
@@ -285,35 +279,12 @@
   }
 }
 
-/* Fades the two ends of a horizontal strip (the sponsor and platform marquees). */
-@utility mask-fade-x {
-  mask-image: linear-gradient(to right, transparent, black 14%, black 86%, transparent);
-}
-
-/* ------------------------------------------------------------------
-   Keyframes
-   ------------------------------------------------------------------ */
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
-    animation: none;
-  }
-}
-
 /* ------------------------------------------------------------------
    Components (plain classes, always emitted)
    ------------------------------------------------------------------ */
 @layer components {
   /* Radio-style chip used by the download picker. Selected state is aria-checked="true":
-     pale blue surface and a blue line. No indicator dots. */
+     a blue wash and a blue line. No indicator dots. */
   .chip {
     display: inline-flex;
     align-items: center;
@@ -321,8 +292,8 @@
     height: --spacing(10);
     padding-inline: --spacing(4);
     border-radius: 999px;
-    border: 1px solid var(--color-line);
-    background: var(--color-bg);
+    border: 1px solid var(--color-line-strong);
+    background: var(--color-bg-subtle);
     color: var(--color-fg-muted);
     font-size: 0.9375rem;
     font-weight: 500;
@@ -334,7 +305,7 @@
   }
   .chip:hover {
     color: var(--color-fg);
-    border-color: var(--color-line-strong);
+    background: var(--color-bg-overlay);
   }
   .chip[aria-checked='true'] {
     color: var(--color-fg);
@@ -356,7 +327,7 @@
     padding: 0.0625rem 0.4rem;
     border-radius: 0.375rem;
     border: 1px solid var(--color-line-strong);
-    background: var(--color-bg);
+    background: var(--color-card);
     box-shadow: 0 1px 0 var(--color-line-strong);
     font-family: var(--font-sans);
     font-size: 0.8125em;
@@ -369,7 +340,7 @@
 /* ------------------------------------------------------------------
    Long-form pages (docs and guides). Unlayered on purpose: the typography plugin emits `prose`
    as a utility, and only unlayered rules outrank it. The tokens map its colours onto ours; inline
-   code is a gray chip, code blocks a bordered gray box.
+   code is a light-wash chip, code blocks a card-coloured box with a hairline.
    ------------------------------------------------------------------ */
 .prose {
   --tw-prose-body: var(--color-fg);
@@ -385,7 +356,7 @@
   --tw-prose-captions: var(--color-fg-subtle);
   --tw-prose-code: var(--color-fg);
   --tw-prose-pre-code: var(--color-fg);
-  --tw-prose-pre-bg: var(--color-bg-subtle);
+  --tw-prose-pre-bg: var(--color-card);
   --tw-prose-th-borders: var(--color-line-strong);
   --tw-prose-td-borders: var(--color-line);
   font-size: 1rem;
@@ -396,12 +367,12 @@
   padding-top: 1.25em;
   border-top: 1px solid var(--color-line);
   font-size: 1.5em;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.02em;
 }
 .prose :where(h3):not(:where([class~='not-prose'] *)) {
   font-size: 1.125em;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.01em;
 }
 .prose :where(a):not(:where([class~='not-prose'] *)) {
@@ -428,7 +399,7 @@
 .prose :where(pre):not(:where([class~='not-prose'] *)) {
   border: 1px solid var(--color-line);
   border-radius: var(--radius-lg);
-  background-color: var(--color-bg-subtle) !important;
+  background-color: var(--color-card) !important;
   font-size: 0.8125rem;
   line-height: 1.6;
 }
@@ -450,7 +421,7 @@
   width: 100%;
   height: auto;
   border-radius: var(--radius-lg);
-  border: 1px solid color-mix(in oklch, var(--color-fg) 12%, transparent);
+  border: 1px solid var(--color-line-strong);
   box-shadow: var(--shadow-card);
 }
 .prose :where(figcaption):not(:where([class~='not-prose'] *)) {
@@ -471,9 +442,8 @@
 .alert {
   margin-block: 1.5em;
   padding: 1rem 1.25rem;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-lg);
-  background: var(--color-bg-subtle);
+  border-radius: var(--radius-2xl);
+  background: var(--color-card);
 }
 .alert > :last-child {
   margin-bottom: 0;

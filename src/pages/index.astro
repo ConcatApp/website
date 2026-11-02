@@ -8,30 +8,22 @@ import DownloadButton from '@/components/DownloadButton.astro';
 import Downloader from '@/components/Downloader.astro';
 import Button from '@/components/Button.astro';
 import ArrowLink from '@/components/ArrowLink.astro';
-import Ribbon from '@/components/Ribbon.astro';
 import Tour, { type Step } from '@/components/Tour.astro';
 import {
   ArrowRight,
   AudioLines,
   Braces,
-  Captions,
   Check,
-  Clapperboard,
+  ChevronDown,
   Film,
   GitPullRequest,
-  HardDrive,
-  Languages,
   Mail,
-  Milestone,
-  Mic,
   Plus,
   ScanFace,
   Spline,
-  Star,
   Terminal,
   Upload,
   UserX,
-  WandSparkles,
 } from '@lucide/astro';
 import { siDiscord } from 'simple-icons';
 import {
@@ -45,6 +37,7 @@ import {
 import { formatCount, getStats } from '@/lib/stats';
 import { SPONSOR_BENEFITS, SPONSORS } from '@/lib/sponsor';
 import { CONTACT_EMAIL } from '@/lib/contact';
+import mark from '@/assets/mark.png';
 import editor from '@/assets/editor.png';
 import shotCaptions from '@/assets/feature-captions.png';
 import shotTitles from '@/assets/feature-titles.png';
@@ -55,13 +48,12 @@ const platforms = getPlatforms(manifest);
 const { stats } = await getStats();
 const macos = platforms.find((p) => p.id === 'macos');
 
+// Real numbers only: the two counts come from GitHub at build time, the third is the README's
+// own figure.
 const facts = [
-  {
-    icon: HardDrive,
-    value: formatCount(stats.downloads, { plus: true }),
-    label: 'Downloads from GitHub Releases',
-  },
-  { icon: Star, value: formatCount(stats.stars), label: 'Stars on GitHub' },
+  { value: formatCount(stats.downloads, { plus: true }), label: 'Downloads from GitHub Releases' },
+  { value: formatCount(stats.stars), label: 'Stars on GitHub' },
+  { value: '100', label: 'Effects, filters and transitions' },
 ];
 
 const tour: Step[] = [
@@ -92,22 +84,22 @@ const tour: Step[] = [
   },
 ];
 
+// Each card shows a crop of the real window where one exists, and an app-icon style tile on the
+// band where none does.
 const features = [
   {
-    icon: Captions,
     title: 'Auto-captions, offline.',
     body: 'Local Whisper transcribes on your machine and puts styled captions on the timeline, one title per phrase or per sentence.',
     image: shotCaptions,
-    alt: 'The timeline with a lane of generated captions above the video and the voice clip',
+    alt: 'The Concat timeline with a lane of generated captions above the video and the voice clip',
     href: '/guides/auto-captions',
     cta: 'How captions work',
   },
   {
-    icon: Mic,
     title: 'Text to speech and voice cloning.',
     body: 'Built-in speakers that are quick, or any voice from a few seconds of a recording. The result lands on the timeline.',
     image: shotVoices,
-    alt: 'The Text to speech sheet with a script, the model and voice pickers and the Generate speech button',
+    alt: 'The Concat Text to speech sheet with a script, the model and voice pickers and the Generate speech button',
     href: '/guides/text-to-speech',
     cta: 'Generate a voice',
   },
@@ -126,18 +118,17 @@ const features = [
     cta: 'Animate anything',
   },
   {
-    icon: Clapperboard,
     title: 'Titles that look designed.',
     body: 'Fonts, stroke, shadow and a background plate, with presets to start from. Style many titles at once.',
     image: shotTitles,
-    alt: 'The Text inspector with font, weight, size, colour, shadow and background settings',
+    alt: 'The Concat Text inspector with font, weight, size, colour, shadow and background settings',
     href: '/guides/titles-and-text',
     cta: 'Add titles',
   },
   {
     icon: Film,
     title: '4K export, 10-bit, no watermark.',
-    body: 'H.264, HEVC and AV1 up to 4K 60. Hardware encoders where the machine has them. A bitrate that starts at what YouTube asks for, so the size shown is the size written.',
+    body: 'H.264, HEVC and AV1 up to 4K 60. Hardware encoders where the machine has them, and a bitrate that starts at what YouTube asks for.',
     href: '/guides/export',
     cta: 'Export a video',
   },
@@ -197,14 +188,6 @@ const more = [
     cta: 'Read the contributing guide',
     external: true,
   },
-  {
-    icon: Milestone,
-    title: 'Roadmap',
-    body: 'What comes next, what sponsorship pays for, and what each piece costs.',
-    href: '/roadmap',
-    cta: 'See the roadmap',
-    external: false,
-  },
 ];
 
 const faq = [
@@ -242,96 +225,173 @@ const faq = [
   },
   {
     q: 'Where does sponsorship money go?',
-    a: 'The roadmap lays out what sponsorship pays for and what each piece costs. Every sponsor gets a place on the repository and on this page for the months they sponsor.',
-    link: { href: '/roadmap', label: 'See the roadmap' },
+    a: 'Into continued development and updates. Every sponsor gets a place on the repository and on this page for the months they sponsor.',
+    link: { href: '#sponsor', label: 'Sponsor Concat' },
   },
 ];
 
-// Structured data for search engines: the app as a free, cross-platform application.
-const ld = {
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'Concat',
-  description:
-    'The free, open-source CapCut replacement. A video editor with auto-captions, text-to-speech, background removal, keyframes, effects and 4K export that runs entirely on your machine.',
-  applicationCategory: 'MultimediaApplication',
-  operatingSystem: 'Windows, macOS, Linux, Android, iOS',
-  softwareVersion: manifest.version,
-  license: 'https://www.gnu.org/licenses/agpl-3.0.html',
-  isAccessibleForFree: true,
-  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-  downloadUrl: RELEASES_URL,
-  url: Astro.site?.toString(),
-  sameAs: [REPO_URL, DISCORD_URL],
-};
+// Structured data for search engines: the site, the app as a free, cross-platform application,
+// and the FAQ below (the answers as written on the page).
+const site = Astro.site?.toString();
+const ld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Concat',
+    url: site,
+    description: 'The free, open-source CapCut replacement.',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'Concat',
+    description:
+      'The free, open-source CapCut replacement. A video editor with auto-captions, text-to-speech, background removal, keyframes, effects and 4K export that runs entirely on your machine.',
+    applicationCategory: 'MultimediaApplication',
+    applicationSubCategory: 'Video editor',
+    operatingSystem: 'Windows, macOS, Linux, Android, iOS',
+    softwareVersion: manifest.version,
+    license: 'https://www.gnu.org/licenses/agpl-3.0.html',
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    downloadUrl: RELEASES_URL,
+    image: site ? new URL('/og.png', site).toString() : undefined,
+    screenshot: site ? new URL('/og.png', site).toString() : undefined,
+    featureList: [
+      'Auto-captions with local Whisper',
+      'Text-to-speech and voice cloning',
+      'Background removal',
+      'Keyframes with a curve editor',
+      '100 effects, filters and transitions',
+      'Multi-track and multi-timeline editing',
+      'Export in H.264, HEVC and AV1 up to 4K 60 10-bit',
+      'Built-in MCP server for AI agents',
+    ],
+    url: site,
+    sameAs: [REPO_URL, DISCORD_URL],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.code ? `${item.a} ${item.code}` : item.a,
+      },
+    })),
+  },
+];
 ---
 
 <Base
   title="Concat: the free, open-source CapCut replacement"
-  description="A video editor with auto-captions, voices, effects and 4K export that runs entirely on your machine. No watermarks, no account, no subscription."
+  description="A free video editor with auto-captions, text-to-speech, background removal, effects and 4K export that runs entirely on your machine. No watermark, no account, no subscription."
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)}></script>
   <Header />
 
   <main>
-    <section class="pt-28 sm:pt-36">
-      <div class="container-x text-center">
-        <h1 class="text-display mx-auto mt-7 max-w-5xl" data-reveal>
-          The free, open-source <span class="text-accent-ink">CapCut</span> replacement.
+    <!-- Hero: the mark, a two-line headline, one line, one button. -->
+    <section class="pt-16" aria-labelledby="hero-title">
+      <div class="container-x grid justify-items-center pt-[clamp(56px,7vw,88px)] pb-[clamp(56px,7vw,88px)] text-center">
+        <Image
+          src={mark}
+          alt="Concat app icon"
+          width={148}
+          height={148}
+          loading="eager"
+          class="size-[74px] rounded-[18.5%] shadow-frame ring-1 ring-white/12"
+          data-reveal
+        />
+        <h1 id="hero-title" class="text-display mt-12 sm:mt-14" data-reveal>
+          <span class="grad grad-a">The free, open-source</span>
+          <br />
+          <span class="grad grad-b">CapCut replacement.</span>
         </h1>
-        <p class="text-lead mx-auto mt-7 max-w-[36rem] text-fg-muted" data-reveal>
-          Auto-captions, text-to-speech, background removal, keyframes, effects, titles and
-          multi-track cutting, up to 4K. All of it on your machine: no watermark, no account, no
-          subscription.
+        <p class="text-lead mt-4 max-w-[22rem] text-balance text-fg-muted" data-reveal>
+          A video editor with captions, voices, effects and 4K export that runs entirely on your
+          machine.
         </p>
-        <div class="mt-9 flex justify-center" data-reveal>
-          <DownloadButton platforms={platforms} class="justify-center" />
-        </div>
-        <p class="mt-5 text-sm text-fg-subtle" data-reveal>
-          Windows, macOS, Linux, Android and iOS. Nothing uploads.
-        </p>
-      </div>
-
-      <div class="container-x mt-14 sm:mt-20">
-        <div class="frame" data-reveal>
-          <Image
-            src={editor}
-            alt="The Concat editor: media library on the left, the monitor with a generated caption in the middle, the text inspector on the right and a multi-track timeline below"
-            widths={[640, 1024, 1440, 2048]}
-            sizes="(min-width: 1200px) 1120px, 100vw"
-            loading="eager"
-            fetchpriority="high"
-            class="block h-auto w-full"
-          />
+        <div class="relative mt-7" data-reveal>
+          <DownloadButton platforms={platforms} all={false} />
+          <!-- A handwritten aside: a curved arrow from the note to the button. -->
+          <span class="note hidden sm:block" aria-hidden="true">
+            <svg class="note-arrow" viewBox="0 0 66 24" fill="none">
+              <path d="M63 6C52 20 24 24 7 9" stroke="currentColor" stroke-linecap="round"></path>
+              <path
+                d="M8.6 15.8 7 9l7 .8"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+            <span class="note-text">Free forever</span>
+          </span>
         </div>
       </div>
     </section>
 
-    <section aria-label="What Concat does" class="overflow-hidden py-12 lg:py-20">
-      <div class="relative left-1/2 w-[max(100%,1100px)] -translate-x-1/2">
-        <Ribbon text="Auto-captions ✦ Text to speech ✦ Voice cloning ✦ Background removal ✦ Keyframes ✦ 100 effects ✦ 4K export ✦ No watermark" />
+    <!-- The window, full width, on the band. The band ends in a tab that hangs into the page. -->
+    <section class="hero-band band" aria-label="The Concat editor window">
+      <div class="frame relative mx-auto w-[min(1032px,100%-32px)] sm:w-[min(1032px,100%-48px)]">
+        <Image
+          src={editor}
+          alt="The Concat video editor: media library on the left, the monitor with a generated caption in the middle, the text inspector on the right and a multi-track timeline below"
+          widths={[640, 1024, 1440, 2064]}
+          sizes="(min-width: 1080px) 1032px, 100vw"
+          loading="eager"
+          fetchpriority="high"
+          class="block h-auto w-full"
+        />
       </div>
+      <p class="band-tab">No watermark, no account</p>
     </section>
+
+    <Section title={'Everything people open CapCut for.\nNone of the catches.'}>
+      <ul class="grid gap-2 sm:grid-cols-3" data-reveal="stagger">
+        {facts.map((f) => (
+          <li class="tile card flex min-h-[200px] flex-col rounded-[28px] p-6 sm:min-h-[240px] sm:rounded-[40px] sm:p-[34px_37px_37px]">
+            <p class="text-stat">{f.value}</p>
+            <p class="mt-auto pt-6 text-[14px] tracking-[-0.02em] text-fg-muted">{f.label}</p>
+          </li>
+        ))}
+      </ul>
+    </Section>
 
     <Section
-      align="center"
-      title="Everything people open CapCut for. None of the catches."
-      headerClass="max-w-3xl"
-      bodyClass="pt-4 lg:pt-8"
+      id="features"
+      title={'Built for the edits\npeople make every day.'}
+      lead="Captions, voices, titles and effects on a multi-track timeline, rendered by a native Rust engine with a GPU compositor."
     >
-      <ul class="w-full flex flex-wrap justify-center space-x-12" data-reveal="stagger">
-        {facts.map(({ icon: Icon, ...f }) => (
-          <li class="h-full content-start gap-6 rounded-[20px] p-6 flex flex-wrap text-center items-center justify-center">
-            <div class="w-full flex flex-wrap justify-center">
-              <span class="flex size-11 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
-                <Icon class="size-5" stroke-width={2} aria-hidden="true" />
-              </span>
+      <ul class="grid gap-2 md:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        {features.map(({ icon: Icon, ...f }) => (
+          <li class="card flex flex-col items-center rounded-[28px] px-6 pt-6 pb-8 text-center sm:rounded-[40px]">
+            <div class="grid h-[208px] w-full place-items-center">
+              {f.image ? (
+                <Image
+                  src={f.image}
+                  alt={f.alt ?? ''}
+                  widths={[400, 640, 960]}
+                  sizes="(min-width: 1024px) 320px, (min-width: 768px) 45vw, 90vw"
+                  class="block h-[184px] w-auto max-w-full rounded-[14px] object-cover object-left-top shadow-frame ring-1 ring-line-strong"
+                />
+              ) : (
+                Icon && (
+                  <span class="band grid size-[112px] place-items-center rounded-[26px] shadow-frame">
+                    <Icon class="size-11 text-white" stroke-width={1.5} aria-hidden="true" />
+                  </span>
+                )
+              )}
             </div>
-
-            <div>
-              <p class="text-stat text-accent-ink text-center">{f.value}</p>
-              <p class="mt-2 text-[14.5px] leading-snug text-fg-muted text-center">{f.label}</p>
-            </div>
+            <h3 class="mt-7 text-[16px] tracking-[-0.02em]">{f.title}</h3>
+            <p class="mt-1.5 max-w-[17rem] text-[14px] tracking-[-0.02em] text-fg-muted">
+              {f.body}
+            </p>
+            <ArrowLink href={f.href} class="mt-auto pt-5 text-[14px]">
+              {f.cta}
+            </ArrowLink>
           </li>
         ))}
       </ul>
@@ -345,73 +405,22 @@ const ld = {
       <Tour image={editor} alt="The Concat editor window" steps={tour} />
     </Section>
 
-    <Section
-      id="features"
-      title="Built for the edits people make every day."
-      lead="Captions, voices, titles and effects on a multi-track timeline, rendered by a native Rust engine with a GPU compositor."
-    >
-      <ul class="grid gap-5 md:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
-        {features.map(({ icon: Icon, ...f }) => (
-          <li class="card-glass flex h-full flex-col rounded-[24px] p-2">
-            {f.image ? (
-              <div class="bg-dots aspect-[4/3] overflow-hidden rounded-[18px] bg-bg-subtle p-4">
-                <Image
-                  src={f.image}
-                  alt={f.alt ?? ''}
-                  widths={[480, 768, 1024]}
-                  sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
-                  class="block h-full w-full rounded-lg border border-line object-cover object-top"
-                />
-              </div>
-            ) : (
-              <div class="bg-dots flex aspect-[4/3] items-center justify-center rounded-[18px] bg-bg-subtle">
-                <span class="flex size-14 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
-                  <Icon class="size-7" stroke-width={1.75} aria-hidden="true" />
-                </span>
-              </div>
-            )}
-            <div class="flex flex-1 flex-col p-5">
-              <h3 class="text-[1.25rem] leading-tight font-semibold tracking-tight">{f.title}</h3>
-              <p class="mt-2.5 text-[15px] leading-relaxed text-fg-muted">{f.body}</p>
-              <ArrowLink href={f.href} class="mt-auto pt-5">
-                {f.cta}
-              </ArrowLink>
-            </div>
-          </li>
-        ))}
-      </ul>
-      <p class="mt-8 text-sm text-fg-muted" data-reveal>
-        Also: 100 effects, filters and transitions, chroma key, colour wheels and curves, one-switch
-        voice cleanup, multi-timeline projects, stickers and shapes.{' '}
-        <a
-          href={`${REPO_URL}#highlights`}
-          class="font-medium text-accent-ink underline underline-offset-4"
-          target="_blank"
-          rel="noopener"
-        >
-          Every feature, on GitHub
-        </a>
-      </p>
-    </Section>
-
-    <Section title="Two ways in, the same engine." headerClass="max-w-xl">
-      <div class="grid gap-5 lg:grid-cols-2" data-reveal="stagger">
+    <Section title={'Two ways in,\nthe same engine.'}>
+      <div class="grid gap-2 lg:grid-cols-2" data-reveal="stagger">
         {sides.map((s) => (
           <article
             id={s.id}
-            class="card-glass card-glass-ring flex h-full scroll-mt-24 flex-col rounded-[34px] p-8 [--ring-radius:26px] sm:p-10"
+            class="card flex h-full scroll-mt-24 flex-col rounded-[28px] p-7 sm:rounded-[40px] sm:p-10"
           >
             <p class="eyebrow">{s.eyebrow}</p>
-            <h3 class="text-display-sm mt-4 max-w-[16ch] text-[clamp(1.75rem,1.2rem+1.8vw,2.5rem)]">
-              {s.title}
-            </h3>
+            <h3 class="text-title mt-4 max-w-[16ch]">{s.title}</h3>
             <dl class="mt-8 border-y border-line">
               {s.rows.map(({ icon: Icon, ...r }) => (
                 <div class="grid grid-cols-[auto_1fr] items-start gap-x-4 border-t border-line py-4 first:border-t-0 sm:grid-cols-[auto_6.5rem_1fr]">
-                  <span class="flex size-9 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
-                    <Icon class="size-4" stroke-width={2.25} aria-hidden="true" />
+                  <span class="flex size-9 items-center justify-center rounded-full bg-bg-overlay text-fg">
+                    <Icon class="size-4" stroke-width={2} aria-hidden="true" />
                   </span>
-                  <dt class="pt-1.5 text-[15px] font-semibold">{r.term}</dt>
+                  <dt class="pt-1.5 text-[15px] font-medium">{r.term}</dt>
                   <dd class="col-span-2 pt-1 text-[15px] leading-snug text-fg-muted sm:col-span-1 sm:pt-1.5">
                     {r.text}
                   </dd>
@@ -421,7 +430,7 @@ const ld = {
             <div class="mt-auto pt-8">
               <Button href={s.cta.href} variant="secondary">
                 {s.cta.label}
-                <ArrowRight class="size-4" stroke-width={2.25} aria-hidden="true" />
+                <ArrowRight class="size-4" stroke-width={2} aria-hidden="true" />
               </Button>
             </div>
           </article>
@@ -432,15 +441,15 @@ const ld = {
     <Section
       id="download"
       title="Runs everywhere."
-      lead={`macOS, Windows, Linux, Android and iOS. Every build is a GitHub Releases asset with a checksum. Current version ${manifest.version}.`}
+      lead={`Windows, macOS, Linux, Android and iOS. Every build is a GitHub Releases asset with a checksum. Current version ${manifest.version}.`}
     >
-      <div data-reveal>
+      <div class="band rounded-[28px] p-3 sm:rounded-[40px] sm:p-[30px]" data-reveal>
         <Downloader platforms={platforms} />
       </div>
-      <p class="mt-6 text-sm text-fg-subtle" data-reveal>
+      <p class="mt-6 text-center text-[14px] text-fg-muted" data-reveal>
         <a
           href={RELEASES_URL}
-          class="underline underline-offset-4 transition-colors duration-200 hover:text-accent-ink"
+          class="underline underline-offset-4 transition-colors duration-150 hover:text-fg"
           target="_blank"
           rel="noopener"
         >
@@ -449,14 +458,14 @@ const ld = {
         <span class="mx-2">/</span>
         <a
           href={checksumsUrl(manifest)}
-          class="underline underline-offset-4 transition-colors duration-200 hover:text-accent-ink"
+          class="underline underline-offset-4 transition-colors duration-150 hover:text-fg"
         >
           SHA256SUMS
         </a>
         <span class="mx-2">/</span>
         <a
           href="/guides/install"
-          class="underline underline-offset-4 transition-colors duration-200 hover:text-accent-ink"
+          class="underline underline-offset-4 transition-colors duration-150 hover:text-fg"
         >
           Install guide
         </a>
@@ -466,29 +475,27 @@ const ld = {
     <Section
       id="sponsor"
       title="Sponsor Concat."
-      lead="Concat has no paywall and never will. Sponsorship is what stands in for one: it funds continued development, updates and the store releases on the roadmap."
+      lead="Concat has no paywall and never will. Sponsorship stands in for one: it funds continued development and updates."
     >
-      <div class="grid gap-5 lg:grid-cols-12" data-reveal="stagger">
-        <article class="card-glass card-glass-ring flex flex-col rounded-[34px] p-8 [--ring-radius:26px] sm:p-10 lg:col-span-7">
+      <div class="grid gap-2 lg:grid-cols-12" data-reveal="stagger">
+        <article class="card flex flex-col rounded-[28px] p-7 sm:rounded-[40px] sm:p-10 lg:col-span-7">
           <p class="eyebrow">Sponsorship</p>
-          <h3 class="mt-4 text-[1.5rem] leading-tight font-semibold tracking-tight">
-            Your name, logo and link, for as long as you sponsor.
-          </h3>
-          <ul class="mt-6 flex flex-col gap-3 text-[15px] leading-relaxed text-fg-muted">
+          <h3 class="text-title mt-4">Your name, logo and link, for as long as you sponsor.</h3>
+          <ul class="mt-6 grid gap-4 border-t border-line pt-6 text-[16px] font-medium tracking-[-0.02em] text-fg-muted">
             {SPONSOR_BENEFITS.map((benefit) => (
-              <li class="flex gap-3">
-                <span class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
-                  <Check class="size-3" stroke-width={3} aria-hidden="true" />
+              <li class="flex gap-3.5">
+                <span class="mt-0.5 flex size-[23px] shrink-0 items-center justify-center rounded-full border border-fg-muted text-fg">
+                  <Check class="size-3" stroke-width={2} aria-hidden="true" />
                 </span>
                 <span>{benefit}</span>
               </li>
             ))}
           </ul>
-          <p class="mt-6 max-w-xl text-sm leading-relaxed text-fg-muted">
+          <p class="mt-6 max-w-xl text-[14px] leading-relaxed text-fg-muted">
             Sponsorship is monthly and priced over a message. The listing lives on the{' '}
             <a
               href={REPO_URL}
-              class="font-medium text-accent-ink underline underline-offset-4"
+              class="text-fg underline underline-offset-4"
               target="_blank"
               rel="noopener"
             >
@@ -497,21 +504,20 @@ const ld = {
             and on this page.
           </p>
           <div class="mt-auto pt-8">
-            <Button href="#contact" variant="primary">
+            <Button href="#contact" size="lg">
               Get in touch
-              <ArrowRight class="size-4" stroke-width={2.25} aria-hidden="true" />
+              <ArrowRight class="size-4" stroke-width={2} aria-hidden="true" />
             </Button>
           </div>
         </article>
 
-        <div class="flex flex-col gap-5 lg:col-span-5">
-          <p class="eyebrow px-1">Current sponsors</p>
+        <div class="flex flex-col gap-2 lg:col-span-5">
           {SPONSORS.map((s) => (
             <a
               href={s.href}
               target="_blank"
               rel="noopener sponsored"
-              class="card-glass flex items-center gap-5 rounded-[24px] p-5"
+              class="card flex items-center gap-5 rounded-[28px] p-5"
             >
               <Image
                 src={s.logo}
@@ -521,22 +527,25 @@ const ld = {
                 class="size-16 shrink-0 rounded-2xl"
               />
               <span class="min-w-0">
-                <span class="block text-lg font-semibold tracking-tight">{s.name}</span>
-                <span class="mt-0.5 block text-sm text-fg-muted">{s.description}</span>
+                <span class="block text-[11px] font-medium tracking-[0.06em] text-fg-subtle uppercase">
+                  Current sponsor
+                </span>
+                <span class="mt-1 block text-lg font-medium tracking-[-0.02em]">{s.name}</span>
+                <span class="mt-0.5 block text-[14px] text-fg-muted">{s.description}</span>
                 {s.note && <span class="mt-1 block text-xs text-fg-subtle">{s.note}</span>}
               </span>
             </a>
           ))}
           <a
             href="#contact"
-            class="flex items-center gap-5 rounded-[24px] border border-dashed border-line-strong p-5 transition-colors duration-200 hover:border-accent hover:bg-accent-soft/40"
+            class="flex flex-1 items-center gap-5 rounded-[28px] border border-dashed border-line-strong p-5 transition-colors duration-150 hover:bg-bg-subtle"
           >
             <span class="flex size-16 shrink-0 items-center justify-center rounded-2xl border border-dashed border-line-strong text-fg-subtle">
               <Plus class="size-6" aria-hidden="true" />
             </span>
             <span>
-              <span class="block text-lg font-semibold tracking-tight">Your logo here</span>
-              <span class="mt-0.5 block text-sm text-fg-muted">
+              <span class="block text-lg font-medium tracking-[-0.02em]">Your logo here</span>
+              <span class="mt-0.5 block text-[14px] text-fg-muted">
                 Sponsor Concat and your name, logo and link take this slot.
               </span>
             </span>
@@ -550,14 +559,14 @@ const ld = {
       title="Contact."
       lead="Sponsoring starts with a message. Tell us about you or your company and how you should appear on the repository and this page."
     >
-      <div class="grid gap-5 md:grid-cols-2" data-reveal="stagger">
-        <article class="card-glass flex flex-col rounded-[24px] p-7">
-          <span class="flex size-10 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
+      <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        <article class="card flex flex-col rounded-[28px] p-7 sm:rounded-[32px] sm:p-8">
+          <span class="flex size-10 items-center justify-center rounded-full bg-bg-overlay text-fg">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="size-5">
               <path d={siDiscord.path}></path>
             </svg>
           </span>
-          <h3 class="mt-5 text-lg font-semibold tracking-tight">Discord</h3>
+          <h3 class="mt-5 text-lg tracking-[-0.02em]">Discord</h3>
           <p class="mt-2 text-[15px] leading-relaxed text-fg-muted">
             Join the Concat server and send a message. Questions and bug reports are welcome there
             too.
@@ -565,7 +574,7 @@ const ld = {
           <Button
             href={DISCORD_URL}
             variant="secondary"
-            class="mt-auto w-fit pt-0 [margin-top:1.5rem]"
+            class="mt-6 w-fit"
             target="_blank"
             rel="noopener"
           >
@@ -573,11 +582,11 @@ const ld = {
           </Button>
         </article>
         {CONTACT_EMAIL && (
-          <article class="card-glass flex flex-col rounded-[24px] p-7">
-            <span class="flex size-10 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
+          <article class="card flex flex-col rounded-[28px] p-7 sm:rounded-[32px] sm:p-8">
+            <span class="flex size-10 items-center justify-center rounded-full bg-bg-overlay text-fg">
               <Mail class="size-5" aria-hidden="true" />
             </span>
-            <h3 class="mt-5 text-lg font-semibold tracking-tight">Email</h3>
+            <h3 class="mt-5 text-lg tracking-[-0.02em]">Email</h3>
             <p class="mt-2 text-[15px] leading-relaxed text-fg-muted">
               For anything longer, or if you are not on Discord.
             </p>
@@ -586,14 +595,12 @@ const ld = {
             </Button>
           </article>
         )}
-      </div>
-      <div class="mt-5 grid gap-5 md:grid-cols-2" data-reveal="stagger">
         {more.map(({ icon: Icon, ...m }) => (
-          <article class="card-glass flex flex-col rounded-[24px] p-7">
-            <span class="flex size-10 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
+          <article class="card flex flex-col rounded-[28px] p-7 sm:rounded-[32px] sm:p-8">
+            <span class="flex size-10 items-center justify-center rounded-full bg-bg-overlay text-fg">
               <Icon class="size-5" aria-hidden="true" />
             </span>
-            <h3 class="mt-5 text-lg font-semibold tracking-tight">{m.title}</h3>
+            <h3 class="mt-5 text-lg tracking-[-0.02em]">{m.title}</h3>
             <p class="mt-2 text-[15px] leading-relaxed text-fg-muted">{m.body}</p>
             <ArrowLink
               href={m.href}
@@ -608,45 +615,51 @@ const ld = {
       </div>
     </Section>
 
-    <Section id="faq">
-      <div class="grid gap-x-10 gap-y-8 lg:grid-cols-12">
-        <div class="lg:col-span-4" data-reveal>
-          <h2 class="text-display-sm">Questions, answered.</h2>
+    <section id="faq" class="scroll-mt-20" aria-labelledby="faq-title">
+      <div class="container-x section-y grid items-start gap-x-16 gap-y-6 lg:grid-cols-[5fr_7fr]">
+        <div data-reveal>
+          <h2 id="faq-title" class="text-display-sm">
+            Frequently
+            <br />
+            asked questions.
+          </h2>
           <p class="mt-4 text-[15px] text-fg-muted">
             Anything else, ask on{' '}
             <a
               href={DISCORD_URL}
-              class="font-medium text-fg underline-offset-4 hover:underline"
+              class="text-fg underline underline-offset-4"
               target="_blank"
               rel="noopener"
             >
               Discord
             </a>{' '}
             or read the{' '}
-            <a href="/guides" class="font-medium text-fg underline-offset-4 hover:underline">
+            <a href="/guides" class="text-fg underline underline-offset-4">
               guides
             </a>
             .
           </p>
         </div>
-        <div class="lg:col-span-7 lg:col-start-6" data-reveal>
+        <div data-reveal>
           {faq.map((item) => (
-            <details class="group border-b border-line py-1">
-              <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-4 text-[17px] font-semibold tracking-tight [&::-webkit-details-marker]:hidden">
-                {item.q}
-                <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-bg-overlay transition-transform duration-200 group-open:rotate-45">
-                  <Plus class="size-4" stroke-width={2.5} aria-hidden="true" />
-                </span>
+            <details class="group border-b border-line">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-[18px] font-medium tracking-[-0.01em] [&::-webkit-details-marker]:hidden">
+                <h3 class="text-[16px] tracking-[-0.01em]">{item.q}</h3>
+                <ChevronDown
+                  class="size-4 shrink-0 text-fg-muted transition-transform duration-200 group-open:rotate-180"
+                  stroke-width={1.75}
+                  aria-hidden="true"
+                />
               </summary>
-              <div class="max-w-[40rem] pb-5 text-[15.5px] leading-relaxed text-fg-muted">
+              <div class="max-w-[40rem] pb-[18px] text-[15px] leading-relaxed text-fg-muted">
                 <p>{item.a}</p>
                 {item.code && (
-                  <code class="mt-3 block w-fit rounded-md border border-line bg-bg-subtle px-3 py-2 font-mono text-xs text-fg select-all">
+                  <code class="mt-3 block w-fit rounded-md border border-line bg-card px-3 py-2 font-mono text-xs text-fg select-all">
                     {item.code}
                   </code>
                 )}
                 {item.link && (
-                  <ArrowLink href={item.link.href} class="mt-3">
+                  <ArrowLink href={item.link.href} class="mt-3 text-[14px]">
                     {item.link.label}
                   </ArrowLink>
                 )}
@@ -655,31 +668,168 @@ const ld = {
           ))}
         </div>
       </div>
-    </Section>
-
-    <section>
-      <div class="container-x pt-4 pb-24 lg:pt-8 lg:pb-32">
-        <div
-          class="grid grid-cols-12 items-center gap-x-6 gap-y-8 rounded-[36px] bg-accent px-7 py-12 text-accent-fg sm:px-10 lg:px-16 lg:py-20"
-          data-reveal
-        >
-          <h2 class="text-display col-span-12 text-[clamp(2.25rem,1.4rem+4.2vw,4.5rem)] lg:col-span-7">
-            Ready to cut?
-          </h2>
-          <div class="col-span-12 lg:col-span-4 lg:col-start-9">
-            <DownloadButton
-              platforms={platforms}
-              variant="inverse"
-              class="flex-col items-stretch sm:flex-row lg:flex-col"
-            />
-            <p class="mt-4 text-[14px] font-medium opacity-80">
-              Free, open source, {manifest.version}. No account, nothing uploads.
-            </p>
-          </div>
-        </div>
-      </div>
     </section>
   </main>
 
-  <Footer />
+  <Footer>
+    <Fragment slot="cta">
+      <h2 class="text-[clamp(2.125rem,1.4rem+2.4vw,2.875rem)] leading-[1.05] tracking-[-0.02em]">
+        Make something
+        <br />
+        worth watching.
+      </h2>
+      <p class="text-lead mx-auto mt-4 text-fg-muted">
+        Free and open source · Windows, macOS, Linux, Android and iOS
+      </p>
+      <div class="mt-7 flex justify-center">
+        <DownloadButton platforms={platforms} all={false} />
+      </div>
+    </Fragment>
+  </Footer>
 </Base>
+
+<style>
+  /* Each headline line carries its own run of blue, from near-white to Concat blue. */
+  .grad {
+    display: inline-block;
+    /* room for the descenders inside the clipped box, without changing the line's height */
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .grad-a {
+    background-image: linear-gradient(90deg, #f6f9ff 0%, #dbe8ff 40%, #9ec4ff 75%, #7cb0ff 100%);
+  }
+  .grad-b {
+    background-image: linear-gradient(90deg, #b9d4ff 0%, #79adff 45%, #3d8bff 100%);
+  }
+
+  /* The aside sits off the button's bottom right corner: the arrow's tip near the corner, the
+     words above its other end, tilted. */
+  .note {
+    position: absolute;
+    left: calc(100% - 12px);
+    top: calc(100% - 10px);
+    pointer-events: none;
+    color: color-mix(in oklab, white 50%, transparent);
+  }
+  .note-arrow {
+    width: 66px;
+    height: 24px;
+    stroke-width: 1.2;
+  }
+  .note-text {
+    position: absolute;
+    left: 54px;
+    top: -22px;
+    font: 17px/1.5 var(--font-hand);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    transform: rotate(12deg);
+    transform-origin: left center;
+  }
+
+  /* The band ends in a tab that hangs into the page: everything else in the bottom strip is
+     masked away. Layers: the band itself, the tab's body, its two round bottom corners, and the
+     two concave corners where the tab meets the band's edge. */
+  .hero-band {
+    --tab-w: 236px;
+    --tab-h: 40px;
+    --tab-r: 14px;
+    padding: 40px 0 calc(40px + var(--tab-h));
+    -webkit-mask:
+      linear-gradient(#000 0 0) 0 0 / 100% calc(100% - var(--tab-h)) no-repeat,
+      linear-gradient(#000 0 0) 50% calc(100% - var(--tab-r)) / var(--tab-w)
+        calc(var(--tab-h) - var(--tab-r)) no-repeat,
+      linear-gradient(#000 0 0) 50% 100% / calc(var(--tab-w) - 2 * var(--tab-r)) var(--tab-r)
+        no-repeat,
+      radial-gradient(circle closest-side, #000 calc(100% - 0.5px), transparent 100%)
+        calc(50% - var(--tab-w) / 2 + var(--tab-r)) 100% / calc(2 * var(--tab-r))
+        calc(2 * var(--tab-r)) no-repeat,
+      radial-gradient(circle closest-side, #000 calc(100% - 0.5px), transparent 100%)
+        calc(50% + var(--tab-w) / 2 - var(--tab-r)) 100% / calc(2 * var(--tab-r))
+        calc(2 * var(--tab-r)) no-repeat,
+      radial-gradient(
+          circle var(--tab-r) at 0 100%,
+          transparent calc(var(--tab-r) - 0.5px),
+          #000 var(--tab-r)
+        )
+        calc(50% - var(--tab-w) / 2 - var(--tab-r) / 2) calc(100% - var(--tab-h) + var(--tab-r)) /
+        var(--tab-r) var(--tab-r) no-repeat,
+      radial-gradient(
+          circle var(--tab-r) at 100% 100%,
+          transparent calc(var(--tab-r) - 0.5px),
+          #000 var(--tab-r)
+        )
+        calc(50% + var(--tab-w) / 2 + var(--tab-r) / 2) calc(100% - var(--tab-h) + var(--tab-r)) /
+        var(--tab-r) var(--tab-r) no-repeat;
+    mask:
+      linear-gradient(#000 0 0) 0 0 / 100% calc(100% - var(--tab-h)) no-repeat,
+      linear-gradient(#000 0 0) 50% calc(100% - var(--tab-r)) / var(--tab-w)
+        calc(var(--tab-h) - var(--tab-r)) no-repeat,
+      linear-gradient(#000 0 0) 50% 100% / calc(var(--tab-w) - 2 * var(--tab-r)) var(--tab-r)
+        no-repeat,
+      radial-gradient(circle closest-side, #000 calc(100% - 0.5px), transparent 100%)
+        calc(50% - var(--tab-w) / 2 + var(--tab-r)) 100% / calc(2 * var(--tab-r))
+        calc(2 * var(--tab-r)) no-repeat,
+      radial-gradient(circle closest-side, #000 calc(100% - 0.5px), transparent 100%)
+        calc(50% + var(--tab-w) / 2 - var(--tab-r)) 100% / calc(2 * var(--tab-r))
+        calc(2 * var(--tab-r)) no-repeat,
+      radial-gradient(
+          circle var(--tab-r) at 0 100%,
+          transparent calc(var(--tab-r) - 0.5px),
+          #000 var(--tab-r)
+        )
+        calc(50% - var(--tab-w) / 2 - var(--tab-r) / 2) calc(100% - var(--tab-h) + var(--tab-r)) /
+        var(--tab-r) var(--tab-r) no-repeat,
+      radial-gradient(
+          circle var(--tab-r) at 100% 100%,
+          transparent calc(var(--tab-r) - 0.5px),
+          #000 var(--tab-r)
+        )
+        calc(50% + var(--tab-w) / 2 + var(--tab-r) / 2) calc(100% - var(--tab-h) + var(--tab-r)) /
+        var(--tab-r) var(--tab-r) no-repeat;
+  }
+  .band-tab {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: var(--tab-w);
+    height: var(--tab-h);
+    transform: translateX(-50%);
+    display: grid;
+    place-items: center;
+    padding-bottom: 2px;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: white;
+  }
+
+  /* A fact tile glows blue along its edges under the pointer. */
+  .tile {
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    box-shadow: inset 0 0 42px 31px var(--color-accent);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+  .tile:hover::before {
+    opacity: 0.35;
+  }
+  @media (max-width: 560px) {
+    .tile::before {
+      box-shadow: inset 0 0 24px 16px var(--color-accent);
+    }
+  }
+</style>
