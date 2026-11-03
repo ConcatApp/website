@@ -1,0 +1,39 @@
+---
+/**
+ * The "Concat Unit Ad" AdSense slot, responsive. The loader script is in Base.astro's head; this
+ * is only the slot. Filling happens on `astro:page-load`, not in an inline script, so slots that
+ * arrive through a client-side navigation get filled too. Pagefind skips it.
+ */
+import { cn } from '@/lib/cn';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class={cn('not-prose', className)} data-pagefind-ignore>
+  <ins
+    class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-8181717251612842"
+    data-ad-slot="8085527008"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+</div>
+
+<script>
+  declare global {
+    interface Window {
+      adsbygoogle?: unknown[];
+    }
+  }
+
+  // Each push fills the next slot AdSense has not marked with data-adsbygoogle-status yet, so one
+  // push per unmarked slot fills the page without touching slots filled before a navigation.
+  document.addEventListener('astro:page-load', () => {
+    const empty = document.querySelectorAll('ins.adsbygoogle:not([data-adsbygoogle-status])');
+    for (let i = 0; i < empty.length; i++) (window.adsbygoogle = window.adsbygoogle || []).push({});
+  });
+</script>
