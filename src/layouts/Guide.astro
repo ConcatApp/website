@@ -9,7 +9,7 @@
  */
 import type { MarkdownHeading } from 'astro';
 import type { CollectionEntry } from 'astro:content';
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import { Search } from '@lucide/astro';
 import Base from '@/layouts/Base.astro';
 import Header from '@/components/Header.astro';
@@ -19,6 +19,7 @@ import AdUnit from '@/components/AdUnit.astro';
 import GuideCard from '@/components/GuideCard.astro';
 import TryConcat from '@/components/TryConcat.astro';
 import { readingMinutes, relatedGuides } from '@/lib/docs';
+import { article, breadcrumbs, lastModified } from '@/lib/seo';
 
 interface Props {
   entry: CollectionEntry<'guides'>;
@@ -26,16 +27,56 @@ interface Props {
 }
 
 const { entry, headings } = Astro.props;
-const { title, description, section, cover, coverAlt } = entry.data;
+const { title, seoTitle, description, section, cover, coverAlt } = entry.data;
 const minutes = readingMinutes(entry.body);
 const toc = headings.filter((h) => h.depth === 2);
 const related = await relatedGuides(entry);
 const editUrl = entry.filePath
   ? `https://github.com/ConcatApp/website/edit/main/${entry.filePath}`
   : undefined;
+
+// Search and link previews: the cover, cut to the 1200x630 share size, stands in for the site-wide
+// image; the date is the last commit to the guide's file.
+const share = cover
+  ? (
+      await getImage({
+        src: cover,
+        width: 1200,
+        height: 630,
+        fit: 'cover',
+        position: 'left top',
+        format: 'png',
+      })
+    ).src
+  : '/og.png';
+const path = `/guides/${entry.id}/`;
+const modified = lastModified(path);
+const updated = modified
+  ? new Date(modified).toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    })
+  : undefined;
+const ld = [
+  article({ site: Astro.site, path, headline: title, description, image: share, modified }),
+  breadcrumbs(Astro.site, [
+    ['Concat', '/'],
+    ['Guides', '/guides/'],
+    [title, path],
+  ]),
+];
 ---
 
-<Base title={`${title} · Concat guides`} description={description} type="article">
+<Base
+  title={seoTitle ?? `${title} · Concat guides`}
+  description={description}
+  type="article"
+  image={share}
+  imageAlt={cover ? (coverAlt ?? title) : undefined}
+  modified={modified}
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)}></script>
   <Header />
 
   <main class="pt-16">
@@ -60,6 +101,12 @@ const editUrl = entry.filePath
         )}
         <div class="mt-8 flex items-center gap-3 text-[14px] text-fg-subtle" data-pagefind-ignore>
           <span>{minutes} min read</span>
+          {updated && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>Updated {updated}</span>
+            </>
+          )}
           <span aria-hidden="true">·</span>
           <button
             type="button"

@@ -20,6 +20,8 @@ interface Props {
   /** Open Graph type: "website" for landing pages, "article" for docs and guides. */
   type?: 'website' | 'article';
   noindex?: boolean;
+  /** ISO date the page last changed (articles): `article:modified_time`. */
+  modified?: string;
 }
 
 const SITE_NAME = 'Concat';
@@ -30,6 +32,7 @@ const {
   imageAlt = 'Concat: the free, open-source CapCut replacement, with the editor window below the headline',
   type = 'website',
   noindex = false,
+  modified,
 } = Astro.props;
 
 const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).toString() : path);
@@ -63,6 +66,7 @@ const ogImage = absolute(image);
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={imageAlt} />
+    {modified && <meta property="article:modified_time" content={modified} />}
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />

@@ -14,6 +14,7 @@ import AdUnit from '@/components/AdUnit.astro';
 import TryConcat from '@/components/TryConcat.astro';
 import GuideIcon from '@/components/GuideIcon.astro';
 import { TOOLS, toolHref } from '@/lib/tools';
+import { breadcrumbs, lastModified } from '@/lib/seo';
 
 interface Props {
   slug: string;
@@ -26,7 +27,9 @@ if (!tool) throw new Error(`No tool "${slug}" in src/lib/tools.ts`);
 const at = TOOLS.indexOf(tool);
 const others = [1, 2, 3].map((i) => TOOLS[(at + i) % TOOLS.length]!);
 const site = Astro.site;
-const ld = {
+const path = `${toolHref(tool)}/`;
+const modified = lastModified(path);
+const app = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
   name: tool.title,
@@ -37,7 +40,16 @@ const ld = {
   isAccessibleForFree: true,
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   publisher: { '@type': 'Organization', name: 'Concat', url: site?.toString() },
+  ...(modified && { dateModified: modified }),
 };
+const ld = [
+  app,
+  breadcrumbs(site, [
+    ['Concat', '/'],
+    ['Free tools', '/tools/'],
+    [tool.title, path],
+  ]),
+];
 ---
 
 <Base title={`${tool.title} · Free · Concat`} description={tool.description}>

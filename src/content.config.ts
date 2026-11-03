@@ -26,6 +26,8 @@ const guides = defineCollection({
   schema: ({ image }) =>
     page.extend({
       section: z.string().default('Start'),
+      /** The <title> for search results, when it should carry more than the page's h1. */
+      seoTitle: z.string().optional(),
       /** The icon on the guide's card when it has no cover, by name (src/lib/guide-icons.ts). */
       icon: z.enum(GUIDE_ICONS).default('book'),
       /** A real app capture, shown on the band on the guide's card and at the top of the page. */

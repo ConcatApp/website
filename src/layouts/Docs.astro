@@ -8,12 +8,13 @@
 import type { MarkdownHeading } from 'astro';
 import { ArrowLeft, ArrowRight, ChevronDown, Search } from '@lucide/astro';
 import Base from '@/layouts/Base.astro';
+import { article, breadcrumbs, lastModified } from '@/lib/seo';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import SearchDialog from '@/components/Search.astro';
 import AdUnit from '@/components/AdUnit.astro';
 import { cn } from '@/lib/cn';
-import { LABEL, getNav, hrefFor, type Entry, type Kind } from '@/lib/docs';
+import { BASE, LABEL, getNav, hrefFor, type Entry, type Kind } from '@/lib/docs';
 
 interface Props {
   kind: Kind;
@@ -32,9 +33,33 @@ const editUrl = entry.filePath
   ? `https://github.com/ConcatApp/website/edit/main/${entry.filePath}`
   : undefined;
 const title = entry.id === 'index' ? LABEL[kind] : `${entry.data.title} · ${LABEL[kind]}`;
+const path = `${current}/`;
+const modified = lastModified(path);
+const ld = [
+  article({
+    site: Astro.site,
+    path,
+    headline: entry.data.title,
+    description: entry.data.description,
+    image: '/og.png',
+    modified,
+    type: 'TechArticle',
+  }),
+  breadcrumbs(Astro.site, [
+    ['Concat', '/'],
+    [LABEL[kind], `${BASE[kind]}/`],
+    ...(entry.id === 'index' ? [] : ([[entry.data.title, path]] as Array<[string, string]>)),
+  ]),
+];
 ---
 
-<Base title={`${title} · Concat`} description={entry.data.description} type="article">
+<Base
+  title={`${title} · Concat`}
+  description={entry.data.description}
+  type="article"
+  modified={modified}
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)}></script>
   <Header />
 
   <main class="pt-16">

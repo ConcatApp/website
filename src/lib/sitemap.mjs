@@ -69,7 +69,8 @@ function sourcesFor(pathname) {
     .filter(existsSync);
 }
 
-function lastmodFor(pathname) {
+/** The last commit date (ISO 8601) of the files a URL path is built from, or undefined. */
+export function lastmodFor(pathname) {
   if (!hasHistory()) return undefined;
   const files = sourcesFor(pathname);
   if (files.length === 0) return undefined;
