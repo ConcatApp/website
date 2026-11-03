@@ -65,7 +65,14 @@ export function checksumsUrl(manifest: Manifest): string {
   return `${RELEASES_URL}/download/${encodeURIComponent(tag)}/SHA256SUMS`;
 }
 
-export async function getManifest(): Promise<{ manifest: Manifest; live: boolean }> {
+/** Fetched once per build: every guide's download button reads the same manifest. */
+let manifestOnce: Promise<{ manifest: Manifest; live: boolean }> | undefined;
+export function getManifest(): Promise<{ manifest: Manifest; live: boolean }> {
+  manifestOnce ??= fetchManifest();
+  return manifestOnce;
+}
+
+async function fetchManifest(): Promise<{ manifest: Manifest; live: boolean }> {
   try {
     const res = await fetch(MANIFEST_URL, {
       headers: { accept: 'application/json' },

@@ -1,0 +1,131 @@
+---
+/**
+ * The guides landing page, laid out like a blog index: a centred head with the search and links to
+ * each section, then every section as a grid of cards in the order src/lib/docs.ts lists them.
+ * The first section (Start) leads, with its first guide that has a cover as a large card.
+ */
+import { getCollection } from 'astro:content';
+import { Search } from '@lucide/astro';
+import Base from '@/layouts/Base.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import SearchDialog from '@/components/Search.astro';
+import AdUnit from '@/components/AdUnit.astro';
+import GuideCard from '@/components/GuideCard.astro';
+import { getNav } from '@/lib/docs';
+
+const entries = await getCollection('guides');
+const byId = new Map(entries.map((e) => [e.id, e]));
+const { groups } = await getNav('guides');
+const slug = (title: string) => title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+const [first, ...sections] = groups.map((g) => ({
+  title: g.title,
+  id: slug(g.title),
+  entries: g.items.map((item) => byId.get(item.id)!),
+}));
+const lead = first ? (first.entries.find((e) => e.data.cover) ?? first.entries[0]) : undefined;
+const rest = first ? first.entries.filter((e) => e !== lead) : [];
+---
+
+<Base
+  title="Guides: how to edit video with Concat · Concat"
+  description="Plain-language guides to editing video with Concat, the free CapCut replacement: captions, voiceovers, titles, background removal, vertical video and export, step by step."
+>
+  <Header />
+
+  <main class="pt-16">
+    <header class="container-x grid justify-items-center pt-[clamp(56px,7vw,104px)] text-center">
+      <h1 class="text-display">Guides</h1>
+      <p class="text-lead mt-6 max-w-[34rem] text-balance text-fg-muted">
+        How to make the video you came for, in plain words. Every page describes the current
+        release, 0.2.8, and every picture is the real app.
+      </p>
+      <button
+        type="button"
+        class="mt-9 flex h-12 w-full max-w-md items-center gap-3 rounded-full border border-line-strong bg-bg-subtle px-5 text-[15px] text-fg-muted transition-colors duration-150 hover:bg-bg-overlay hover:text-fg"
+        data-search-open
+      >
+        <Search class="size-4" aria-hidden="true" />
+        Search the guides
+        <kbd class="kbd ml-auto text-[11px] text-fg-subtle" data-search-key>
+          Ctrl K
+        </kbd>
+      </button>
+      <nav class="mt-8 flex max-w-3xl flex-wrap justify-center gap-2" aria-label="Sections">
+        {[first, ...sections].filter(Boolean).map((s) => (
+          <a
+            href={`#${s.id}`}
+            class="flex h-9 items-center rounded-full bg-bg-subtle px-4 text-[14px] text-fg-muted transition-colors duration-150 hover:bg-bg-overlay hover:text-fg"
+          >
+            {s.title}
+          </a>
+        ))}
+        <a
+          href="/tools"
+          class="flex h-9 items-center rounded-full bg-bg-subtle px-4 text-[14px] text-fg-muted transition-colors duration-150 hover:bg-bg-overlay hover:text-fg"
+        >
+          Free tools
+        </a>
+      </nav>
+    </header>
+
+    {first && lead && (
+      <section
+        id={first.id}
+        class="container-x mt-[clamp(56px,7vw,96px)] scroll-mt-24"
+        aria-labelledby={`${first.id}-title`}
+      >
+        <h2 id={`${first.id}-title`} class="sr-only">
+          {first.title}
+        </h2>
+        <GuideCard entry={lead} large />
+        {rest.length > 0 && (
+          <ul class="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            {rest.map((e) => (
+              <li class="flex">
+                <GuideCard entry={e} class="w-full" />
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    )}
+
+    {sections.map((s) => (
+      <section
+        id={s.id}
+        class="container-x scroll-mt-24 pt-[clamp(72px,8vw,120px)]"
+        aria-labelledby={`${s.id}-title`}
+      >
+        <div class="flex items-baseline justify-between gap-4">
+          <h2 id={`${s.id}-title`} class="text-title">
+            {s.title}
+          </h2>
+          <p class="text-[14px] text-fg-subtle">
+            {s.entries.length} {s.entries.length === 1 ? 'guide' : 'guides'}
+          </p>
+        </div>
+        <ul class="mt-8 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          {s.entries.map((e) => (
+            <li class="flex">
+              <GuideCard entry={e} class="w-full" />
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+
+    <AdUnit class="container-x mt-20" />
+
+    <p class="container-x mt-16 text-center text-[15px] text-fg-muted">
+      Building on the API instead? The{' '}
+      <a href="/docs" class="text-accent-ink transition-colors duration-200 hover:text-fg">
+        developer docs
+      </a>{' '}
+      cover JSON-RPC, gRPC and the MCP server built into the app for AI agents.
+    </p>
+  </main>
+
+  <SearchDialog />
+  <Footer />
+</Base>

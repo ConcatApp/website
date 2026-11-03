@@ -1,0 +1,90 @@
+---
+/** The Lucide icon for a guide's `icon` name (src/lib/guide-icons.ts). */
+import {
+  AppWindow,
+  AudioLines,
+  BookOpen,
+  BookA,
+  Captions,
+  Clapperboard,
+  Cpu,
+  Download,
+  Eraser,
+  FileCog,
+  Film,
+  Keyboard,
+  Layers,
+  LifeBuoy,
+  Mic,
+  MonitorPlay,
+  MousePointerClick,
+  Music,
+  PanelsTopLeft,
+  Proportions,
+  RectangleVertical,
+  RefreshCw,
+  Repeat,
+  Scissors,
+  Settings,
+  ShieldCheck,
+  Smartphone,
+  Spline,
+  SquareDashed,
+  SunMedium,
+  Terminal,
+  Type,
+  Vibrate,
+  Volume2,
+  WandSparkles,
+} from '@lucide/astro';
+import type { GuideIcon } from '@/lib/guide-icons';
+
+interface Props {
+  name: GuideIcon;
+  class?: string;
+}
+
+const ICONS: Record<GuideIcon, typeof BookOpen> = {
+  book: BookOpen,
+  install: Download,
+  play: MousePointerClick,
+  layout: PanelsTopLeft,
+  requirements: Cpu,
+  captions: Captions,
+  speech: AudioLines,
+  mic: Mic,
+  voice: Volume2,
+  models: Layers,
+  sounds: Music,
+  text: Type,
+  effects: WandSparkles,
+  cutout: Eraser,
+  mask: SquareDashed,
+  keyframes: Spline,
+  vertical: RectangleVertical,
+  stabilize: Vibrate,
+  enhance: SunMedium,
+  cut: Scissors,
+  export: Film,
+  keyboard: Keyboard,
+  settings: Settings,
+  phone: Smartphone,
+  update: RefreshCw,
+  help: LifeBuoy,
+  script: Terminal,
+  switch: Repeat,
+  film: Clapperboard,
+  podcast: Mic,
+  screen: MonitorPlay,
+  linux: AppWindow,
+  privacy: ShieldCheck,
+  codec: FileCog,
+  glossary: BookA,
+  ratio: Proportions,
+};
+
+const { name, class: className } = Astro.props;
+const Icon = ICONS[name] ?? BookOpen;
+---
+
+<Icon class={className} aria-hidden="true" />

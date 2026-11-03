@@ -1,0 +1,183 @@
+---
+/**
+ * A guide as an article, for people using the app rather than reading a reference: no sidebar,
+ * a centred head (the section, the title, the description, the reading time), the cover on the
+ * band when the guide has one, then one comfortable reading column. Figures and tables step out
+ * of the column to a wider measure (`.guide-prose` in global.css). An "In this guide" list opens
+ * pages with three or more sections. The page ends on the ad slot, the download call to action
+ * and three guides to read next. Pagefind indexes the article only.
+ */
+import type { MarkdownHeading } from 'astro';
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import { Search } from '@lucide/astro';
+import Base from '@/layouts/Base.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import SearchDialog from '@/components/Search.astro';
+import AdUnit from '@/components/AdUnit.astro';
+import Button from '@/components/Button.astro';
+import DownloadButton from '@/components/DownloadButton.astro';
+import GuideCard from '@/components/GuideCard.astro';
+import { readingMinutes, relatedGuides } from '@/lib/docs';
+import { getManifest, getPlatforms } from '@/lib/releases';
+
+interface Props {
+  entry: CollectionEntry<'guides'>;
+  headings: MarkdownHeading[];
+}
+
+const { entry, headings } = Astro.props;
+const { title, description, section, cover, coverAlt } = entry.data;
+const minutes = readingMinutes(entry.body);
+const toc = headings.filter((h) => h.depth === 2);
+const related = await relatedGuides(entry);
+const { manifest } = await getManifest();
+const platforms = getPlatforms(manifest);
+const editUrl = entry.filePath
+  ? `https://github.com/ConcatApp/website/edit/main/${entry.filePath}`
+  : undefined;
+---
+
+<Base title={`${title} · Concat guides`} description={description} type="article">
+  <Header />
+
+  <main class="pt-16">
+    <article data-pagefind-body data-pagefind-meta="kind:Guides">
+      <header class="container-x grid justify-items-center pt-[clamp(48px,7vw,96px)] text-center">
+        <nav
+          class="flex items-center gap-2 text-[14px] text-fg-muted"
+          aria-label="Breadcrumb"
+          data-pagefind-ignore
+        >
+          <a href="/guides" class="transition-colors duration-150 hover:text-fg">
+            Guides
+          </a>
+          <span aria-hidden="true" class="text-fg-subtle">
+            /
+          </span>
+          <span>{section}</span>
+        </nav>
+        <h1 class="text-display mt-6 max-w-[16em]">{title}</h1>
+        {description && (
+          <p class="text-lead mt-6 max-w-[36rem] text-balance text-fg-muted">{description}</p>
+        )}
+        <div class="mt-8 flex items-center gap-3 text-[14px] text-fg-subtle" data-pagefind-ignore>
+          <span>{minutes} min read</span>
+          <span aria-hidden="true">·</span>
+          <button
+            type="button"
+            class="flex items-center gap-1.5 transition-colors duration-150 hover:text-fg"
+            data-search-open
+          >
+            <Search class="size-3.5" aria-hidden="true" />
+            Search the guides
+          </button>
+        </div>
+      </header>
+
+      {cover && (
+        <div class="container-x mt-[clamp(40px,6vw,72px)]">
+          <div class="band overflow-hidden rounded-[28px] px-[clamp(16px,6vw,80px)] pt-[clamp(16px,5vw,64px)] sm:rounded-[40px]">
+            <div class="frame relative mx-auto max-w-[56rem] rounded-b-none">
+              <Image
+                src={cover}
+                alt={coverAlt ?? ''}
+                widths={[640, 960, 1280, 1680]}
+                sizes="(min-width: 1080px) 900px, 100vw"
+                loading="eager"
+                class="block h-auto w-full"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div class="guide-prose prose mt-[clamp(48px,6vw,80px)]">
+        {toc.length >= 3 && (
+          <nav class="toc not-prose" aria-label="In this guide" data-pagefind-ignore>
+            <p class="eyebrow">In this guide</p>
+            <ol class="mt-4 grid gap-x-8 gap-y-2.5 sm:grid-cols-2">
+              {toc.map((h) => (
+                <li>
+                  <a
+                    href={`#${h.slug}`}
+                    class="text-[15px] text-fg-muted transition-colors duration-150 hover:text-fg"
+                  >
+                    {h.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+        <slot />
+      </div>
+
+      {editUrl && (
+        <p class="container-x mt-14 text-center text-sm text-fg-subtle" data-pagefind-ignore>
+          Something out of date?{' '}
+          <a
+            href={editUrl}
+            class="underline underline-offset-4 transition-colors duration-200 hover:text-accent-ink"
+            target="_blank"
+            rel="noopener"
+          >
+            Edit this page on GitHub
+          </a>
+        </p>
+      )}
+    </article>
+
+    <AdUnit class="container-x mt-16" />
+
+    <section class="container-x mt-[clamp(64px,8vw,112px)]" aria-labelledby="guide-cta">
+      <div class="band rounded-[28px] px-[clamp(24px,6vw,80px)] py-[clamp(48px,7vw,88px)] text-center sm:rounded-[40px]">
+        <h2 id="guide-cta" class="text-display-sm text-white">
+          Try it in Concat
+        </h2>
+        <p class="text-lead mx-auto mt-4 max-w-[30rem] text-white/80">
+          Free and open source. No watermark, no account, and your footage never leaves your
+          machine.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <DownloadButton platforms={platforms} all={false} />
+          <Button
+            href="/#download"
+            variant="secondary"
+            size="lg"
+            class="border-white/30 bg-white/10 text-white hover:bg-white/20"
+          >
+            All platforms
+          </Button>
+        </div>
+      </div>
+    </section>
+
+    {related.length > 0 && (
+      <section class="container-x mt-[clamp(64px,8vw,112px)]" aria-labelledby="keep-reading">
+        <div class="flex items-end justify-between gap-4">
+          <h2 id="keep-reading" class="text-title">
+            Keep reading
+          </h2>
+          <a
+            href="/guides"
+            class="text-[15px] font-medium text-accent-ink transition-colors duration-200 hover:text-fg"
+          >
+            All guides
+          </a>
+        </div>
+        <ul class="mt-8 grid gap-3 md:grid-cols-3">
+          {related.map((e) => (
+            <li class="flex">
+              <GuideCard entry={e} class="w-full" />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </main>
+
+  <SearchDialog />
+  <Footer />
+</Base>

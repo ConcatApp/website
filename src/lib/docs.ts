@@ -12,7 +12,15 @@ export const BASE: Record<Kind, string> = { docs: '/docs', guides: '/guides' };
 export const LABEL: Record<Kind, string> = { docs: 'Developer docs', guides: 'Guides' };
 const SECTIONS: Record<Kind, string[]> = {
   docs: ['Start', 'API', 'Transports', 'Recipes'],
-  guides: ['Start', 'Captions and voices', 'Picture', 'Timeline', 'Reference'],
+  guides: [
+    'Start',
+    'Make something',
+    'Captions and voices',
+    'Picture',
+    'Timeline',
+    'Know-how',
+    'Reference',
+  ],
 };
 
 export interface NavItem {
@@ -53,4 +61,45 @@ export async function getNav(kind: Kind): Promise<{ groups: NavGroup[]; flat: Na
     }))
     .filter((g) => g.items.length > 0);
   return { groups, flat: groups.flatMap((g) => g.items) };
+}
+
+/** Minutes to read a page at 220 words a minute, counting prose only (no imports or tags). */
+export function readingMinutes(body = ''): number {
+  const text = body
+    .replace(/^import .*$/gm, '')
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/[#>*_|`[\]()-]/g, ' ');
+  const words = text.split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 220));
+}
+
+/**
+ * Guides to read next: the rest of the same section, nearest first, then the guides after it in
+ * index order, so every page ends on a short list that is never empty.
+ */
+export async function relatedGuides(
+  entry: CollectionEntry<'guides'>,
+  count = 3,
+): Promise<CollectionEntry<'guides'>[]> {
+  const entries = await getCollection('guides');
+  const byId = new Map(entries.map((e) => [e.id, e]));
+  const { flat } = await getNav('guides');
+  const ordered = flat.map((item) => byId.get(item.id)!).filter((e) => e && e.id !== entry.id);
+  const sameSection = ordered
+    .filter((e) => e.data.section === entry.data.section)
+    .sort(
+      (a, b) =>
+        Math.abs(a.data.order - entry.data.order) - Math.abs(b.data.order - entry.data.order),
+    );
+  const at = flat.findIndex((item) => item.id === entry.id);
+  const after = [...flat.slice(at + 1), ...flat.slice(0, Math.max(at, 0))]
+    .map((item) => byId.get(item.id)!)
+    .filter((e) => e && e.id !== entry.id);
+  const picked: CollectionEntry<'guides'>[] = [];
+  for (const e of [...sameSection, ...after]) {
+    if (!picked.includes(e)) picked.push(e);
+    if (picked.length === count) break;
+  }
+  return picked;
 }

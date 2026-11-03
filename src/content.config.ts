@@ -1,12 +1,14 @@
 /**
  * Two collections of Markdown/MDX pages:
  *   docs    developer reference at /docs (API, transports, recipes), migrated from the app repo
- *   guides  pages for people using the app at /guides
- * `section` groups the sidebar, `order` sorts within a section. The docs sections are listed in
- * src/lib/docs.ts. An `index` entry becomes the section's landing page.
+ *   guides  articles for people using the app at /guides
+ * `section` groups the sidebar (docs) and the guides index, `order` sorts within a section. The
+ * sections are listed in src/lib/docs.ts. A docs `index` entry becomes the section's landing page;
+ * the guides landing page is src/pages/guides/index.astro.
  */
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { GUIDE_ICONS } from '@/lib/guide-icons';
 
 const page = z.object({
   title: z.string(),
@@ -21,11 +23,15 @@ const docs = defineCollection({
 
 const guides = defineCollection({
   loader: glob({ base: './src/content/guides', pattern: '**/*.{md,mdx}' }),
-  schema: page.extend({
-    section: z.string().default('Start'),
-    /** Shown on the guide card and at the top of the page, under the lead. */
-    hero: z.string().optional(),
-  }),
+  schema: ({ image }) =>
+    page.extend({
+      section: z.string().default('Start'),
+      /** The icon on the guide's card when it has no cover, by name (src/lib/guide-icons.ts). */
+      icon: z.enum(GUIDE_ICONS).default('book'),
+      /** A real app capture, shown on the band on the guide's card and at the top of the page. */
+      cover: image().optional(),
+      coverAlt: z.string().optional(),
+    }),
 });
 
 export const collections = { docs, guides };

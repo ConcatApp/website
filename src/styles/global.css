@@ -329,6 +329,7 @@
     border: 1px solid var(--color-line-strong);
     background: var(--color-card);
     box-shadow: 0 1px 0 var(--color-line-strong);
+    color: var(--color-fg);
     font-family: var(--font-sans);
     font-size: 0.8125em;
     font-weight: 500;
@@ -359,6 +360,9 @@
   --tw-prose-pre-bg: var(--color-card);
   --tw-prose-th-borders: var(--color-line-strong);
   --tw-prose-td-borders: var(--color-line);
+  /* The plugin's default key colour is near-black, which vanished on this page. */
+  --tw-prose-kbd: var(--color-fg);
+  --tw-prose-kbd-shadows: 255 255 255;
   font-size: 1rem;
   line-height: 1.7;
 }
@@ -436,6 +440,68 @@
   border-radius: var(--radius-sm);
   background: var(--color-accent-soft);
   color: var(--color-accent-ink);
+}
+
+/* Guides (src/layouts/Guide.astro): an article, not a reference page. One reading column of
+   40rem in larger type with more air, centred between the gutters container-x uses; figures,
+   tables and anything marked `.wide` step out of it to a wider measure, centred on the column.
+   A Figure with a `width` sets --figure-w and steps out only that far. */
+.guide-prose {
+  --gutter: 1rem;
+  max-width: calc(40rem + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+@media (min-width: 35rem) {
+  .guide-prose {
+    --gutter: 1.5rem;
+  }
+}
+.guide-prose > figure,
+.guide-prose > table,
+.guide-prose > .wide {
+  --measure: min(var(--figure-w, 60rem), 100vw - 2 * var(--gutter));
+  width: var(--measure);
+  max-width: none;
+  margin-left: calc((100% - var(--measure)) / 2);
+}
+.guide-prose > table {
+  --figure-w: 52rem;
+}
+@media (max-width: 40rem) {
+  .guide-prose > table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+.guide-prose > :first-child {
+  margin-top: 0;
+}
+.guide-prose :where(h2):not(:where([class~='not-prose'] *)) {
+  margin-top: 2.4em;
+  padding-top: 0;
+  border-top: 0;
+  font-size: 1.75em;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+.guide-prose :where(h3):not(:where([class~='not-prose'] *)) {
+  margin-top: 2em;
+  font-size: 1.25em;
+}
+.guide-prose :where(h2, h3) {
+  scroll-margin-top: 6rem;
+}
+.guide-prose :where(figcaption):not(:where([class~='not-prose'] *)) {
+  text-align: center;
+}
+.guide-prose > .toc {
+  margin: 0 0 3.5rem;
+  padding: 1.75rem 2rem;
+  border-radius: 1.75rem;
+  background: var(--color-card);
 }
 
 /* GitHub-style alerts, produced by src/lib/remark-alerts.mjs */

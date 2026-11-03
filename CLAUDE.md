@@ -81,9 +81,17 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../timeline` or `CONCAT_
 
 - `src/layouts/Base.astro` head/meta (Open Graph, Twitter card, canonical, robots, a `head` slot), fonts,
   ClientRouter, loads the scroll script
-- `src/layouts/Docs.astro` long-form page frame for /docs and /guides: search trigger, sidebar,
-  breadcrumb, prose column, "On this page", previous/next, edit link. Its article is the only
-  `data-pagefind-body` on the site, so search covers docs and guides and nothing else
+- `src/layouts/Docs.astro` long-form page frame for /docs: search trigger, sidebar, breadcrumb, prose
+  column, "On this page", previous/next, edit link, the ad slot.
+- `src/layouts/Guide.astro` a guide as a blog article (since 2026-11-03, the owner asked for "breathable
+  full-page-width blog/guides for normal users", not developer docs): no sidebar, a centred head
+  (breadcrumb, `text-display` title, description, reading time, a search link), the cover on the band
+  when the guide has one, an "In this guide" card for three or more h2s, one 40rem reading column in
+  18px type (`.guide-prose` in global.css) with figures and tables stepping out to a wide measure,
+  then the AdSense slot, a "Try it in Concat" band with the OS-detected download button, and "Keep
+  reading" (`relatedGuides` in `src/lib/docs.ts`). `src/pages/guides/index.astro` is the blog-style
+  index: search, section links, the Start section led by a large card, then every section's cards.
+  The Docs and Guide articles are the only `data-pagefind-body` on the site
 - `src/layouts/Page.astro` standalone long-form page without a sidebar, the `layout` for MDX pages under
   `src/pages/`: `privacy.mdx` (the roadmap page was removed on 2026-11-02, and nothing links to it)
 - `src/pages/privacy.mdx` the privacy policy, linked from the footer. AdSense requires it. It states what the
@@ -111,12 +119,17 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../timeline` or `CONCAT_
   Footer (the outro: a dark panel inside the band sheet with an optional `cta` slot, the link columns and
   the name in band blue), ArrowLink (accent text link with arrow), Tour (sticky screenshot panned to regions
   as steps scroll by), DownloadButton (OS-detected CTA, any number per page), Downloader (OS then
-  architecture then files picker), GuideList (cards for every guide grouped by section, used from the
-  guides landing page), Search (the Ctrl+K / Cmd+K dialog over the Pagefind index; any `data-search-open`
+  architecture then files picker), GuideCard (a guide's card: the band with its cover or its icon,
+  section, title, description, reading time; `large` for the lead card), GuideIcon (a guide's
+  `icon` name to its Lucide icon; the names are in `src/lib/guide-icons.ts`), Search (the Ctrl+K / Cmd+K dialog over the Pagefind index; any `data-search-open`
   element opens it)
 - `src/assets/` `editor.png` (the hero, from `app/hero.png`), the feature and guide crops, `guides/`
   screenshots for the guides, the app mark (`mark.png`), `sponsors/` logos.
-- `src/components/Figure.astro` a framed screenshot with a caption, for MDX guides.
+- `src/components/Figure.astro` a framed screenshot with a caption, for MDX guides; in a guide it takes
+  the wide measure, or its `width` when given.
+- `src/assets/made-with-slint.svg` Slint's own #MadeWithSlint badge (`logo/MadeWithSlint-logo-dark.svg`
+  in slint-ui/slint, the dark-background variant), unaltered as its branding guide asks; the footer
+  shows it because Slint's royalty-free licence asks for it on the download page.
   `public/` favicons (`.ico`, `.png`, Apple touch icon), `og.png` (share image), `robots.txt`.
 - `docs/RESOURCES.md` research: the GitHub Sponsors reference (section 9), the offerwall-site revamp and
   the screenshot workflow (section 10), the meltkit.com revamp (section 11), galleries, tools
@@ -152,7 +165,10 @@ Path alias: `@/` maps to `src/`.
   `models/manifest.toml` in the app repo (Chatterbox is nine files, about 1.1 GB; everything installed is about 3.4 GB).
 - Pages are MDX (Markdown works too) in `src/content/docs/` and `src/content/guides/`. Frontmatter: `title`,
   `description` (shown as the lead and used for meta tags), `section` (docs: Start, API, Transports, Recipes;
-  guides: Start, Captions and voices, Picture, Timeline, Reference) and `order`. `index.mdx` is the section landing page.
+  guides: Start, Make something, Captions and voices, Picture, Timeline, Know-how, Reference) and
+  `order`. A docs `index.mdx` is the section landing page. Guides also take `icon` (a name from
+  `src/lib/guide-icons.ts`, shown on the card when there is no cover) and an optional `cover` (a
+  real capture, path relative to the MDX file) with `coverAlt`.
 - Links between pages are site-relative (`/docs/api/methods#projectopen`). Use `> [!NOTE]`, `[!TIP]`,
   `[!IMPORTANT]`, `[!WARNING]` or `[!CAUTION]` for callouts. No emoji, including status ticks in tables.
 - Markdown runs on the unified processor from `@astrojs/markdown-remark` (set as `markdown.processor` in

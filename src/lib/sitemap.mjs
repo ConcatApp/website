@@ -57,10 +57,16 @@ function sourcesFor(pathname) {
   if (kind === 'docs' || kind === 'guides') {
     const slug = rest.length === 0 ? 'index' : rest.join('/');
     const base = `src/content/${kind}/${slug}`;
-    return ['.mdx', '.md', '/index.mdx', '/index.md'].map((ext) => base + ext).filter(existsSync);
+    const content = ['.mdx', '.md', '/index.mdx', '/index.md']
+      .map((ext) => base + ext)
+      .filter(existsSync);
+    if (content.length > 0) return content;
   }
-  // A standalone page such as /privacy/ (src/pages/privacy.mdx).
-  return ['.mdx', '.md', '.astro'].map((ext) => `src/pages/${path}${ext}`).filter(existsSync);
+  // A standalone page such as /privacy/ (src/pages/privacy.mdx), or a folder's index page such as
+  // /guides/ or /tools/ (src/pages/guides/index.astro).
+  return ['.mdx', '.md', '.astro', '/index.astro']
+    .map((ext) => `src/pages/${path}${ext}`)
+    .filter(existsSync);
 }
 
 function lastmodFor(pathname) {
