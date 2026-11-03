@@ -14,6 +14,7 @@ import {
   ArrowRight,
   AudioLines,
   Braces,
+  Captions,
   Check,
   ChevronDown,
   Film,
@@ -23,6 +24,7 @@ import {
   ScanFace,
   Spline,
   Terminal,
+  Type,
   Upload,
   UserX,
 } from '@lucide/astro';
@@ -41,9 +43,6 @@ import { SPONSOR_BENEFITS, SPONSORS } from '@/lib/sponsor';
 import { CONTACT_EMAIL } from '@/lib/contact';
 import mark from '@/assets/mark.png';
 import editor from '@/assets/editor.png';
-import shotCaptions from '@/assets/feature-captions.png';
-import shotTitles from '@/assets/feature-titles.png';
-import shotVoices from '@/assets/feature-voices.png';
 
 const { manifest } = await getManifest();
 const platforms = getPlatforms(manifest);
@@ -86,22 +85,19 @@ const tour: Step[] = [
   },
 ];
 
-// Each card shows a crop of the real window where one exists, and an app-icon style tile on the
-// band where none does.
+// Each card shows an app-icon style tile on the band.
 const features = [
   {
     title: 'Auto-captions, offline.',
     body: 'Local Whisper transcribes on your machine and puts styled captions on the timeline, one title per phrase or per sentence.',
-    image: shotCaptions,
-    alt: 'The Concat timeline with a lane of generated captions above the video and the voice clip',
+    icon: Captions,
     href: '/guides/auto-captions',
     cta: 'How captions work',
   },
   {
     title: 'Text to speech and voice cloning.',
     body: 'Built-in speakers that are quick, or any voice from a few seconds of a recording. The result lands on the timeline.',
-    image: shotVoices,
-    alt: 'The Concat Text to speech sheet with a script, the model and voice pickers and the Generate speech button',
+    icon: AudioLines,
     href: '/guides/text-to-speech',
     cta: 'Generate a voice',
   },
@@ -122,8 +118,7 @@ const features = [
   {
     title: 'Titles that look designed.',
     body: 'Fonts, stroke, shadow and a background plate, with presets to start from. Style many titles at once.',
-    image: shotTitles,
-    alt: 'The Concat Text inspector with font, weight, size, colour, shadow and background settings',
+    icon: Type,
     href: '/guides/titles-and-text',
     cta: 'Add titles',
   },
@@ -265,7 +260,7 @@ const ld = [
       'Background removal',
       'Keyframes with a curve editor',
       '100 effects, filters and transitions',
-      'Multi-track and multi-timeline editing',
+      'Multi-track and multi-timeline editing, with overlays and picture-in-picture',
       'Export in H.264, HEVC and AV1 up to 4K 60 10-bit',
       'Built-in MCP server for AI agents',
     ],
@@ -371,21 +366,9 @@ const ld = [
         {features.map(({ icon: Icon, ...f }) => (
           <li class="card flex flex-col items-center rounded-[28px] px-6 pt-6 pb-8 text-center sm:rounded-[40px]">
             <div class="grid h-[208px] w-full place-items-center">
-              {f.image ? (
-                <Image
-                  src={f.image}
-                  alt={f.alt ?? ''}
-                  widths={[400, 640, 960]}
-                  sizes="(min-width: 1024px) 320px, (min-width: 768px) 45vw, 90vw"
-                  class="block h-[184px] w-auto max-w-full rounded-[14px] object-cover object-left-top shadow-frame ring-1 ring-line-strong"
-                />
-              ) : (
-                Icon && (
-                  <span class="band grid size-[112px] place-items-center rounded-[26px] shadow-frame">
-                    <Icon class="size-11 text-white" stroke-width={1.5} aria-hidden="true" />
-                  </span>
-                )
-              )}
+              <span class="band grid size-[112px] place-items-center rounded-[26px] shadow-frame">
+                <Icon class="size-11 text-white" stroke-width={1.5} aria-hidden="true" />
+              </span>
             </div>
             <h3 class="mt-7 text-[16px] tracking-[-0.02em]">{f.title}</h3>
             <p class="mt-1.5 max-w-[17rem] text-[14px] tracking-[-0.02em] text-fg-muted">

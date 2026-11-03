@@ -44,10 +44,10 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../timeline` or `CONCAT_
   pages at those paths.
 - The fact tiles use real numbers only: `src/lib/stats.ts` fetches GitHub stars and the download total
   across every asset of every release at build time (the figure GitHub and the README's Downloads badge
-  show; 395K and 13.8K stars on 2026-11-02), falling back to `src/data/github-stats.json`. `GITHUB_TOKEN`
+  show; 409K and 13.9K stars on 2026-11-03), falling back to `src/data/github-stats.json`. `GITHUB_TOKEN`
   in the build environment lifts the API rate limit (the Pages workflow passes it); it is never committed,
   and this repository is public. The third tile reads "100s" (hundreds of) effects, filters and transitions, the owner's wording.
-  `formatCount` rounds down and keeps one decimal under 100K (13.8K).
+  `formatCount` rounds down and keeps one decimal under 100K (13.9K).
 - The app mark is the waving cat on a rounded dark tile, at the top of every README since 2026-10-13
   (`assets/concat-mark-dark.png` in the app repo; the blue tile is the older app icon). The app's SVGs only
   wrap a PNG of the cat, so the asset script copies the PNG to `src/assets/mark.png` (the header, hero and
@@ -132,6 +132,15 @@ Path alias: `@/` maps to `src/`.
   ships. As of 2026-10-20 main has, beyond 0.2.8, transitions' own knobs, the phone's shelf pills, effect
   cards shipped with the app, the Windows "Concat (safe graphics)" entry and `concat --software`, File ›
   Open closing the open project first, the Direct3D 12 FXC pin and 16 KB Android pages; none is documented.
+  Checked again on 2026-11-03 (still no release after 0.2.8): main also has Azerbaijani (26 languages),
+  4:5 and 3:4 project shapes, Up and Down to the previous and next cut, linkage (captions, titles and
+  sounds move with the main track), fade knobs on a sound's corners, a chroma key with an eyedropper,
+  picking the spoken language for captions, and speech reduced to Chatterbox (Kokoro, Pocket TTS and
+  sherpa-onnx removed); H.264 and HEVC export only through the platform's own encoders (x264 and x265
+  removed); and a dual licence (AGPL or commercial). When 0.2.9 ships, the text-to-speech, models,
+  captions, export and shortcuts guides need the most rework. The README's Multi-track line now names
+  overlays and picture-in-picture (stacking that 0.2.8 already does); its Patreon "Support Concat" cell
+  sits in the sponsors table but is a donation link, not a paid sponsor.
 - Many guide screenshots are still 0.2.7 captures (the start screen, editor layout, tray, Library tabs,
   Captions and Text to speech sheets, Audio tab). Their captions say so; retake them on 0.2.8 in the dark
   theme and drop those caption notes. `src/assets/guides/start.png` is the 0.2.7 start screen and is no
@@ -215,7 +224,7 @@ offerwall-site look it replaced.
 - Page grammar, in order: the header bar; hero (the mark, the two-line gradient headline, one line, the
   OS-detected download pill with the handwritten aside); the editor window on the band, which ends in a
   hanging tab ("No watermark, no account"); a centred statement over three fact tiles (real numbers only);
-  the feature cards (`features`, real crops where one exists, an icon tile on the band where not); the
+  the feature cards (`features`, an icon tile on the band on every card; the owner asked for no screenshots there on 2026-11-03); the
   scroll-driven tour of the window (`Tour`); two big cards ("for people who edit" and "for scripts and
   agents"); the download picker on the band; Sponsor (benefits card plus the current sponsors and a "Your
   logo here" slot); Contact (Discord, email, contribute); the two-column FAQ; the footer, which carries the
