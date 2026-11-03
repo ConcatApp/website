@@ -1,0 +1,72 @@
+---
+title: 'Turn a podcast into short clips'
+seoTitle: 'How to turn a video podcast into vertical clips with captions, free · Concat'
+description: 'Find the moments worth sharing in a long recording, cut each one into a vertical clip with the speaker filling the frame, clean up the voice, caption it and export, all in one project.'
+section: 'Make something'
+order: 3
+icon: 'podcast'
+---
+
+A one-hour conversation holds a dozen thirty-second moments that would travel on their own. Here
+is a way to cut them in Concat without starting a new project for each: one project holds the
+full episode and every clip, each on its own timeline.
+
+## Set up one project for the episode
+
+Make a 16:9 project at your recording's size and frame rate, and import the episode. If the video
+and the sound were recorded separately, put both on the timeline and line them up by a clap or a
+clear word at the start. For
+a quick check of what you recorded (size, frame rate, codec, length) before you begin, the
+[video file inspector](/tools/video-info) reads the file in your browser.
+
+## Find the moments
+
+Play the episode through, or transcribe it first: [auto-captions](/guides/auto-captions) on the
+whole recording puts every phrase on the timeline as a title, so you can skim the words and jump
+straight to the good part. Delete the caption lane afterwards, or keep it for the clip.
+
+At each moment you want, place a marker by splitting the clip there
+(<kbd class="kbd">Ctrl+B</kbd>, <kbd class="kbd">⌘B</kbd> on a Mac). You will copy these stretches
+into the vertical timelines next.
+
+## A vertical timeline per clip
+
+Click the plus beside the timeline tabs to add a timeline, double-click its tab to name it after
+the moment, and set it to 9:16 at 1080p with the Inspector's **Modify** button. Copy the stretch
+from the episode timeline (<kbd class="kbd">Ctrl+C</kbd>) and paste it into the new one
+(<kbd class="kbd">Ctrl+V</kbd>); clips paste across timelines at the playhead. Each
+timeline keeps its own frame and rate, and the Export sheet exports whichever one is open; see
+[several timelines](/guides/cut-on-the-timeline#several-timelines).
+
+## Make the speaker fill the frame
+
+A wide shot of two people looks lost in a tall frame. Select the clip and press **Fill** in the
+Inspector's Transform section: the picture is enlarged to cover the frame, cut at the sides.
+Then nudge **Position X** until the person talking is centred. When the other person answers,
+split the clip there and move the second half's position to them. Keyframes on Position X move
+the frame smoothly between the two instead; see [keyframes](/guides/keyframes).
+
+If you would rather keep the whole wide shot, set **Canvas** to **Blur** to fill the bars with
+the picture itself; see [vertical video](/guides/vertical-video).
+
+## Clean up the voice
+
+Podcast audio recorded in a room benefits from all three switches in the Inspector's **Audio**
+tab: **Normalize loudness** brings every clip to the same broadcast level, **Reduce noise** takes
+out hiss and hum, and **Enhance voice** adds presence. They run as the clip plays, with nothing to
+download. See [clean up a voice](/guides/clean-up-a-voice).
+
+## Caption it
+
+Select the clip and press the **T** on the timeline tray. Captions land one phrase at a time,
+timed to the words. Make them large and place them in the middle of the frame, where the apps
+draw nothing over them. Style one, then style them all at once; see
+[titles and text](/guides/titles-and-text).
+
+## Export each clip
+
+Open a clip's timeline and click **Export**: 1080 × 1920, H.264, the bitrate it starts at. Then
+open the next tab and export again. Every file is free of watermarks.
+
+If you only need the sound of an episode as an MP3 for a podcast feed,
+[extract the audio](/tools/extract-audio) from the video in your browser.

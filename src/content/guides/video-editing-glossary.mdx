@@ -1,0 +1,127 @@
+---
+title: 'Video editing terms, explained'
+seoTitle: 'Video editing glossary: bitrate, codec, keyframe, B-roll and more · Concat'
+description: 'The words editors and export screens use, in plain language: from aspect ratio and bitrate to J-cuts, keyframes, proxies and 10-bit colour.'
+section: 'Know-how'
+order: 2
+icon: 'glossary'
+---
+
+Editing has its own vocabulary, and export screens assume you know it. Here is what the common
+terms mean, with a pointer to where each one turns up in Concat.
+
+## The picture
+
+**Resolution.** The size of the picture in pixels, width by height: 1920 × 1080 is "1080p", 3840
+× 2160 is "4K". Concat names sizes by the short edge, so a vertical 1080p video is 1080 × 1920.
+
+**Aspect ratio.** The shape of the frame, width to height: 16:9 for YouTube, 9:16 for TikTok,
+Reels and Shorts, 1:1 square. The [aspect ratio calculator](/tools/aspect-ratio-calculator) works
+out sizes for any ratio.
+
+**Frame rate (fps).** How many pictures a second the video shows. 24 looks like cinema, 30 is
+usual for phones and the web, 60 is smooth and suits games and sport. Keep a project at the rate
+the footage was shot at.
+
+**10-bit colour.** Each colour channel stored with 1,024 levels instead of 256, which avoids
+banding in skies and gradients. It matters for footage shot in 10-bit or HDR; Concat's Export
+sheet has a switch for it.
+
+**HDR.** High dynamic range: brighter highlights and deeper shadows than standard video, on screens
+that can show them. A video in HDR looks wrong on a player that does not support it unless it is
+tone-mapped back to SDR (standard range).
+
+## The file
+
+**Container.** The file format: MP4, MOV, MKV, WebM. It holds the picture, the sound and the
+captions as separate streams.
+
+**Codec.** How a stream is compressed. H.264, HEVC and AV1 for the picture; AAC, Opus and MP3 for
+the sound. See [H.264, HEVC or AV1](/guides/h264-hevc-or-av1).
+
+**Bitrate.** How many bits each second of video takes, in megabits per second (Mbps). Higher
+means more detail kept and a bigger file. Size is bitrate times length: the
+[file size calculator](/tools/video-file-size-calculator) does the sum.
+
+**Export (render).** Turning the edit into a finished video file. Nothing on the timeline is
+changed by it.
+
+**Proxy.** A small, easy-to-decode copy of a heavy clip that the editor plays while you work, and
+swaps for the original at export. Concat makes proxies so 4K scrubs smoothly.
+
+## The timeline
+
+**Timeline.** The strip where the edit happens, time running left to right. A Concat project can
+hold several, each its own cut.
+
+**Track (lane).** A row of the timeline. Clips on higher lanes draw over the ones below, so titles
+and overlays go above the footage.
+
+**Clip.** One piece of media placed on the timeline, which can be a part of a longer file.
+
+**Playhead.** The vertical line marking the frame you are looking at.
+
+**Split.** Cutting a clip in two at the playhead (<kbd class="kbd">Ctrl+B</kbd>,
+
+<kbd class="kbd">⌘B</kbd> on a Mac).
+
+**Trim.** Shortening a clip by dragging its start or end edge.
+
+**Ripple delete.** Deleting a clip and closing the gap it leaves, so everything after it moves up.
+Concat's **Magnetic timeline** switch makes every delete ripple.
+
+**Main track.** The bottom picture lane, which the rest of the edit is built on. In Concat it is
+the **main lane**, and the canvas background is drawn behind it.
+
+## Editing technique
+
+**A-roll and B-roll.** A-roll is the main footage, usually someone talking. B-roll is the
+supporting shots cut over it to show what they are talking about.
+
+**J-cut and L-cut.** Letting the sound and the picture of a cut change at different moments. In a
+J-cut you hear the next shot before you see it; in an L-cut the sound of the previous shot carries
+on over the next one. Both make cuts feel smoother. In Concat, detach a clip's audio (right-click,
+**Detach audio**) to move the two edges apart.
+
+**Jump cut.** A cut inside one continuous shot, so the subject seems to jump. Used on purpose in
+talking-head videos to remove pauses.
+
+**Picture-in-picture.** A smaller video placed over the main one, such as a face over a screen
+recording. A clip on a lane above the main one, sized and placed in the Inspector.
+
+## Animation and effects
+
+**Keyframe.** A value pinned to a moment, such as a scale of 100 at one second and 150 at two
+seconds. The editor animates between keys. Concat puts a diamond beside every knob that can be
+animated; see [keyframes](/guides/keyframes).
+
+**Easing.** How an animation speeds up and slows down between keys. Ease in and out looks natural;
+linear looks mechanical.
+
+**Key frame (in a file).** A different thing with the same name: a complete picture stored in
+the video, from which the frames after it are built. Trimming without re-encoding can only start
+on one, which is why some quick trims are not frame-exact; see [Trim a video](/tools/trim-video).
+
+**Chroma key (green screen).** Making one colour transparent, so a subject filmed in front of a
+green backdrop can be placed over anything. Concat also removes backgrounds without a green
+screen; see [remove a background](/guides/remove-a-background).
+
+**Mask.** A shape that decides which part of a clip shows. See [mask a clip](/guides/mask).
+
+**Transition.** An effect between two clips, such as a dissolve or a wipe, instead of a straight
+cut.
+
+**LUT.** A look-up table, a file that maps colours to other colours to give footage a graded look.
+Concat's Library has an **Adjustments** page with an adjustment layer and your imported LUTs.
+
+## Sound
+
+**Normalize (loudness).** Raising or lowering a clip so it plays at a standard loudness. One of
+Concat's three voice switches; see [clean up a voice](/guides/clean-up-a-voice).
+
+**Noise reduction.** Taking steady background sound such as hiss, hum and fans out from under a
+voice.
+
+**Captions and subtitles.** Text of what is said, timed to the speech. Open (burned-in) captions
+are part of the picture; closed captions are a separate file the viewer can turn on, usually SRT
+or WebVTT. The [subtitle converter](/tools/subtitle-converter) converts between the two.

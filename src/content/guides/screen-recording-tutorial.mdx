@@ -1,0 +1,78 @@
+---
+title: 'Turn a screen recording into a tutorial'
+seoTitle: 'Edit a screen recording into a tutorial video: cut, zoom, caption · Concat'
+description: 'Cut the dead air out of a raw screen capture, zoom in on what matters with keyframes, add titles and a clean voiceover, and export a tutorial people finish watching.'
+section: 'Make something'
+order: 4
+icon: 'screen'
+---
+
+A raw screen recording is mostly waiting: loading bars, a cursor looking for a button, a sentence
+started twice. Editing is mostly taking that out. Here is a routine in Concat that turns a
+recording from OBS, the Xbox Game Bar, macOS's screenshot tool or any other recorder into a
+tutorial.
+
+## Make the project match the recording
+
+Start a project with the recording's shape and size, usually 16:9 at 1080p or 1440p, and the
+frame rate it was captured at. Not sure what the recorder wrote? Drop the file on the
+[video file inspector](/tools/video-info) to see its size, frame rate and codec. Import the
+recording and double-click it onto the timeline.
+
+## Cut the dead air
+
+Play through at your own pace and remove everything nobody needs to watch.
+
+- At the start of a pause, press <kbd class="kbd">Ctrl+B</kbd> (<kbd class="kbd">⌘B</kbd> on a
+  Mac) to split; at its end, split again; select the piece and press
+  <kbd class="kbd">Delete</kbd>. With the **Magnetic timeline** switch on, the rest slides up.
+- <kbd class="kbd">Q</kbd> and <kbd class="kbd">W</kbd> delete the part of the clip before or after
+  the playhead in one stroke, which is faster for trimming the ends of a take.
+- A long wait you cannot cut, such as an install, can play faster instead: split it off and raise
+  its **Rate** in the Inspector's Speed section.
+
+[Cut on the timeline](/guides/cut-on-the-timeline) has every tool.
+
+## Zoom in on what matters
+
+Small text in a full-screen capture is unreadable on a phone. Animate a zoom instead of making
+the viewer squint:
+
+1. Put the playhead just before the moment and click the diamond beside **Scale** and beside
+   **Position X** and **Y** in the Inspector. That sets the starting keys.
+2. Move the playhead half a second on, raise **Scale** and move the position so the area you
+   want fills the frame. New keys are set for you.
+3. Near the end of the moment, add keys at the same values, and half a second later return
+   Scale and Position to where they began.
+
+Ease each move in and out, or draw its curve, in the curve editor; see [keyframes](/guides/keyframes).
+
+## Titles and steps
+
+A title per step helps people find their place. Open the Library's **Text** page, pick a style,
+and type "Step 1: install" or whatever the step is; drag it to a corner. Style one and then style
+the rest at once. See [titles and text](/guides/titles-and-text).
+
+## A clean voice
+
+Record the narration after the cut, when you know what is on screen:
+[Record a voiceover](/guides/record-a-voiceover) records over the edit while it plays. If you
+talked during the capture, turn on **Normalize loudness**, **Reduce noise** and **Enhance voice**
+in the Inspector's **Audio** tab to take the fan noise and the keyboard out from under it; see
+[clean up a voice](/guides/clean-up-a-voice).
+
+Prefer not to narrate? Write the script, check its length with the
+[script length counter](/tools/script-length-counter), and have
+[text to speech](/guides/text-to-speech) read it.
+
+## Captions
+
+Captions make a tutorial searchable by eye and usable with the sound off. Select the voice clip
+and press the **T** on the timeline tray; [auto-captions](/guides/auto-captions) transcribe it on
+your machine.
+
+## Export
+
+Click **Export**, keep the timeline's size and H.264, and the bitrate it starts at. For a
+recording full of small text, export at the size it was captured at rather than smaller, so the
+text stays sharp after the platform re-encodes it.

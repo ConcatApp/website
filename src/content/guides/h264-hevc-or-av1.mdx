@@ -1,0 +1,78 @@
+---
+title: 'H.264, HEVC or AV1: which to export'
+seoTitle: 'H.264 vs HEVC vs AV1: which video codec to export · Concat'
+description: 'What a codec is, how the three modern ones differ in size, quality and where they play, and which to pick for YouTube, TikTok, a client or an archive.'
+section: 'Know-how'
+order: 1
+icon: 'codec'
+---
+
+Every video file is two things at once. The **container** is the file format you see in the
+name, such as `.mp4`, `.mov` or `.webm`. Inside it, the picture is compressed with a **codec**,
+and that choice decides how big the file is, how good it looks for its size, and which devices
+can play it. Concat exports three: H.264, HEVC and AV1, always in an MP4.
+
+## The short answer
+
+| You are making                                   | Export as | Why                                                          |
+| ------------------------------------------------ | --------- | ------------------------------------------------------------ |
+| Anything you will upload: YouTube, TikTok, Reels | **H.264** | Every platform accepts it and re-encodes it on upload anyway |
+| A file to send to someone, or for a client       | **H.264** | It plays on every phone, laptop and TV made in 15 years      |
+| A file to keep on your own disk                  | **HEVC**  | About half the size of H.264 for the same look               |
+| The smallest file at a given quality             | **AV1**   | Smaller again, if the machine can encode it                  |
+| 10-bit or HDR footage you want to keep that way  | **HEVC**  | 10-bit H.264 plays almost nowhere                            |
+
+When in doubt, H.264. It is the default for a reason.
+
+## H.264, the one that plays everywhere
+
+H.264 (also called AVC) is from 2003. Every browser, phone, smart TV, games console and editing
+app decodes it, most of them in hardware, so it plays smoothly and uses little battery. Its
+compression is the least efficient of the three: for the same picture it needs the most bits.
+
+That rarely matters for uploads. YouTube, TikTok, Instagram and the rest decode whatever you send
+and encode their own copies, so a well-made H.264 file at a generous bitrate is the best thing to
+hand them. A smaller HEVC or AV1 upload does not come out looking better on the other side.
+
+## HEVC, half the size
+
+HEVC (H.265) arrived in 2013 and needs roughly half the bits of H.264 for the same quality, which
+is what Concat's Export sheet means by "Half the size". iPhones record in it by default. It is
+the sensible choice for your own archive, for long recordings and for 10-bit footage.
+
+The catch is playback. Apple devices and recent Windows and Android hardware decode it, but not
+every browser does on every machine, and some web services still refuse it. A file you send in
+HEVC may not open on the other person's computer.
+
+## AV1, the smallest
+
+AV1 is from 2018 and was made by a group of companies including Google, Netflix and Mozilla, free of
+the licence fees attached to HEVC. It compresses better again, which is why streaming services use
+it. Recent browsers, phones and graphics cards decode it; older ones do not.
+
+Encoding AV1 is heavy work. On Windows and Linux, Concat hands it to the graphics chip when the
+machine has an AV1 encoder (recent NVIDIA, Intel and AMD graphics), ahead of the software encoder,
+and the Export sheet shows "Not on this device" for a codec the machine cannot encode at all.
+
+## Bitrate matters more than the codec
+
+The codec decides how efficiently bits are spent; the **bitrate** decides how many there are. An
+H.264 file at a sensible bitrate beats an AV1 file starved of bits. Concat's Export sheet starts
+the bitrate at what YouTube asks for at the timeline's size and frame rate (8 Mbps at 1080p, 40 at
+4K, half again above 30 fps, less for HEVC and AV1) and that is right for almost everything. The
+[file size calculator](/tools/video-file-size-calculator) shows what a bitrate means in megabytes.
+
+## Exporting in Concat
+
+Open the Export sheet (the blue **Export** button, or <kbd class="kbd">Ctrl+E</kbd>,
+
+<kbd class="kbd">⌘E</kbd> on a Mac) and pick the **Codec**: H.264 ("Plays everywhere"), HEVC ("Half
+the size") or AV1 ("Smallest"). Turn on **10-bit colour** only for 10-bit or HDR footage. The
+[export guide](/guides/export) covers every other row.
+
+## Changing the codec of a file you already have
+
+To turn an HEVC phone video into H.264 that plays anywhere, or a large file into a smaller one,
+you do not need to open an editor: the [video converter](/tools/convert-video) and
+[Compress a video](/tools/compress-video) do it in your browser, and the
+[video file inspector](/tools/video-info) tells you which codec a file uses.

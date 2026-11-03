@@ -1,0 +1,64 @@
+---
+title: 'A free video editor for Linux'
+seoTitle: 'Free video editor for Linux with AI captions: AppImage, deb, rpm, Arch, Flatpak · Concat'
+description: 'Concat runs natively on Linux, x86_64 and ARM64, with GPU rendering through Vulkan, local AI captions and voices, and no watermark. Which package to pick and how to install it.'
+section: 'Know-how'
+order: 4
+icon: 'linux'
+---
+
+Linux has fewer video editors than Windows and macOS, and fewer still with the features people
+use for social video: auto-captions, AI voices, background removal. Concat is a native Linux app
+with all of them, built from the same code as the Windows, macOS and phone versions, free and open
+source under the AGPL-3.0.
+
+## What you get
+
+- A native editor, not a web app in a wrapper: a Rust engine with a GPU compositor that draws
+  through Vulkan, and falls back to the processor when there is no usable GPU.
+- [Auto-captions](/guides/auto-captions) with Whisper, [text to speech and voice
+  cloning](/guides/text-to-speech), [background removal](/guides/remove-a-background), all on your
+  machine.
+- Keyframes with a curve editor, 100 effects, filters and transitions, multi-track and
+  multi-timeline editing, titles, voice cleanup.
+- Export in H.264, HEVC and AV1 up to 4K 60 10-bit, using NVENC, Quick Sync or AMF when the
+  graphics chip has them. No watermark.
+- Builds for **x86_64** and **ARM64** alike.
+
+## Pick a package
+
+| Your system                    | Download     | Install                                                    |
+| ------------------------------ | ------------ | ---------------------------------------------------------- |
+| Any distribution               | AppImage     | `chmod +x Concat-*.AppImage`, then run it                  |
+| Debian, Ubuntu, Mint, Pop!\_OS | `.deb`       | `sudo apt install ./Concat-*.deb`                          |
+| Fedora, openSUSE               | `.rpm`       | `sudo dnf install ./Concat-*.rpm`                          |
+| Arch, Manjaro, EndeavourOS     | Arch package | `sudo pacman -U Concat-*.pkg.tar.zst`                      |
+| Flatpak users                  | Flatpark     | A community remote that wraps each release's x86_64 `.deb` |
+
+The [download picker](/#download) detects Linux and your processor and offers each format; every
+file is a GitHub Releases asset with a checksum. Details are in
+[Install Concat](/guides/install#linux).
+
+## Wayland
+
+Concat runs on native Wayland: dropped files, resizing the frameless window from its edge and the
+dock entry all work there.
+
+## Hardware
+
+Any 64-bit processor runs it, and 4 GB of RAM is the minimum; 16 GB is comfortable for 4K
+timelines and the larger caption models. A GPU with a Vulkan driver makes previews and effects
+fast, and without one the window draws on the processor. The caption transcriber picks the fastest
+code the processor can run, so an old CPU without AVX2 still transcribes. See
+[system requirements](/guides/system-requirements).
+
+## Updates
+
+The AppImage updates in place from **Settings › Version**. For the `.deb`, `.rpm` and Arch
+package, Settings downloads the new package and opens it in your system installer. The Flatpak
+updates through Flatpak. See [Update Concat](/guides/update).
+
+## Next
+
+Start with [your first edit](/guides/first-edit), or if you are moving from another editor,
+[coming from CapCut](/guides/coming-from-capcut) maps the familiar tools to where they are.

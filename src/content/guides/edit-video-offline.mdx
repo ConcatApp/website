@@ -1,0 +1,63 @@
+---
+title: 'Edit video offline, without uploading it'
+seoTitle: 'Edit video offline with AI captions and voices, no upload · Concat'
+description: 'Why editing on your own machine beats an online editor for privacy, speed and cost, what in Concat needs the network once, and how to set it up to work with no connection at all.'
+section: 'Know-how'
+order: 3
+icon: 'privacy'
+---
+
+Online video editors and many apps upload your footage to process it: the captions, the voices,
+the background removal and the export happen on someone else's computer. Concat does all of it on
+yours. Here is what that buys you, and how to set Concat up to work with no connection at all.
+
+## Why edit locally
+
+- **Privacy.** A client's unreleased product, a family video, a recording of a meeting: none of
+  it leaves your disk. There is no server holding a copy, and no terms of service granting anyone
+  rights to it.
+- **No waiting on uploads.** A 4K recording can take longer to upload than to edit. Locally,
+  you import it and start cutting.
+- **Works anywhere.** On a train, on a plane, at a venue with bad Wi-Fi.
+- **No per-minute fees.** Transcription and AI voices online are usually metered. On your own
+  machine there is nothing to meter: caption a three-hour recording as often as you like.
+- **No account to lose.** Projects are folders on your disk, not entries in a cloud library that
+  disappears with a subscription.
+
+## What runs on your machine in Concat
+
+Everything. The editing, the preview and the export run on a native engine with a GPU compositor.
+The AI features run locally too:
+
+| Feature                                                    | Runs on                    | Download, once                       |
+| ---------------------------------------------------------- | -------------------------- | ------------------------------------ |
+| [Auto-captions](/guides/auto-captions)                     | Whisper, on your processor | 78 MB to 488 MB per model            |
+| [Text to speech and voice cloning](/guides/text-to-speech) | Local voice models         | 98 MB to about 1.1 GB per model      |
+| [Background removal](/guides/remove-a-background)          | Local cutout models        | 15 MB to 179 MB, 40 MB for the brush |
+| [Enhance](/guides/enhance)                                 | A local restoration model  | 5 MB                                 |
+| [Voice cleanup](/guides/clean-up-a-voice)                  | Built in                   | Nothing                              |
+
+Every model downloads from Settings the first time you use its feature, and never needs the network
+again. Installed together they take about 3.4 GB. See [the AI models](/guides/offline-models).
+
+## What uses the network, and only when you ask
+
+- **Downloading a model**, the first time you use a feature that needs it.
+- **Checking for and installing updates**, from Settings › Version when you click.
+- **Links** to the guides, GitHub and Discord, which open in your browser.
+
+The [code signing policy](https://github.com/jub0t/Concat/blob/main/CODE_SIGNING.md) in the
+repository lists what Concat sends over the network: nothing you did not ask for.
+
+## Set up for working offline
+
+1. [Install Concat](/guides/install) while you are online.
+2. Open **Settings** (the gear at the top right) and download the models for the features you will
+   use: a caption model (Base, English is the sweet spot), a voice model, the cutout models.
+3. That is it. Unplug the network and everything keeps working, captions and voices included.
+
+## Small jobs without installing anything
+
+For a quick compress, trim or conversion on a machine where you cannot install software, the
+[free tools](/tools) on this site work the same way: they run in your browser with its own video
+encoders, and the file never leaves your device.
