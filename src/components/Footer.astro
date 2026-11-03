@@ -7,6 +7,7 @@
  */
 import { Image } from 'astro:assets';
 import mark from '@/assets/mark.png';
+import madeWithSlint from '@/assets/made-with-slint.png';
 import { DISCORD_URL, RELEASES_URL, REPO_URL, X_URL } from '@/lib/releases';
 
 const year = new Date().getFullYear();
@@ -102,6 +103,16 @@ const columns = [
         <p>&copy; {year} Concat. Free and open source under AGPL-3.0.</p>
         <p>Not affiliated with CapCut or ByteDance.</p>
       </div>
+      <!-- Slint's attribution badge, which its royalty-free licence asks for on the page the app
+           is downloaded from. -->
+      <a
+        href="https://slint.dev"
+        target="_blank"
+        rel="noopener"
+        class="mt-6 block w-fit opacity-80 transition-opacity duration-150 hover:opacity-100"
+      >
+        <Image src={madeWithSlint} alt="Made with Slint" width={88} height={40} class="h-10 w-auto" />
+      </a>
       <div class="wordmark-box mt-[clamp(32px,5vw,56px)]" aria-hidden="true">
         <p class="wordmark band">Concat</p>
       </div>
