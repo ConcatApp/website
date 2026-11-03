@@ -1,0 +1,225 @@
+---
+import Tool from '@/layouts/Tool.astro';
+import FileDrop from '@/components/FileDrop.astro';
+import JobStatus from '@/components/JobStatus.astro';
+import Button from '@/components/Button.astro';
+---
+
+<Tool slug="compress-video">
+  <div data-compress-tool>
+    <FileDrop />
+    <p class="mt-3 text-[14px] text-fg-muted" data-info></p>
+
+    <div class="mt-8">
+      <p class="field-label">How small</p>
+      <div class="flex flex-wrap gap-2" role="radiogroup" aria-label="How small">
+        <button type="button" class="chip" role="radio" aria-checked="true" data-goal="medium">
+          Balanced <span class="chip-hint">good quality</span>
+        </button>
+        <button type="button" class="chip" role="radio" aria-checked="false" data-goal="low">
+          Smaller <span class="chip-hint">for sharing</span>
+        </button>
+        <button type="button" class="chip" role="radio" aria-checked="false" data-goal="very-low">
+          Smallest
+        </button>
+        <button type="button" class="chip" role="radio" aria-checked="false" data-goal="size">
+          Under a size
+        </button>
+      </div>
+    </div>
+
+    <div class="mt-6 grid gap-6 sm:grid-cols-3">
+      <label data-size-field hidden>
+        <span class="field-label">Size limit (MB)</span>
+        <input class="input" type="number" min="1" step="1" value="25" data-limit />
+      </label>
+      <label>
+        <span class="field-label">Resolution</span>
+        <select class="input" data-res>
+          <option value="0">Keep the original</option>
+          <option value="1080">1080p</option>
+          <option value="720" selected>
+            720p
+          </option>
+          <option value="480">480p</option>
+          <option value="360">360p</option>
+        </select>
+      </label>
+      <label>
+        <span class="field-label">Format</span>
+        <select class="input" data-container>
+          <option value="mp4" selected>
+            MP4 (plays everywhere)
+          </option>
+          <option value="webm">WebM</option>
+        </select>
+      </label>
+    </div>
+
+    <Button class="mt-8" data-go disabled>
+      Compress
+    </Button>
+    <JobStatus />
+  </div>
+
+  <Fragment slot="about">
+    <h2>How to compress a video</h2>
+    <ol>
+      <li>Choose the video, or drop it on the box. It is read on your device, not uploaded.</li>
+      <li>
+        Pick how small: <strong>Balanced</strong> keeps it looking close to the original,
+        <strong>Smaller</strong> and <strong>Smallest</strong> trade more detail for size, and
+        <strong>Under a size</strong> aims for a limit you type, such as a chat app's attachment
+        limit.
+      </li>
+      <li>
+        Lower the resolution if the video will be watched on a phone. 720p is plenty for a chat
+        message and roughly halves the size of a 1080p video on its own.
+      </li>
+      <li>
+        Click <strong>Compress</strong> and download the result.
+      </li>
+    </ol>
+
+    <h2>What makes a video smaller</h2>
+    <p>
+      A video's size is its bitrate times its length, so there are three levers: fewer bits a second
+      (more compression), fewer pixels (a lower resolution), or a shorter video. Lowering the
+      resolution is the gentlest of the three, because a smaller picture needs far fewer bits to
+      look clean. Squeezing a large picture into very few bits is what makes video turn blocky and
+      smeared.
+    </p>
+    <p>
+      <strong>Under a size</strong> works out the bitrate for you from the video's length, keeping
+      128 kbps for the sound and a little room for the file's own data. If the limit is tiny for a
+      long video, lower the resolution as well, or <a href="/tools/trim-video">trim it</a> first.
+      The <a href="/tools/video-file-size-calculator">file size calculator</a> shows the sums.
+    </p>
+
+    <h2>Is it private?</h2>
+    <p>
+      Yes. The page uses your browser's own video encoder (the same one a video call uses, often the
+      graphics chip) to rewrite the file on your machine. There is no server in between, and the
+      page works with the network unplugged once it has loaded. Large files take as long as the
+      encoder needs; a fast laptop compresses a minute of 1080p video in well under a minute.
+    </p>
+
+    <h2>If it does not work</h2>
+    <ul>
+      <li>
+        <strong>"Cannot decode"</strong>: the browser has no decoder for the video's codec. iPhone
+        videos are often HEVC, which Chrome and Firefox decode only on some machines; Safari and
+        Edge usually can.
+      </li>
+      <li>
+        <strong>It runs out of memory</strong>: the result is held in memory until you download it,
+        so a phone may struggle with a file of several gigabytes. Trim it or use a computer.
+      </li>
+    </ul>
+
+    <h2>Compressing as part of an edit</h2>
+    <p>
+      If you are cutting the video anyway, export it smaller from the editor instead of compressing
+      it twice. Concat's Export sheet sets the size, the frame rate and the bitrate in one place,
+      with H.264, HEVC or AV1, and adds no watermark. See <a href="/guides/export">Export</a>.
+    </p>
+  </Fragment>
+</Tool>
+
+<script>
+  import {
+    convert,
+    formatBytes,
+    formatDuration,
+    probe,
+    unsupported,
+    type ConvertOptions,
+    type Info,
+  } from '@/scripts/media';
+  import { bindDrop, jobView, showChosen } from '@/scripts/media-ui';
+
+  function setup() {
+    const root = document.querySelector<HTMLElement>('[data-compress-tool]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '';
+    const job = jobView(root);
+    const info = root.querySelector('[data-info]')!;
+    const go = root.querySelector<HTMLButtonElement>('[data-go]')!;
+    const sizeField = root.querySelector<HTMLElement>('[data-size-field]')!;
+    let file: File | undefined;
+    let meta: Info | undefined;
+    let goal = 'medium';
+
+    const problem = unsupported();
+    if (problem) job.fail(problem);
+
+    for (const chip of root.querySelectorAll<HTMLButtonElement>('[data-goal]')) {
+      chip.addEventListener('click', () => {
+        goal = chip.dataset.goal!;
+        for (const c of root.querySelectorAll('[data-goal]'))
+          c.setAttribute('aria-checked', String(c === chip));
+        sizeField.hidden = goal !== 'size';
+      });
+    }
+
+    bindDrop(root, async (chosen) => {
+      file = chosen;
+      meta = undefined;
+      showChosen(root, chosen);
+      info.textContent = 'Reading the file...';
+      go.disabled = true;
+      try {
+        meta = await probe(chosen);
+        const v = meta.video;
+        info.textContent = v
+          ? `${v.width} x ${v.height}, ${formatDuration(meta.duration)}, ${v.codec}, ${formatBytes(meta.size)}.`
+          : `No picture in this file (${formatDuration(meta.duration)}).`;
+        go.disabled = !v || !!problem;
+      } catch (err) {
+        info.textContent = err instanceof Error ? err.message : String(err);
+      }
+    });
+
+    go.addEventListener('click', () => {
+      if (!file || !meta || job.busy()) return;
+      const container = root.querySelector<HTMLSelectElement>('[data-container]')!.value as
+        'mp4' | 'webm';
+      const shortEdge =
+        Number(root.querySelector<HTMLSelectElement>('[data-res]')!.value) || undefined;
+      const audioBitrate = 128_000;
+      let video: NonNullable<ConvertOptions['video']> = {
+        shortEdge,
+      };
+      if (goal === 'size') {
+        const limit = Number(root.querySelector<HTMLInputElement>('[data-limit]')!.value) || 0;
+        const total = (limit * 8e6 * 0.93) / Math.max(meta.duration, 0.1);
+        const bitrate = Math.floor(total - (meta.audio ? audioBitrate : 0));
+        if (bitrate < 80_000) {
+          job.fail(
+            `${limit} MB is too small for ${formatDuration(meta.duration)} of video. Raise the limit or trim the video first.`,
+          );
+          return;
+        }
+        video = { ...video, bitrate, constant: true };
+      } else {
+        video = { ...video, quality: goal as 'medium' | 'low' | 'very-low' };
+      }
+      const chosen = file;
+      void job.run(
+        (onProgress) =>
+          convert(
+            chosen,
+            { container, video, audio: { bitrate: audioBitrate }, transcode: true },
+            'compressed',
+            onProgress,
+          ),
+        'Compressing on this device',
+        chosen.size,
+      );
+    });
+  }
+  // Now, since a page's module script can run after the first astro:page-load, and after every
+  // client-side navigation. setup() skips a tool it has already wired.
+  setup();
+  document.addEventListener('astro:page-load', setup);
+</script>

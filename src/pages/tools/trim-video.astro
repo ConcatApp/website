@@ -1,0 +1,243 @@
+---
+import Tool from '@/layouts/Tool.astro';
+import FileDrop from '@/components/FileDrop.astro';
+import JobStatus from '@/components/JobStatus.astro';
+import Button from '@/components/Button.astro';
+---
+
+<Tool slug="trim-video">
+  <div data-trim-tool>
+    <FileDrop />
+    <p class="mt-3 text-[14px] text-fg-muted" data-info></p>
+
+    <div class="mt-6" data-editor hidden>
+      <video
+        class="aspect-video w-full rounded-[18px] bg-black"
+        controls
+        playsinline
+        data-preview
+      ></video>
+      <div class="mt-6 grid gap-6 sm:grid-cols-2">
+        <div>
+          <label class="field-label" for="trim-start">
+            Start (seconds)
+          </label>
+          <div class="flex gap-2">
+            <input
+              id="trim-start"
+              class="input"
+              type="number"
+              min="0"
+              step="0.01"
+              value="0"
+              data-start
+            />
+            <button type="button" class="chip shrink-0" data-set="start">
+              Set to playhead
+            </button>
+          </div>
+        </div>
+        <div>
+          <label class="field-label" for="trim-end">
+            End (seconds)
+          </label>
+          <div class="flex gap-2">
+            <input
+              id="trim-end"
+              class="input"
+              type="number"
+              min="0"
+              step="0.01"
+              value="0"
+              data-end
+            />
+            <button type="button" class="chip shrink-0" data-set="end">
+              Set to playhead
+            </button>
+          </div>
+        </div>
+      </div>
+      <p class="mt-3 text-[14px] text-fg-subtle" aria-live="polite" data-length></p>
+      <div class="mt-6 grid gap-6 sm:grid-cols-2">
+        <label>
+          <span class="field-label">Cut</span>
+          <select class="input" data-mode>
+            <option value="exact" selected>
+              Exact (re-encodes the video)
+            </option>
+            <option value="fast">Fast (copies, no quality loss)</option>
+          </select>
+        </label>
+        <label>
+          <span class="field-label">Save as</span>
+          <select class="input" data-container>
+            <option value="same" selected>
+              Same format as the original
+            </option>
+            <option value="mp4">MP4</option>
+            <option value="webm">WebM</option>
+            <option value="mov">MOV</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <Button class="mt-8" data-go disabled>
+      Trim
+    </Button>
+    <JobStatus />
+  </div>
+
+  <Fragment slot="about">
+    <h2>How to trim a video</h2>
+    <ol>
+      <li>Choose the video or drop it on the box. It plays right here, from your disk.</li>
+      <li>
+        Play or scrub to where the video should start and click <strong>Set to playhead</strong>
+        under Start. Do the same for the end. You can also type the times in seconds.
+      </li>
+      <li>
+        Click <strong>Trim</strong> and download the shorter video.
+      </li>
+    </ol>
+
+    <h2>Exact or fast</h2>
+    <p>
+      Video is stored in groups of frames, and each group can only be decoded from its first frame,
+      the key frame. A cut rarely lands on one, so there are two ways to trim:
+    </p>
+    <ul>
+      <li>
+        <strong>Exact</strong> decodes the part you keep and encodes it again with your browser's
+        encoder. The video starts and ends on the very frames you chose, and the file holds nothing
+        else. It takes longer and, like any re-encode, softens the picture a little.
+      </li>
+      <li>
+        <strong>Fast</strong> copies the original frames without touching them, so the quality is
+        untouched and even an hour-long file is done in seconds. To start mid-group it keeps the
+        frames back to the previous key frame and marks them hidden. Players that honour the mark
+        start where you chose; a few apps and sites ignore it and show those extra frames, and the
+        file is larger than the time it plays.
+      </li>
+    </ul>
+    <p>
+      Use Exact for a clip you will post or send; use Fast to cut a long recording down quickly.
+    </p>
+
+    <h2>Trim, then share</h2>
+    <p>
+      A trimmed clip is often still too large to send. Run it through
+      <a href="/tools/compress-video">Compress a video</a> next, or turn a moment of it into a
+      <a href="/tools/video-to-gif">GIF</a>. To cut out the middle of a video, or to join clips, you
+      need an editor: <a href="/guides/cut-on-the-timeline">cutting on Concat's timeline</a>
+      takes a split and a delete, and it is free, with no watermark.
+    </p>
+
+    <h2>If the preview stays black</h2>
+    <p>
+      The preview uses the browser's video player, which does not play every codec everywhere; HEVC
+      from an iPhone is the usual case on Chrome and Firefox. The trim itself may still work: type
+      the start and end in seconds. If the browser cannot decode the file at all, the tool says so
+      when you click Trim.
+    </p>
+  </Fragment>
+</Tool>
+
+<script>
+  import {
+    convert,
+    formatBytes,
+    formatDuration,
+    probe,
+    unsupported,
+    type Container,
+  } from '@/scripts/media';
+  import { bindDrop, jobView, showChosen } from '@/scripts/media-ui';
+
+  function setup() {
+    const root = document.querySelector<HTMLElement>('[data-trim-tool]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '';
+    const q = <T extends HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
+    const job = jobView(root);
+    const info = q('[data-info]');
+    const go = q<HTMLButtonElement>('[data-go]');
+    const video = q<HTMLVideoElement>('[data-preview]');
+    const start = q<HTMLInputElement>('[data-start]');
+    const end = q<HTMLInputElement>('[data-end]');
+    const length = q('[data-length]');
+    const problem = unsupported();
+    if (problem) job.fail(problem);
+    let file: File | undefined;
+    let duration = 0;
+    let sourceContainer: Container = 'mp4';
+    let url: string | undefined;
+
+    const update = () => {
+      const a = Number(start.value);
+      const b = Number(end.value);
+      const ok = file && b > a && a >= 0 && b <= duration + 0.01;
+      length.textContent = ok
+        ? `The trimmed video runs ${formatDuration(b - a)}, from ${formatDuration(a)} to ${formatDuration(b)}.`
+        : 'The end has to come after the start, inside the video.';
+      go.disabled = !ok || !!problem;
+    };
+
+    bindDrop(root, async (chosen) => {
+      file = undefined;
+      showChosen(root, chosen);
+      info.textContent = 'Reading the file...';
+      go.disabled = true;
+      try {
+        const meta = await probe(chosen);
+        duration = meta.duration;
+        sourceContainer = /webm|matroska/i.test(meta.mime)
+          ? 'webm'
+          : /quicktime/i.test(meta.mime)
+            ? 'mov'
+            : 'mp4';
+        info.textContent = `${formatDuration(meta.duration)}, ${meta.video ? `${meta.video.width} x ${meta.video.height}, ` : ''}${formatBytes(meta.size)}.`;
+        if (url) URL.revokeObjectURL(url);
+        url = URL.createObjectURL(chosen);
+        video.src = url;
+        start.value = '0';
+        end.value = duration.toFixed(2);
+        start.max = end.max = duration.toFixed(2);
+        q('[data-editor]').hidden = false;
+        file = chosen;
+        update();
+      } catch (err) {
+        info.textContent = err instanceof Error ? err.message : String(err);
+      }
+    });
+
+    for (const button of root.querySelectorAll<HTMLButtonElement>('[data-set]')) {
+      button.addEventListener('click', () => {
+        (button.dataset.set === 'start' ? start : end).value = video.currentTime.toFixed(2);
+        update();
+      });
+    }
+    start.addEventListener('input', update);
+    end.addEventListener('input', update);
+    document.addEventListener('astro:before-swap', () => url && URL.revokeObjectURL(url), {
+      once: true,
+    });
+
+    go.addEventListener('click', () => {
+      if (!file || job.busy()) return;
+      const picked = q<HTMLSelectElement>('[data-container]').value;
+      const container = (picked === 'same' ? sourceContainer : picked) as Container;
+      const chosen = file;
+      const trim = { start: Number(start.value), end: Number(end.value) };
+      const transcode = q<HTMLSelectElement>('[data-mode]').value === 'exact';
+      void job.run(
+        (onProgress) => convert(chosen, { container, trim, transcode }, 'trimmed', onProgress),
+        'Trimming on this device',
+      );
+    });
+  }
+  // Now, since a page's module script can run after the first astro:page-load, and after every
+  // client-side navigation. setup() skips a tool it has already wired.
+  setup();
+  document.addEventListener('astro:page-load', setup);
+</script>

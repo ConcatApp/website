@@ -112,9 +112,25 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../timeline` or `CONCAT_
 - `src/lib/stats.ts` GitHub stars and download total for the stats row, with snapshot fallback
 - `src/lib/sponsor.ts` sponsor tiers
 - `src/lib/contact.ts` public contact channels (the email shown in the Contact section)
+- Free tools (since 2026-11-03, for search traffic; the owner wants many, and genuinely useful ones):
+  `src/lib/tools.ts` lists them (slug, group Video/Writing/Calculators, title, lead, meta description,
+  icon); each is `src/pages/tools/<slug>.astro` on `src/layouts/Tool.astro` (head, the tool on a big
+  card, the ad slot, an explainer in `.guide-prose` through the `about` slot, the download band,
+  three more tools, `WebApplication` JSON-LD); `/tools` is the index (`ItemList` JSON-LD). Every tool
+  runs in the browser and uploads nothing. The video tools (compress, convert, trim, extract audio,
+  video to GIF, inspector) use `src/scripts/media.ts`: Mediabunny (pinned 1.61.6, with
+  `@mediabunny/mp3-encoder`) over the browser's WebCodecs, imported on first use, plus gifenc for
+  GIFs; `FileDrop.astro`, `JobStatus.astro` and `src/scripts/media-ui.ts` are their shared UI. Not
+  ffmpeg.wasm: its core is over Workers' 25 MiB file limit. Tool scripts call `setup()` at once and
+  on `astro:page-load` (a page's module script can run after the first page-load event) and
+  `setup()` skips a root marked `data-ready`. Trim offers Exact (re-encodes) and Fast (copies; a
+  copy keeps hidden frames back to the key frame, which some apps show). Size targets use a constant
+  bitrate with 7% headroom. The script length counter keeps its draft in localStorage, which the
+  privacy policy states. Tools are linked from the header's Free tools menu, a landing section
+  (`#tools`, the video tools), the footer, the guides index and the HTML sitemap.
 - `src/components/` Astro-only: Button (primary: the light pill; secondary: the faint outlined pill;
   ghost), Section (content column with a centred title, `\n` in it is a line break, and lead), Container,
-  Header (a plain bar: mark and name as the home link, two hover/click dropdown menus Learn and Community;
+  Header (a plain bar: mark and name as the home link, three hover/click dropdown menus Learn (guides, docs), Free tools (the video tools and the index) and Community;
   GitHub, Discord and X icons and the Download pill on the right; a menu button opens a sheet below md),
   Footer (the outro: a dark panel inside the band sheet with an optional `cta` slot, the link columns and
   the name in band blue), ArrowLink (accent text link with arrow), Tour (sticky screenshot panned to regions

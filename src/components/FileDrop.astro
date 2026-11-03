@@ -1,0 +1,28 @@
+---
+/**
+ * The file picker on a media tool: a large dashed target that takes a click or a dropped file. The
+ * file is read on the page (src/scripts/media-ui.ts wires it); nothing is uploaded.
+ */
+import { Upload } from '@lucide/astro';
+
+interface Props {
+  accept?: string;
+  label?: string;
+}
+
+const { accept = 'video/*,.mkv,.mov', label = 'Choose a video' } = Astro.props;
+---
+
+<label
+  class="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-[22px] border-2 border-dashed border-line-strong bg-bg-subtle px-6 py-12 text-center transition-colors duration-200 hover:border-accent hover:bg-bg-overlay data-[over]:border-accent data-[over]:bg-accent-soft"
+  data-drop
+>
+  <span class="band grid size-14 place-items-center rounded-[18px]">
+    <Upload class="size-6 text-white" aria-hidden="true" />
+  </span>
+  <span class="text-[1.0625rem] font-medium tracking-[-0.02em]">{label}</span>
+  <span class="text-[14px] text-fg-muted" data-drop-hint>
+    or drop it here. It stays on your device.
+  </span>
+  <input type="file" accept={accept} class="sr-only" data-drop-input />
+</label>

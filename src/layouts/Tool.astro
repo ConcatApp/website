@@ -1,0 +1,126 @@
+---
+/**
+ * A free single-page tool (src/lib/tools.ts): a centred head, the tool itself on a big card, the
+ * ad slot, then an explainer in the guides' reading column (the `about` slot), the download band
+ * and the other tools. Each tool runs in the browser, which the head says. Pagefind indexes the
+ * head and the explainer, under the kind "Tools".
+ */
+import { ShieldCheck } from '@lucide/astro';
+import Base from '@/layouts/Base.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import SearchDialog from '@/components/Search.astro';
+import AdUnit from '@/components/AdUnit.astro';
+import TryConcat from '@/components/TryConcat.astro';
+import GuideIcon from '@/components/GuideIcon.astro';
+import { TOOLS, toolHref } from '@/lib/tools';
+
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+const tool = TOOLS.find((t) => t.slug === slug);
+if (!tool) throw new Error(`No tool "${slug}" in src/lib/tools.ts`);
+// The three tools after this one, wrapping round, so every tool is linked from three others.
+const at = TOOLS.indexOf(tool);
+const others = [1, 2, 3].map((i) => TOOLS[(at + i) % TOOLS.length]!);
+const site = Astro.site;
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: tool.title,
+  description: tool.description,
+  url: site ? new URL(`${toolHref(tool)}/`, site).toString() : undefined,
+  applicationCategory: 'MultimediaApplication',
+  operatingSystem: 'Any (runs in the browser)',
+  isAccessibleForFree: true,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@type': 'Organization', name: 'Concat', url: site?.toString() },
+};
+---
+
+<Base title={`${tool.title} · Free · Concat`} description={tool.description}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)}></script>
+  <Header />
+
+  <main class="pt-16">
+    <div data-pagefind-body data-pagefind-meta="kind:Tools">
+      <header class="container-x grid justify-items-center pt-[clamp(48px,7vw,96px)] text-center">
+        <nav
+          class="flex items-center gap-2 text-[14px] text-fg-muted"
+          aria-label="Breadcrumb"
+          data-pagefind-ignore
+        >
+          <a href="/tools" class="transition-colors duration-150 hover:text-fg">
+            Free tools
+          </a>
+        </nav>
+        <h1 class="text-display mt-6 max-w-[16em]">{tool.title}</h1>
+        <p class="text-lead mt-6 max-w-[34rem] text-balance text-fg-muted">{tool.lead}</p>
+        <p class="mt-6 flex items-center gap-2 text-[14px] text-fg-subtle">
+          <ShieldCheck class="size-4" aria-hidden="true" />
+          Runs in your browser. Nothing is uploaded.
+        </p>
+      </header>
+
+      <section
+        class="container-x mt-[clamp(40px,5vw,64px)]"
+        aria-label={tool.title}
+        data-pagefind-ignore
+      >
+        <div class="card mx-auto max-w-[56rem] rounded-[28px] p-[clamp(20px,4vw,48px)] sm:rounded-[40px]">
+          <slot />
+        </div>
+      </section>
+
+      <AdUnit class="container-x mt-16" />
+
+      {Astro.slots.has('about') && (
+        <div class="guide-prose prose mt-[clamp(56px,7vw,96px)]">
+          <slot name="about" />
+        </div>
+      )}
+    </div>
+
+    <TryConcat
+      title="Edit the video, too"
+      lead="Concat is a free video editor that runs on your machine: captions, voices, titles and 4K export, with no watermark and no account."
+    />
+
+    <section class="container-x mt-[clamp(64px,8vw,112px)]" aria-labelledby="more-tools">
+      <div class="flex items-end justify-between gap-4">
+        <h2 id="more-tools" class="text-title">
+          More free tools
+        </h2>
+        <a
+          href="/tools"
+          class="text-[15px] font-medium text-accent-ink transition-colors duration-200 hover:text-fg"
+        >
+          All tools
+        </a>
+      </div>
+      <ul class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {others.map((t) => (
+          <li class="flex">
+            <a
+              href={toolHref(t)}
+              class="card group flex w-full items-start gap-4 rounded-[28px] p-6"
+            >
+              <span class="band grid size-12 shrink-0 place-items-center rounded-[16px]">
+                <GuideIcon name={t.icon} class="size-5 text-white" />
+              </span>
+              <span>
+                <span class="block text-[1.0625rem] font-medium tracking-[-0.02em]">{t.title}</span>
+                <span class="mt-1 block text-[14px] leading-relaxed text-fg-muted">{t.lead}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </main>
+
+  <SearchDialog />
+  <Footer />
+</Base>

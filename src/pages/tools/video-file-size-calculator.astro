@@ -1,0 +1,222 @@
+---
+import Tool from '@/layouts/Tool.astro';
+---
+
+<Tool slug="video-file-size-calculator">
+  <div data-size-tool>
+    <div class="flex flex-wrap gap-2" role="radiogroup" aria-label="What to work out">
+      <button type="button" class="chip" role="radio" aria-checked="true" data-mode="size">
+        File size from bitrate
+      </button>
+      <button type="button" class="chip" role="radio" aria-checked="false" data-mode="bitrate">
+        Bitrate for a size limit
+      </button>
+    </div>
+
+    <fieldset class="mt-8">
+      <legend class="field-label">Length of the video</legend>
+      <div class="grid grid-cols-3 gap-3">
+        <label>
+          <span class="sr-only">Hours</span>
+          <input class="input" type="number" min="0" step="1" value="0" data-h />
+          <span class="mt-1.5 block text-[13px] text-fg-subtle">hours</span>
+        </label>
+        <label>
+          <span class="sr-only">Minutes</span>
+          <input class="input" type="number" min="0" step="1" value="10" data-m />
+          <span class="mt-1.5 block text-[13px] text-fg-subtle">minutes</span>
+        </label>
+        <label>
+          <span class="sr-only">Seconds</span>
+          <input class="input" type="number" min="0" step="1" value="0" data-s />
+          <span class="mt-1.5 block text-[13px] text-fg-subtle">seconds</span>
+        </label>
+      </div>
+    </fieldset>
+
+    <div class="mt-6 grid gap-6 sm:grid-cols-2">
+      <label data-show="size">
+        <span class="field-label">Video bitrate (Mbps)</span>
+        <input class="input" type="number" min="0" step="0.1" value="8" data-vbr />
+      </label>
+      <label data-show="bitrate" hidden>
+        <span class="field-label">Size limit (MB)</span>
+        <input class="input" type="number" min="1" step="1" value="500" data-limit />
+      </label>
+      <label>
+        <span class="field-label">Audio bitrate (kbps)</span>
+        <select class="input" data-abr>
+          <option value="0">No audio</option>
+          <option value="96">96 kbps</option>
+          <option value="128">128 kbps</option>
+          <option value="192" selected>
+            192 kbps
+          </option>
+          <option value="256">256 kbps</option>
+          <option value="320">320 kbps</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="readout mt-8" aria-live="polite">
+      <p class="text-[14px] text-fg-muted" data-out-label>
+        Estimated file size
+      </p>
+      <p class="text-stat mt-2" data-out>
+        -
+      </p>
+      <p class="mt-2 text-[14px] text-fg-subtle" data-out-note></p>
+    </div>
+  </div>
+
+  <Fragment slot="about">
+    <h2>How video file size works</h2>
+    <p>
+      A video's size is its bitrate multiplied by its length. Bitrate is how many bits each second
+      of the file takes, usually given in megabits per second (Mbps) for the picture and kilobits
+      per second (kbps) for the sound. Add the two, multiply by the number of seconds, divide by
+      eight to turn bits into bytes, and you have the size.
+    </p>
+    <p>
+      An 8 Mbps picture with 192 kbps sound runs to about 61 MB a minute, so ten minutes is about
+      614 MB. Double the bitrate and the file doubles. The resolution and the frame rate do not
+      enter the sum on their own: they change how much bitrate a clean picture needs.
+    </p>
+
+    <h2>Fitting a video under a size limit</h2>
+    <p>
+      Switch to <strong>Bitrate for a size limit</strong>, enter the length and the limit, and the
+      calculator gives the highest video bitrate that fits. It keeps 2 percent back for the
+      container's own data (the index and the headers an MP4 carries), so the export lands under the
+      limit rather than on it. If the answer is very low for the resolution, the picture will turn
+      blocky: export at a smaller size, cut the video shorter, or use a newer codec.
+    </p>
+
+    <h2>Rough starting points</h2>
+    <p>
+      YouTube publishes the bitrates it recommends for uploads, and they make sensible defaults for
+      H.264 in general. For standard (SDR) video:
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Resolution</th>
+          <th>24 to 30 fps</th>
+          <th>48 to 60 fps</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>720p</td>
+          <td>5 Mbps</td>
+          <td>7.5 Mbps</td>
+        </tr>
+        <tr>
+          <td>1080p</td>
+          <td>8 Mbps</td>
+          <td>12 Mbps</td>
+        </tr>
+        <tr>
+          <td>1440p</td>
+          <td>16 Mbps</td>
+          <td>24 Mbps</td>
+        </tr>
+        <tr>
+          <td>4K (2160p)</td>
+          <td>35 to 45 Mbps</td>
+          <td>53 to 68 Mbps</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      HEVC and AV1 reach the same look at noticeably lower bitrates than H.264, which matters when
+      you are squeezing under a limit. The trade-off is that older phones and some websites play
+      H.264 only. <a href="/guides/h264-hevc-or-av1">H.264, HEVC or AV1</a> walks through which to
+      pick.
+    </p>
+
+    <h2>Why the real file can differ</h2>
+    <p>
+      Most exports use a variable bitrate: quiet, still shots take fewer bits and busy ones take
+      more, around the average you set. The final size usually lands within a few percent of the
+      estimate, but a very still video can come out smaller. Sizes here are decimal megabytes (1 MB
+      is 1,000,000 bytes), the unit macOS and most websites use; Windows counts in units of
+      1,048,576 bytes, so it shows the same file about 5 percent smaller.
+    </p>
+    <p>
+      In Concat the Export sheet starts with a recommended bitrate for the timeline's size and frame
+      rate, and you can type your own. The <a href="/guides/export">export guide</a> covers every
+      option on it.
+    </p>
+  </Fragment>
+</Tool>
+
+<script>
+  function setup() {
+    const root = document.querySelector<HTMLElement>('[data-size-tool]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '';
+    const q = <T extends Element>(sel: string) => root.querySelector<T>(sel)!;
+    const num = (sel: string) => Math.max(0, Number(q<HTMLInputElement>(sel).value) || 0);
+    let mode: 'size' | 'bitrate' = 'size';
+
+    const formatSize = (bytes: number) =>
+      bytes >= 1e9
+        ? `${(bytes / 1e9).toFixed(2)} GB`
+        : `${(bytes / 1e6).toFixed(bytes >= 1e8 ? 0 : 1)} MB`;
+
+    function render() {
+      const seconds = num('[data-h]') * 3600 + num('[data-m]') * 60 + num('[data-s]');
+      const audioKbps = Number(q<HTMLSelectElement>('[data-abr]').value);
+      const out = q('[data-out]');
+      const note = q('[data-out-note]');
+      q('[data-out-label]').textContent =
+        mode === 'size' ? 'Estimated file size' : 'Highest video bitrate that fits';
+      if (seconds <= 0) {
+        out.textContent = '-';
+        note.textContent = 'Enter how long the video is.';
+        return;
+      }
+      if (mode === 'size') {
+        const videoKbps = num('[data-vbr]') * 1000;
+        const bytes = ((videoKbps + audioKbps) * 1000 * seconds) / 8;
+        out.textContent = formatSize(bytes);
+        note.textContent = `About ${formatSize(bytes / (seconds / 60))} a minute, at ${(
+          (videoKbps + audioKbps) /
+          1000
+        ).toFixed(2)} Mbps in total.`;
+      } else {
+        const limitBytes = num('[data-limit]') * 1e6 * 0.98;
+        const totalKbps = (limitBytes * 8) / seconds / 1000;
+        const videoKbps = totalKbps - audioKbps;
+        if (videoKbps <= 0) {
+          out.textContent = 'Too small';
+          note.textContent = 'The sound alone fills that limit. Pick a lower audio bitrate.';
+          return;
+        }
+        out.textContent =
+          videoKbps >= 1000
+            ? `${(videoKbps / 1000).toFixed(2)} Mbps`
+            : `${Math.floor(videoKbps)} kbps`;
+        note.textContent = `${Math.floor(videoKbps).toLocaleString('en')} kbps for the picture plus ${audioKbps} kbps for the sound, with 2% kept back for the container.`;
+      }
+    }
+
+    for (const button of root.querySelectorAll<HTMLButtonElement>('[data-mode]')) {
+      button.addEventListener('click', () => {
+        mode = button.dataset.mode as 'size' | 'bitrate';
+        for (const b of root.querySelectorAll('[data-mode]'))
+          b.setAttribute('aria-checked', String(b === button));
+        for (const el of root.querySelectorAll<HTMLElement>('[data-show]'))
+          el.hidden = el.dataset.show !== mode;
+        render();
+      });
+    }
+    root.addEventListener('input', render);
+    render();
+  }
+  // Now, since a page's module script can run after the first astro:page-load, and after every
+  // client-side navigation. setup() skips a tool it has already wired.
+  setup();
+  document.addEventListener('astro:page-load', setup);
+</script>

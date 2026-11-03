@@ -9,6 +9,7 @@ import Base from '@/layouts/Base.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import { LABEL, getNav, type Kind } from '@/lib/docs';
+import { TOOLS, toolHref } from '@/lib/tools';
 
 const kinds: Kind[] = ['guides', 'docs'];
 // Each collection's landing page is its title link, so it is left out of the groups, and a group
@@ -33,6 +34,7 @@ const site = [
   { href: '/#faq', title: 'Questions' },
   { href: '/privacy', title: 'Privacy' },
 ];
+const tools = TOOLS.map((t) => ({ href: toolHref(t), title: t.title }));
 ---
 
 <Base
@@ -52,18 +54,39 @@ const site = [
       </p>
 
       <div class="mt-12 grid gap-2 lg:grid-cols-3">
-        <section class="card rounded-[28px] p-7 sm:rounded-[32px] sm:p-8">
-          <h2 class="text-[20px] tracking-[-0.02em]">Concat</h2>
-          <ul class="mt-4 grid gap-2 text-[15px]">
-            {site.map((page) => (
-              <li>
-                <a href={page.href} class="transition-colors duration-150 hover:text-accent-ink">
-                  {page.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <div class="grid content-start gap-2">
+          <section class="card rounded-[28px] p-7 sm:rounded-[32px] sm:p-8">
+            <h2 class="text-[20px] tracking-[-0.02em]">Concat</h2>
+            <ul class="mt-4 grid gap-2 text-[15px]">
+              {site.map((page) => (
+                <li>
+                  <a href={page.href} class="transition-colors duration-150 hover:text-accent-ink">
+                    {page.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+          <section class="card rounded-[28px] p-7 sm:rounded-[32px] sm:p-8">
+            <h2 class="text-[20px] tracking-[-0.02em]">
+              <a href="/tools" class="transition-colors duration-150 hover:text-accent-ink">
+                Free tools
+              </a>
+            </h2>
+            <ul class="mt-4 grid gap-2 text-[15px]">
+              {tools.map((page) => (
+                <li>
+                  <a
+                    href={page.href}
+                    class="text-fg-muted transition-colors duration-150 hover:text-fg"
+                  >
+                    {page.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
 
         {collections.map((c) => (
           <section class="card rounded-[28px] p-7 sm:rounded-[32px] sm:p-8">

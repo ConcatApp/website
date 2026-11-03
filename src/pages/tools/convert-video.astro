@@ -1,0 +1,151 @@
+---
+import Tool from '@/layouts/Tool.astro';
+import FileDrop from '@/components/FileDrop.astro';
+import JobStatus from '@/components/JobStatus.astro';
+import Button from '@/components/Button.astro';
+---
+
+<Tool slug="convert-video">
+  <div data-convert-tool>
+    <FileDrop />
+    <p class="mt-3 text-[14px] text-fg-muted" data-info></p>
+
+    <div class="mt-8 grid gap-6 sm:grid-cols-2">
+      <label>
+        <span class="field-label">Convert to</span>
+        <select class="input" data-container>
+          <option value="mp4" selected>
+            MP4 (H.264, plays everywhere)
+          </option>
+          <option value="webm">WebM (VP9, for the web)</option>
+          <option value="mov">MOV (QuickTime)</option>
+        </select>
+      </label>
+      <label>
+        <span class="field-label">Resolution</span>
+        <select class="input" data-res>
+          <option value="0" selected>
+            Keep the original
+          </option>
+          <option value="2160">4K (2160p)</option>
+          <option value="1080">1080p</option>
+          <option value="720">720p</option>
+          <option value="480">480p</option>
+        </select>
+      </label>
+    </div>
+
+    <Button class="mt-8" data-go disabled>
+      Convert
+    </Button>
+    <JobStatus />
+  </div>
+
+  <Fragment slot="about">
+    <h2>How to convert a video to MP4</h2>
+    <ol>
+      <li>Choose the video, or drop it on the box. MOV, MKV, WebM and MP4 all open.</li>
+      <li>
+        Pick <strong>MP4</strong> (or WebM or MOV) and, if you like, a smaller resolution.
+      </li>
+      <li>
+        Click <strong>Convert</strong> and download the file. Nothing is uploaded.
+      </li>
+    </ol>
+
+    <h2>Why some conversions take seconds</h2>
+    <p>
+      A video file is a container (MP4, MOV, MKV, WebM) holding streams encoded with a codec (H.264,
+      HEVC, VP9, AV1 for the picture; AAC, Opus, MP3 for the sound). Often only the container needs
+      to change: an iPhone MOV and an OBS MKV usually hold H.264 and AAC already, which MP4 holds
+      too. Then the converter copies the streams into the new container without decoding them, so it
+      finishes in seconds and the picture is exactly as it was.
+    </p>
+    <p>
+      When the codec has to change too, for example VP9 into an MP4 that should play on an old
+      phone, the picture is decoded and encoded again with your browser's own encoder. That takes
+      longer and, like any re-encode, costs a little quality. Choosing a smaller resolution always
+      re-encodes.
+    </p>
+
+    <h2>Which format to pick</h2>
+    <ul>
+      <li>
+        <strong>MP4</strong> with H.264 plays on every phone, computer, TV and website. Pick it when
+        in doubt.
+      </li>
+      <li>
+        <strong>WebM</strong> with VP9 is the open format browsers play natively, good for putting
+        video on a web page.
+      </li>
+      <li>
+        <strong>MOV</strong> is Apple's QuickTime container, for apps that ask for it by name.
+      </li>
+    </ul>
+    <p>
+      MKV is not offered as an output because many phones and websites will not play it; convert MKV
+      to MP4 instead. For the difference between the codecs, read
+      <a href="/guides/h264-hevc-or-av1">H.264, HEVC or AV1</a>.
+    </p>
+
+    <h2>Private by design</h2>
+    <p>
+      The file is read and written on your device with your browser's built-in video tools. There is
+      no upload, no queue and no size cap beyond your device's memory, and no watermark is added. To
+      edit the video as well, <a href="/guides/first-edit">Concat</a> is a free editor that runs on
+      your machine and exports H.264, HEVC or AV1 up to 4K.
+    </p>
+  </Fragment>
+</Tool>
+
+<script>
+  import { convert, formatBytes, formatDuration, probe, unsupported } from '@/scripts/media';
+  import { bindDrop, jobView, showChosen } from '@/scripts/media-ui';
+
+  function setup() {
+    const root = document.querySelector<HTMLElement>('[data-convert-tool]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '';
+    const job = jobView(root);
+    const info = root.querySelector('[data-info]')!;
+    const go = root.querySelector<HTMLButtonElement>('[data-go]')!;
+    const problem = unsupported();
+    if (problem) job.fail(problem);
+    let file: File | undefined;
+
+    bindDrop(root, async (chosen) => {
+      file = undefined;
+      showChosen(root, chosen);
+      info.textContent = 'Reading the file...';
+      go.disabled = true;
+      try {
+        const meta = await probe(chosen);
+        const v = meta.video;
+        const a = meta.audio;
+        info.textContent = `${meta.format}${v ? `, ${v.codec} ${v.width} x ${v.height}` : ''}${a ? `, ${a.codec} sound` : ''}, ${formatDuration(meta.duration)}, ${formatBytes(meta.size)}.`;
+        file = chosen;
+        go.disabled = !!problem;
+      } catch (err) {
+        info.textContent = err instanceof Error ? err.message : String(err);
+      }
+    });
+
+    go.addEventListener('click', () => {
+      if (!file || job.busy()) return;
+      const container = root.querySelector<HTMLSelectElement>('[data-container]')!.value as
+        'mp4' | 'webm' | 'mov';
+      const shortEdge =
+        Number(root.querySelector<HTMLSelectElement>('[data-res]')!.value) || undefined;
+      const chosen = file;
+      void job.run(
+        (onProgress) =>
+          convert(chosen, { container, video: { shortEdge } }, 'converted', onProgress),
+        'Converting on this device',
+      );
+    });
+  }
+  // Now, since a page's module script can run after the first astro:page-load, and after every
+  // client-side navigation. setup() skips a tool it has already wired.
+  setup();
+  document.addEventListener('astro:page-load', setup);
+</script>

@@ -1,0 +1,228 @@
+---
+import Tool from '@/layouts/Tool.astro';
+import FileDrop from '@/components/FileDrop.astro';
+import JobStatus from '@/components/JobStatus.astro';
+import Button from '@/components/Button.astro';
+---
+
+<Tool slug="video-to-gif">
+  <div data-gif-tool>
+    <FileDrop />
+    <p class="mt-3 text-[14px] text-fg-muted" data-info></p>
+
+    <div class="mt-6" data-editor hidden>
+      <video
+        class="aspect-video w-full rounded-[18px] bg-black"
+        controls
+        playsinline
+        muted
+        data-preview
+      ></video>
+      <div class="mt-6 grid gap-6 sm:grid-cols-2">
+        <div>
+          <label class="field-label" for="gif-start">
+            Start (seconds)
+          </label>
+          <div class="flex gap-2">
+            <input
+              id="gif-start"
+              class="input"
+              type="number"
+              min="0"
+              step="0.1"
+              value="0"
+              data-start
+            />
+            <button type="button" class="chip shrink-0" data-here>
+              Set to playhead
+            </button>
+          </div>
+        </div>
+        <label>
+          <span class="field-label">Length (seconds, up to 20)</span>
+          <input class="input" type="number" min="0.5" max="20" step="0.5" value="4" data-length />
+        </label>
+        <label>
+          <span class="field-label">Width</span>
+          <select class="input" data-width>
+            <option value="320">320 pixels (small)</option>
+            <option value="480" selected>
+              480 pixels
+            </option>
+            <option value="640">640 pixels</option>
+            <option value="800">800 pixels (large)</option>
+          </select>
+        </label>
+        <label>
+          <span class="field-label">Frames a second</span>
+          <select class="input" data-fps>
+            <option value="10">10 (smallest file)</option>
+            <option value="15" selected>
+              15
+            </option>
+            <option value="20">20</option>
+            <option value="25">25 (smoothest)</option>
+          </select>
+        </label>
+      </div>
+      <p class="mt-3 text-[14px] text-fg-subtle" aria-live="polite" data-estimate></p>
+    </div>
+
+    <Button class="mt-8" data-go disabled>
+      Make GIF
+    </Button>
+    <JobStatus />
+  </div>
+
+  <Fragment slot="about">
+    <h2>How to make a GIF from a video</h2>
+    <ol>
+      <li>Choose a video or drop it on the box. It plays here, from your disk.</li>
+      <li>
+        Play to the moment you want and click <strong>Set to playhead</strong>, then set how many
+        seconds the GIF should run.
+      </li>
+      <li>
+        Pick a width and a frame rate, click <strong>Make GIF</strong>, and download it.
+      </li>
+    </ol>
+
+    <h2>Keeping a GIF small</h2>
+    <p>
+      GIF is a format from 1987: every frame is stored as a picture of up to 256 colours, with
+      little of the compression a video uses. Its size grows with the width squared, with the frame
+      rate and with the length, so a 4 second GIF at 480 pixels and 15 frames a second can already
+      weigh a few megabytes. In order of effect:
+    </p>
+    <ul>
+      <li>
+        <strong>Make it narrower.</strong> Halving the width cuts the file to about a quarter.
+      </li>
+      <li>
+        <strong>Make it shorter.</strong> Two to four seconds loop best anyway.
+      </li>
+      <li>
+        <strong>Lower the frame rate.</strong> 10 to 15 frames a second still reads as motion for
+        reactions and memes.
+      </li>
+      <li>
+        <strong>Pick calm footage.</strong> Grain, confetti and fast camera moves change every pixel
+        in every frame, which GIF stores at full cost.
+      </li>
+    </ul>
+
+    <h2>Colours</h2>
+    <p>
+      Each frame gets its own palette of the 256 colours that suit it best, which keeps skin tones
+      and gradients cleaner than one palette for the whole GIF. Smooth gradients, such as a sky, can
+      still show bands; that is the format's limit, not the converter's.
+    </p>
+
+    <h2>When a video is better</h2>
+    <p>
+      Most chat apps and sites play short MP4 clips without sound as smoothly as a GIF, at a tenth
+      of the size. If the place you are posting to accepts video,{' '}
+      <a href="/tools/trim-video">trim the clip</a> and send it as MP4. To add a caption or a title
+      to it first, edit it in
+      <a href="/guides/titles-and-text">Concat</a>.
+    </p>
+  </Fragment>
+</Tool>
+
+<script>
+  import { formatBytes, formatDuration, probe, toGif, unsupported } from '@/scripts/media';
+  import { bindDrop, jobView, showChosen } from '@/scripts/media-ui';
+
+  function setup() {
+    const root = document.querySelector<HTMLElement>('[data-gif-tool]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '';
+    const q = <T extends HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
+    const job = jobView(root);
+    const info = q('[data-info]');
+    const go = q<HTMLButtonElement>('[data-go]');
+    const video = q<HTMLVideoElement>('[data-preview]');
+    const start = q<HTMLInputElement>('[data-start]');
+    const length = q<HTMLInputElement>('[data-length]');
+    const width = q<HTMLSelectElement>('[data-width]');
+    const fps = q<HTMLSelectElement>('[data-fps]');
+    const estimate = q('[data-estimate]');
+    const problem = typeof VideoDecoder === 'undefined' ? unsupported() : null;
+    if (problem) job.fail(problem);
+    let file: File | undefined;
+    let duration = 0;
+    let aspect = 16 / 9;
+    let url: string | undefined;
+
+    const update = () => {
+      const s = Number(start.value);
+      const l = Math.min(20, Number(length.value));
+      const ok = !!file && s >= 0 && l > 0 && s < duration;
+      const end = Math.min(duration, s + l);
+      const frames = Math.ceil((end - s) * Number(fps.value));
+      const w = Number(width.value);
+      estimate.textContent = ok
+        ? `${frames} frames at ${w} x ${Math.round(w / aspect)}, from ${formatDuration(s)} to ${formatDuration(end)}.`
+        : 'Set a start inside the video and a length.';
+      go.disabled = !ok || !!problem;
+    };
+
+    bindDrop(root, async (chosen) => {
+      file = undefined;
+      showChosen(root, chosen);
+      info.textContent = 'Reading the file...';
+      go.disabled = true;
+      try {
+        const meta = await probe(chosen);
+        if (!meta.video) {
+          info.textContent = 'This file has no picture to turn into a GIF.';
+          return;
+        }
+        duration = meta.duration;
+        aspect = meta.video.width / meta.video.height;
+        info.textContent = `${meta.video.width} x ${meta.video.height}, ${formatDuration(meta.duration)}, ${formatBytes(meta.size)}.`;
+        if (url) URL.revokeObjectURL(url);
+        url = URL.createObjectURL(chosen);
+        video.src = url;
+        start.value = '0';
+        q('[data-editor]').hidden = false;
+        file = chosen;
+        update();
+      } catch (err) {
+        info.textContent = err instanceof Error ? err.message : String(err);
+      }
+    });
+
+    q('[data-here]').addEventListener('click', () => {
+      start.value = video.currentTime.toFixed(1);
+      update();
+    });
+    for (const el of [start, length, width, fps]) {
+      el.addEventListener('input', update);
+      el.addEventListener('change', update);
+    }
+    document.addEventListener('astro:before-swap', () => url && URL.revokeObjectURL(url), {
+      once: true,
+    });
+
+    go.addEventListener('click', () => {
+      if (!file || job.busy()) return;
+      const s = Number(start.value);
+      const options = {
+        start: s,
+        end: Math.min(duration, s + Math.min(20, Number(length.value))),
+        fps: Number(fps.value),
+        width: Number(width.value),
+      };
+      const chosen = file;
+      void job.run(
+        (onProgress) => toGif(chosen, options, onProgress),
+        'Drawing the GIF on this device',
+      );
+    });
+  }
+  // Now, since a page's module script can run after the first astro:page-load, and after every
+  // client-side navigation. setup() skips a tool it has already wired.
+  setup();
+  document.addEventListener('astro:page-load', setup);
+</script>

@@ -1,0 +1,41 @@
+---
+/**
+ * The call to action at the foot of a guide or a tool: a band with the headline, one line and the
+ * OS-detected download button beside a link to every platform.
+ */
+import Button from '@/components/Button.astro';
+import DownloadButton from '@/components/DownloadButton.astro';
+import { getManifest, getPlatforms } from '@/lib/releases';
+
+interface Props {
+  title?: string;
+  lead?: string;
+}
+
+const {
+  title = 'Try it in Concat',
+  lead = 'Free and open source. No watermark, no account, and your footage never leaves your machine.',
+} = Astro.props;
+const { manifest } = await getManifest();
+const platforms = getPlatforms(manifest);
+---
+
+<section class="container-x mt-[clamp(64px,8vw,112px)]" aria-labelledby="try-concat">
+  <div class="band rounded-[28px] px-[clamp(24px,6vw,80px)] py-[clamp(48px,7vw,88px)] text-center sm:rounded-[40px]">
+    <h2 id="try-concat" class="text-display-sm text-white">
+      {title}
+    </h2>
+    <p class="text-lead mx-auto mt-4 max-w-[30rem] text-white/80">{lead}</p>
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <DownloadButton platforms={platforms} all={false} />
+      <Button
+        href="/#download"
+        variant="secondary"
+        size="lg"
+        class="border-white/30 bg-white/10 text-white hover:bg-white/20"
+      >
+        All platforms
+      </Button>
+    </div>
+  </div>
+</section>

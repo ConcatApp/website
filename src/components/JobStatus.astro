@@ -1,0 +1,48 @@
+---
+/**
+ * Progress and result for a media tool: a bar with a cancel button while a job runs, then the
+ * download with its size, or the error. Driven by `jobView()` in src/scripts/media-ui.ts.
+ */
+import { Download } from '@lucide/astro';
+---
+
+<div class="mt-6" data-job hidden aria-live="polite">
+  <div data-job-running hidden>
+    <div class="flex items-center justify-between gap-4 text-[14px]">
+      <span class="text-fg-muted" data-job-label>
+        Working
+      </span>
+      <span class="tabular-nums text-fg-subtle" data-job-percent>
+        0%
+      </span>
+    </div>
+    <div class="mt-3 h-2 overflow-hidden rounded-full bg-bg-overlay">
+      <div
+        class="h-full w-0 rounded-full bg-accent transition-[width] duration-200"
+        data-job-bar
+      ></div>
+    </div>
+    <button
+      type="button"
+      class="mt-4 text-[14px] text-fg-muted underline underline-offset-4 hover:text-fg"
+      data-job-cancel
+    >
+      Cancel
+    </button>
+  </div>
+  <div class="readout flex flex-wrap items-center justify-between gap-4" data-job-result hidden>
+    <div class="min-w-0">
+      <p class="truncate text-[15px] font-medium" data-job-name></p>
+      <p class="mt-1 text-[14px] text-fg-muted" data-job-size></p>
+    </div>
+    <a
+      class="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-5 text-[15px] font-medium text-primary-fg transition-colors duration-150 hover:bg-primary-hover"
+      data-job-download
+      download
+    >
+      <Download class="size-4" aria-hidden="true" />
+      Download
+    </a>
+  </div>
+  <p class="readout text-[15px] text-fg" data-job-error hidden></p>
+</div>

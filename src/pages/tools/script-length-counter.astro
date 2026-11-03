@@ -1,0 +1,313 @@
+---
+import Tool from '@/layouts/Tool.astro';
+
+const stats = [
+  ['words', 'Words'],
+  ['chars', 'Characters'],
+  ['nospace', 'Without spaces'],
+  ['sentences', 'Sentences'],
+  ['paragraphs', 'Paragraphs'],
+  ['lines', 'Lines'],
+];
+const targets = [15, 30, 60, 90, 180];
+const paces = [
+  { wpm: 130, label: 'Slow' },
+  { wpm: 150, label: 'Natural' },
+  { wpm: 170, label: 'Brisk' },
+  { wpm: 190, label: 'Fast' },
+];
+---
+
+<Tool slug="script-length-counter">
+  <div data-count-tool>
+    <label class="field-label" for="script-text">
+      Your script
+    </label>
+    <!-- A line-number gutter beside the text. A long line wraps over several rows, so the
+         numbers take their heights from a hidden copy of the text laid out at the same width.
+         The numbers are positioned out of the layout and moved with the text's scroll, so only the
+         textarea sets the box's height. -->
+    <div class="editor relative grid grid-cols-[auto_1fr] overflow-hidden rounded-[14px] border border-line-strong bg-bg-subtle transition-colors duration-200 focus-within:border-accent">
+      <div
+        class="relative w-[3.25rem] overflow-hidden border-r border-line select-none"
+        aria-hidden="true"
+        data-gutter
+      >
+        <div
+          class="editor-text absolute inset-x-0 top-0 py-3 pr-3 text-right text-fg-subtle tabular-nums will-change-transform"
+          data-gutter-rows
+        ></div>
+      </div>
+      <textarea
+        id="script-text"
+        class="editor-text block min-h-[280px] w-full resize-y bg-transparent px-4 py-3 text-fg outline-none placeholder:text-fg-subtle"
+        rows="11"
+        placeholder="Paste or type your script. Everything stays in this browser tab."
+        spellcheck="true"
+        data-text
+      ></textarea>
+      <div
+        class="editor-text pointer-events-none invisible absolute top-0 left-0 px-4 py-3 break-words whitespace-pre-wrap"
+        aria-hidden="true"
+        data-mirror
+      ></div>
+    </div>
+
+    <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+      {stats.map(([key, label]) => (
+        <div class="readout py-4">
+          <p class="text-[13px] text-fg-muted">{label}</p>
+          <p
+            class="mt-1 text-[1.75rem] font-medium tracking-[-0.02em] tabular-nums"
+            data-stat={key}
+          >
+            0
+          </p>
+        </div>
+      ))}
+    </div>
+
+    <div class="readout mt-8">
+      <div class="flex flex-wrap items-start justify-between gap-x-8 gap-y-5">
+        <div>
+          <p class="text-[14px] text-fg-muted">Read aloud, it runs about</p>
+          <p class="text-stat mt-2 tabular-nums" data-spoken>
+            0:00
+          </p>
+          <p class="mt-2 text-[14px] text-fg-subtle" data-silent></p>
+        </div>
+        <div>
+          <p class="text-[14px] text-fg-muted" id="pace-label">
+            Speaking pace
+          </p>
+          <div class="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-labelledby="pace-label">
+            {paces.map((p) => (
+              <button
+                type="button"
+                class="chip"
+                role="radio"
+                aria-checked={p.wpm === 150 ? 'true' : 'false'}
+                data-pace={p.wpm}
+              >
+                {p.label}
+                <span class="chip-hint">{p.wpm}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8">
+      <p class="field-label">Will it fit?</p>
+      <ul class="grid gap-2 sm:grid-cols-5" data-targets>
+        {targets.map((t) => (
+          <li class="readout px-4 py-3" data-target={t}>
+            <p class="text-[13px] text-fg-muted">
+              {t < 60
+                ? `${t} seconds`
+                : t === 60
+                  ? '1 minute'
+                  : t === 90
+                    ? '90 seconds'
+                    : '3 minutes'}
+            </p>
+            <p class="mt-1 text-[15px] font-medium tabular-nums" data-fit>
+              -
+            </p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <Fragment slot="about">
+    <h2>How long does a script take to read?</h2>
+    <p>
+      Most people speak at 130 to 170 words a minute when they read a script aloud, and 150 is a
+      fair middle. At that pace a 60 second video holds about 150 words, a 30 second one about 75,
+      and a 15 second one under 40. Short-form creators often talk faster, near 190, to keep the
+      energy up; tutorials and anything with numbers in it read better slower.
+    </p>
+    <p>
+      The estimate counts words only. Leave room for pauses, for the beat after a joke and for any
+      moment where the picture should speak for itself. Reading the script aloud once with a timer
+      is still the best check, and the counter tells you how far off you are before you start.
+    </p>
+
+    <h2>What gets counted</h2>
+    <ul>
+      <li>
+        <strong>Words</strong> are counted the way your browser splits text into words, which also
+        handles languages without spaces between words, such as Chinese and Japanese.
+      </li>
+      <li>
+        <strong>Characters</strong> count what you see as one letter, so an emoji or an accented
+        letter counts once. <strong>Without spaces</strong> leaves out spaces, tabs and line breaks.
+      </li>
+      <li>
+        <strong>Paragraphs</strong> are blocks separated by an empty line; <strong>lines</strong>
+        count every line, empty ones included.
+      </li>
+    </ul>
+
+    <h2>From script to voiceover</h2>
+    <p>
+      Recording the script yourself? Concat's{' '}
+      <a href="/guides/record-a-voiceover">voiceover recorder</a> records over the edit while it
+      plays. Rather not use your own voice?
+      <a href="/guides/text-to-speech">Text to speech</a> reads the script in a built-in voice, or
+      in a voice cloned from a few seconds of a recording, on your machine, and the sheet shows its
+      own estimate of the length before it generates. Then
+      <a href="/guides/auto-captions">auto-captions</a> put the words on screen.
+    </p>
+  </Fragment>
+</Tool>
+
+<script>
+  const KEY = 'concat-script-draft';
+
+  function setup() {
+    const found = document.querySelector<HTMLElement>('[data-count-tool]');
+    if (!found || found.dataset.ready) return;
+    const root: HTMLElement = found;
+    root.dataset.ready = '';
+    const text = root.querySelector<HTMLTextAreaElement>('[data-text]')!;
+    const rows = root.querySelector<HTMLElement>('[data-gutter-rows]')!;
+    const mirror = root.querySelector<HTMLElement>('[data-mirror]')!;
+    const follow = () => (rows.style.transform = `translateY(${-text.scrollTop}px)`);
+
+    /** One number per line, as tall as that line wraps to in the box. */
+    function numberLines() {
+      const lines = text.value.split('\n');
+      mirror.style.left = `${text.offsetLeft}px`;
+      mirror.style.width = `${text.clientWidth}px`;
+      mirror.replaceChildren(
+        ...lines.map((line) => {
+          const row = document.createElement('div');
+          // An empty line still takes one row.
+          row.textContent = line || ' ';
+          return row;
+        }),
+      );
+      const heights = Array.from(mirror.children, (row) => (row as HTMLElement).offsetHeight);
+      rows.replaceChildren(
+        ...heights.map((h, i) => {
+          const n = document.createElement('div');
+          n.textContent = String(i + 1);
+          n.style.height = `${h}px`;
+          return n;
+        }),
+      );
+      follow();
+    }
+    text.addEventListener('scroll', follow);
+    // Only the width matters (it changes the wrapping); the gutter no longer affects the height.
+    let width = 0;
+    new ResizeObserver(() => {
+      if (text.clientWidth === width) return;
+      width = text.clientWidth;
+      numberLines();
+    }).observe(text);
+    let wpm = 150;
+    const set = (key: string, value: string) => {
+      const el = root.querySelector(`[data-stat="${key}"]`);
+      if (el) el.textContent = value;
+    };
+    const Segmenter = (Intl as { Segmenter?: typeof Intl.Segmenter }).Segmenter;
+    const words = Segmenter ? new Segmenter(undefined, { granularity: 'word' }) : null;
+    const sentences = Segmenter ? new Segmenter(undefined, { granularity: 'sentence' }) : null;
+    const graphemes = Segmenter ? new Segmenter(undefined, { granularity: 'grapheme' }) : null;
+    const count = (it: Iterable<unknown>) => {
+      let n = 0;
+      for (const _ of it) n += 1;
+      return n;
+    };
+    const clock = (seconds: number) => {
+      const s = Math.round(seconds);
+      return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+    };
+
+    function render() {
+      numberLines();
+      const value = text.value;
+      const trimmed = value.trim();
+      const w = !trimmed
+        ? 0
+        : words
+          ? count([...words.segment(value)].filter((s) => s.isWordLike))
+          : trimmed.split(/\s+/).length;
+      const chars = graphemes ? count(graphemes.segment(value)) : [...value].length;
+      const nospace = graphemes
+        ? count([...graphemes.segment(value)].filter((s) => !/\s/.test(s.segment)))
+        : value.replace(/\s/g, '').length;
+      set('words', w.toLocaleString('en'));
+      set('chars', chars.toLocaleString('en'));
+      set('nospace', nospace.toLocaleString('en'));
+      set(
+        'sentences',
+        (!trimmed
+          ? 0
+          : sentences
+            ? count([...sentences.segment(value)].filter((s) => s.segment.trim()))
+            : trimmed.split(/[.!?]+\s/).length
+        ).toLocaleString('en'),
+      );
+      set('paragraphs', (!trimmed ? 0 : trimmed.split(/\n\s*\n/).length).toLocaleString('en'));
+      set('lines', (!value ? 0 : value.split('\n').length).toLocaleString('en'));
+
+      root.querySelector('[data-spoken]')!.textContent = clock((w / wpm) * 60);
+      root.querySelector('[data-silent]')!.textContent = w
+        ? `at ${wpm} words a minute. Read silently, about ${clock((w / 238) * 60)}.`
+        : `at ${wpm} words a minute.`;
+      for (const cell of root.querySelectorAll<HTMLElement>('[data-target]')) {
+        const fits = Math.floor((Number(cell.dataset.target) * wpm) / 60);
+        const fit = cell.querySelector('[data-fit]')!;
+        fit.textContent = !w
+          ? `${fits} words`
+          : w <= fits
+            ? `Fits (${fits - w} to spare)`
+            : `${w - fits} words over`;
+        fit.className = `mt-1 text-[15px] font-medium tabular-nums ${w && w > fits ? 'text-fg-muted' : ''}`;
+      }
+      try {
+        localStorage.setItem(KEY, value);
+      } catch {
+        // storage blocked: the draft just is not remembered
+      }
+    }
+
+    try {
+      text.value = localStorage.getItem(KEY) ?? '';
+    } catch {
+      // storage blocked
+    }
+    text.addEventListener('input', render);
+    for (const chip of root.querySelectorAll<HTMLButtonElement>('[data-pace]')) {
+      chip.addEventListener('click', () => {
+        wpm = Number(chip.dataset.pace);
+        for (const c of root.querySelectorAll('[data-pace]'))
+          c.setAttribute('aria-checked', String(c === chip));
+        render();
+      });
+    }
+    render();
+  }
+  // Now, since a page's module script can run after the first astro:page-load, and after every
+  // client-side navigation. setup() skips a tool it has already wired.
+  setup();
+  document.addEventListener('astro:page-load', setup);
+</script>
+
+<style>
+  /* The text, its gutter and its hidden copy must lay out identically for the numbers to line up. */
+  .editor-text {
+    font-size: 15px;
+    line-height: 1.65;
+    font-family: var(--font-sans);
+    letter-spacing: normal;
+  }
+  .editor textarea {
+    scrollbar-gutter: stable;
+  }
+</style>

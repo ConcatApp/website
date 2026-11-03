@@ -1,0 +1,99 @@
+---
+/**
+ * The free tools index: every tool in src/lib/tools.ts, grouped, as cards with the icon on the
+ * band. Each tool runs in the browser; the video ones use the browser's own encoders.
+ */
+import { ShieldCheck } from '@lucide/astro';
+import Base from '@/layouts/Base.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import AdUnit from '@/components/AdUnit.astro';
+import GuideIcon from '@/components/GuideIcon.astro';
+import TryConcat from '@/components/TryConcat.astro';
+import { TOOLS, TOOL_GROUPS, toolHref } from '@/lib/tools';
+
+const groups = TOOL_GROUPS.map((group) => ({
+  group,
+  id: group.toLowerCase(),
+  title:
+    group === 'Video'
+      ? 'Video tools'
+      : group === 'Writing'
+        ? 'Scripts and subtitles'
+        : 'Calculators',
+  tools: TOOLS.filter((t) => t.group === group),
+}));
+const site = Astro.site;
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Free video tools',
+  itemListElement: TOOLS.map((t, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: t.title,
+    url: site ? new URL(`${toolHref(t)}/`, site).toString() : undefined,
+  })),
+};
+---
+
+<Base
+  title="Free online video tools, no upload · Concat"
+  description="Free video tools that run in your browser: compress, convert, trim, extract audio, make GIFs, inspect files, convert subtitles and time a script. No upload, no sign-up, no watermark."
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)}></script>
+  <Header />
+
+  <main class="pt-16">
+    <header class="container-x grid justify-items-center pt-[clamp(56px,7vw,104px)] text-center">
+      <h1 class="text-display max-w-[14em]">Free video tools that never upload your files</h1>
+      <p class="text-lead mt-6 max-w-[34rem] text-balance text-fg-muted">
+        Compress, convert, trim and more, right in your browser with its own video encoders. No
+        sign-up, no watermark, no queue.
+      </p>
+      <p class="mt-6 flex items-center gap-2 text-[14px] text-fg-subtle">
+        <ShieldCheck class="size-4" aria-hidden="true" />
+        Your files stay on your device.
+      </p>
+    </header>
+
+    {groups.map((g, i) => (
+      <section
+        id={g.id}
+        class:list={[
+          'container-x scroll-mt-24',
+          i === 0 ? 'mt-[clamp(56px,7vw,96px)]' : 'pt-[clamp(72px,8vw,120px)]',
+        ]}
+        aria-labelledby={`${g.id}-title`}
+      >
+        <h2 id={`${g.id}-title`} class="text-title">
+          {g.title}
+        </h2>
+        <ul class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {g.tools.map((t) => (
+            <li class="flex">
+              <a href={toolHref(t)} class="card group flex w-full flex-col rounded-[28px] p-7">
+                <span class="band grid size-14 place-items-center rounded-[18px] transition-transform duration-500 ease-out-expo group-hover:-translate-y-0.5">
+                  <GuideIcon name={t.icon} class="size-6 text-white" />
+                </span>
+                <h3 class="mt-6 text-[1.25rem] leading-tight font-medium tracking-[-0.02em]">
+                  {t.title}
+                </h3>
+                <p class="mt-2 text-[15px] leading-relaxed text-fg-muted">{t.lead}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+
+    <AdUnit class="container-x mt-20" />
+
+    <TryConcat
+      title="Need a full editor?"
+      lead="Concat edits video on your machine: captions, voices, titles, effects and 4K export, free, with no watermark and no account."
+    />
+  </main>
+
+  <Footer />
+</Base>

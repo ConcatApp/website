@@ -1,6 +1,7 @@
 /**
- * The icon names a guide can carry in its frontmatter (`icon:`). GuideIcon.astro maps each name to
- * its Lucide icon; the list lives here, free of components, so the content schema can import it.
+ * The icon names a guide can carry in its frontmatter (`icon:`), and the free tools in
+ * src/lib/tools.ts. GuideIcon.astro maps each name to its Lucide icon; the list lives here, free of
+ * components, so the content schema can import it.
  */
 export const GUIDE_ICONS = [
   'book',
@@ -39,6 +40,14 @@ export const GUIDE_ICONS = [
   'codec',
   'glossary',
   'ratio',
+  'calculator',
+  'clock',
+  'subtitles',
+  'timer',
+  'scan',
+  'compress',
+  'gif',
+  'count',
 ] as const;
 
 export type GuideIcon = (typeof GUIDE_ICONS)[number];

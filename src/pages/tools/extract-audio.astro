@@ -1,0 +1,150 @@
+---
+import Tool from '@/layouts/Tool.astro';
+import FileDrop from '@/components/FileDrop.astro';
+import JobStatus from '@/components/JobStatus.astro';
+import Button from '@/components/Button.astro';
+---
+
+<Tool slug="extract-audio">
+  <div data-audio-tool>
+    <FileDrop accept="video/*,audio/*,.mkv,.mov" label="Choose a video" />
+    <p class="mt-3 text-[14px] text-fg-muted" data-info></p>
+
+    <div class="mt-8 grid gap-6 sm:grid-cols-2">
+      <label>
+        <span class="field-label">Save as</span>
+        <select class="input" data-container>
+          <option value="mp3" selected>
+            MP3 (plays everywhere)
+          </option>
+          <option value="m4a">M4A (AAC, smaller at the same quality)</option>
+          <option value="wav">WAV (uncompressed, for editing)</option>
+        </select>
+      </label>
+      <label data-bitrate-field>
+        <span class="field-label">MP3 quality</span>
+        <select class="input" data-bitrate>
+          <option value="128000">128 kbps (speech, podcasts)</option>
+          <option value="192000" selected>
+            192 kbps (good for music)
+          </option>
+          <option value="320000">320 kbps (highest MP3)</option>
+        </select>
+      </label>
+    </div>
+
+    <Button class="mt-8" data-go disabled>
+      Extract audio
+    </Button>
+    <JobStatus />
+  </div>
+
+  <Fragment slot="about">
+    <h2>How to extract audio from a video</h2>
+    <ol>
+      <li>Choose the video or drop it on the box: MP4, MOV, MKV and WebM all work.</li>
+      <li>Pick MP3, M4A or WAV, and a quality for MP3.</li>
+      <li>
+        Click <strong>Extract audio</strong> and download the sound file.
+      </li>
+    </ol>
+
+    <h2>MP3, M4A or WAV</h2>
+    <ul>
+      <li>
+        <strong>MP3</strong> plays on anything that plays sound. 192 kbps is transparent for most
+        listening; 128 kbps is plenty for speech.
+      </li>
+      <li>
+        <strong>M4A</strong> holds AAC, the sound most videos already carry. When the video's sound
+        is AAC, it is copied across untouched, so there is no loss at all and it takes seconds.
+      </li>
+      <li>
+        <strong>WAV</strong> is uncompressed: about 10 MB a minute for stereo, but nothing is thrown
+        away, which suits audio you will edit further.
+      </li>
+    </ul>
+
+    <h2>Uses</h2>
+    <p>
+      Pull the sound out of a recorded talk or a podcast video to publish it as audio, keep a song
+      from a clip you shot, or take a voice track to clean up separately. If the sound needs work,
+      Concat's <a href="/guides/clean-up-a-voice">voice cleanup</a> denoises a recording, enhances
+      the voice and levels the loudness with one switch each, on your machine. To get the words as
+      text instead, <a href="/guides/auto-captions">auto-captions</a> transcribe it locally with
+      Whisper.
+    </p>
+
+    <h2>Private by design</h2>
+    <p>
+      The file never leaves your device: the browser reads the video, encodes the sound and hands
+      you the result. The MP3 encoder is downloaded the first time you ask for MP3, if the browser
+      has none of its own, and runs on the page like the rest.
+    </p>
+  </Fragment>
+</Tool>
+
+<script>
+  import { convert, formatBytes, formatDuration, probe } from '@/scripts/media';
+  import { bindDrop, jobView, showChosen } from '@/scripts/media-ui';
+
+  function setup() {
+    const root = document.querySelector<HTMLElement>('[data-audio-tool]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '';
+    const job = jobView(root);
+    const info = root.querySelector('[data-info]')!;
+    const go = root.querySelector<HTMLButtonElement>('[data-go]')!;
+    const container = root.querySelector<HTMLSelectElement>('[data-container]')!;
+    const bitrateField = root.querySelector<HTMLElement>('[data-bitrate-field]')!;
+    let file: File | undefined;
+    if (typeof AudioEncoder === 'undefined' || typeof AudioDecoder === 'undefined')
+      job.fail(
+        'This browser cannot encode audio on the page. A recent Chrome, Edge, Safari or Firefox can.',
+      );
+
+    container.addEventListener('change', () => {
+      bitrateField.hidden = container.value !== 'mp3';
+    });
+
+    bindDrop(root, async (chosen) => {
+      file = undefined;
+      showChosen(root, chosen);
+      info.textContent = 'Reading the file...';
+      go.disabled = true;
+      try {
+        const meta = await probe(chosen);
+        if (!meta.audio) {
+          info.textContent = 'This file has no sound to extract.';
+          return;
+        }
+        info.textContent = `${meta.audio.codec} sound, ${meta.audio.channels === 1 ? 'mono' : meta.audio.channels === 2 ? 'stereo' : `${meta.audio.channels} channels`}, ${formatDuration(meta.duration)}, ${formatBytes(meta.size)}.`;
+        file = chosen;
+        go.disabled = false;
+      } catch (err) {
+        info.textContent = err instanceof Error ? err.message : String(err);
+      }
+    });
+
+    go.addEventListener('click', () => {
+      if (!file || job.busy()) return;
+      const kind = container.value as 'mp3' | 'm4a' | 'wav';
+      const bitrate = Number(root.querySelector<HTMLSelectElement>('[data-bitrate]')!.value);
+      const chosen = file;
+      void job.run(
+        (onProgress) =>
+          convert(
+            chosen,
+            { container: kind, audio: kind === 'mp3' ? { bitrate } : {} },
+            'audio',
+            onProgress,
+          ),
+        'Extracting the sound on this device',
+      );
+    });
+  }
+  // Now, since a page's module script can run after the first astro:page-load, and after every
+  // client-side navigation. setup() skips a tool it has already wired.
+  setup();
+  document.addEventListener('astro:page-load', setup);
+</script>

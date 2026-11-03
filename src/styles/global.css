@@ -321,6 +321,63 @@
     color: var(--color-fg-muted);
   }
 
+  /* Form controls for the free tools: a light wash in a hairline, blue line on focus. */
+  .field-label {
+    display: block;
+    margin-bottom: --spacing(2);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-fg-muted);
+  }
+  .input {
+    width: 100%;
+    height: --spacing(12);
+    padding-inline: --spacing(4);
+    border-radius: 14px;
+    border: 1px solid var(--color-line-strong);
+    background-color: var(--color-bg-subtle);
+    color: var(--color-fg);
+    font-size: 1rem;
+    font-variant-numeric: tabular-nums;
+    transition:
+      border-color 0.2s var(--ease-out-expo),
+      background-color 0.2s var(--ease-out-expo);
+  }
+  .input:hover {
+    background-color: var(--color-bg-overlay);
+  }
+  .input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    background-color: var(--color-bg-overlay);
+  }
+  .input::placeholder {
+    color: var(--color-fg-subtle);
+  }
+  textarea.input {
+    height: auto;
+    padding-block: --spacing(3);
+    line-height: 1.6;
+    resize: vertical;
+  }
+  textarea.input.mono {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+  }
+  select.input {
+    appearance: none;
+    padding-right: --spacing(10);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a3a3a3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+  }
+  /* A computed answer on a tool: an inset with the number large. */
+  .readout {
+    border-radius: 22px;
+    background: var(--color-bg-subtle);
+    padding: --spacing(5) --spacing(6);
+  }
+
   /* Keyboard key, for the shortcuts guide and inline mentions. */
   .kbd {
     display: inline-block;

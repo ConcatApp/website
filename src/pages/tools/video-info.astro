@@ -1,0 +1,167 @@
+---
+import Tool from '@/layouts/Tool.astro';
+import FileDrop from '@/components/FileDrop.astro';
+---
+
+<Tool slug="video-info">
+  <div data-info-tool>
+    <FileDrop accept="video/*,audio/*,.mkv,.mov" label="Choose a video or a sound file" />
+    <p class="mt-3 text-[14px] text-fg-muted" aria-live="polite" data-status></p>
+    <div class="mt-6 grid gap-3 sm:grid-cols-2" data-groups hidden>
+      <section class="readout">
+        <h2 class="eyebrow">File</h2>
+        <dl class="mt-4 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2.5 text-[15px]" data-file></dl>
+      </section>
+      <section class="readout">
+        <h2 class="eyebrow">Picture</h2>
+        <dl class="mt-4 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2.5 text-[15px]" data-video></dl>
+      </section>
+      <section class="readout sm:col-span-2">
+        <h2 class="eyebrow">Sound</h2>
+        <dl class="mt-4 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2.5 text-[15px]" data-audio></dl>
+      </section>
+    </div>
+  </div>
+
+  <Fragment slot="about">
+    <h2>What the numbers mean</h2>
+    <ul>
+      <li>
+        <strong>Container</strong> is the file format (MP4, MOV, Matroska for MKV and WebM). It
+        holds the streams but says little about quality on its own.
+      </li>
+      <li>
+        <strong>Codec</strong> is how the picture and the sound are compressed. H.264 plays
+        everywhere; HEVC and AV1 are smaller at the same quality but not every device decodes them.
+        <a href="/guides/h264-hevc-or-av1">H.264, HEVC or AV1</a> explains the difference.
+      </li>
+      <li>
+        <strong>Resolution</strong> is the size the picture is shown at, after any rotation the file
+        asks for. A phone video shot upright is often stored sideways with a 90 degree flag; the
+        inspector shows the upright size and the flag.
+      </li>
+      <li>
+        <strong>Frame rate</strong> is measured from the frames themselves, so a phone video that
+        varies its rate in low light shows its average.
+      </li>
+      <li>
+        <strong>Bitrate</strong> is how many bits each second of the stream takes, measured over the
+        first few hundred packets. Higher means more detail kept, and a bigger file.
+      </li>
+    </ul>
+
+    <h2>Why check a video's details</h2>
+    <p>
+      A platform rejects an upload, an editor stutters on a file, or a client asks for 1080p at 25
+      frames a second: the answer starts with what the file actually is. A video that will not play
+      in one app is often HEVC or VP9 where the app expects H.264, which the
+      <a href="/tools/convert-video">video converter</a> fixes. A file far larger than its length
+      calls for is a candidate for <a href="/tools/compress-video">compression</a>.
+    </p>
+
+    <h2>Private by design</h2>
+    <p>
+      The inspector reads only the file's headers and a sample of its packets, on your device. It
+      does not decode the picture, so it works even for codecs your browser cannot play.
+    </p>
+  </Fragment>
+</Tool>
+
+<script>
+  import { formatBytes, formatDuration, probe } from '@/scripts/media';
+  import { bindDrop, showChosen } from '@/scripts/media-ui';
+
+  const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+  const ratio = (w: number, h: number) => {
+    const d = gcd(Math.round(w), Math.round(h)) || 1;
+    return `${Math.round(w) / d}:${Math.round(h) / d}`;
+  };
+  const rate = (bps: number) =>
+    bps >= 1e6 ? `${(bps / 1e6).toFixed(2)} Mbps` : `${Math.round(bps / 1e3)} kbps`;
+
+  function fill(list: Element, rows: Array<[string, string]>) {
+    list.replaceChildren(
+      ...rows.flatMap(([term, value]) => {
+        const dt = document.createElement('dt');
+        dt.className = 'text-fg-muted';
+        dt.textContent = term;
+        const dd = document.createElement('dd');
+        dd.className = 'tabular-nums';
+        dd.textContent = value;
+        return [dt, dd];
+      }),
+    );
+  }
+
+  function setup() {
+    const root = document.querySelector<HTMLElement>('[data-info-tool]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '';
+    const status = root.querySelector('[data-status]')!;
+    const groups = root.querySelector<HTMLElement>('[data-groups]')!;
+
+    bindDrop(root, async (file) => {
+      showChosen(root, file);
+      status.textContent = 'Reading the file...';
+      groups.hidden = true;
+      try {
+        const info = await probe(file);
+        fill(root.querySelector('[data-file]')!, [
+          ['Name', info.name],
+          ['Container', info.format],
+          ['Type', info.mime],
+          ['Size', `${formatBytes(info.size)} (${info.size.toLocaleString('en')} bytes)`],
+          ['Duration', formatDuration(info.duration)],
+          [
+            'Overall bitrate',
+            info.duration > 0 ? rate((info.size * 8) / info.duration) : 'Unknown',
+          ],
+        ]);
+        const v = info.video;
+        fill(
+          root.querySelector('[data-video]')!,
+          v
+            ? [
+                ['Codec', v.codec],
+                ['Resolution', `${v.width} x ${v.height}`],
+                [
+                  'Aspect ratio',
+                  `${ratio(v.width, v.height)} (${(v.width / v.height).toFixed(3)})`,
+                ],
+                ['Rotation', v.rotation ? `${v.rotation} degrees (stored sideways)` : 'None'],
+                ['Frame rate', v.fps ? `${v.fps.toFixed(3).replace(/\.?0+$/, '')} fps` : 'Unknown'],
+                ['Bitrate', v.bitrate ? rate(v.bitrate) : 'Unknown'],
+              ]
+            : [['Picture', 'None (a sound-only file)']],
+        );
+        const a = info.audio;
+        fill(
+          root.querySelector('[data-audio]')!,
+          a
+            ? [
+                ['Codec', a.codec],
+                [
+                  'Channels',
+                  a.channels === 1
+                    ? 'Mono'
+                    : a.channels === 2
+                      ? 'Stereo'
+                      : `${a.channels} channels`,
+                ],
+                ['Sample rate', `${(a.sampleRate / 1000).toFixed(1).replace(/\.0$/, '')} kHz`],
+                ['Bitrate', a.bitrate ? rate(a.bitrate) : 'Unknown'],
+              ]
+            : [['Sound', 'None (a silent file)']],
+        );
+        status.textContent = '';
+        groups.hidden = false;
+      } catch (err) {
+        status.textContent = err instanceof Error ? err.message : String(err);
+      }
+    });
+  }
+  // Now, since a page's module script can run after the first astro:page-load, and after every
+  // client-side navigation. setup() skips a tool it has already wired.
+  setup();
+  document.addEventListener('astro:page-load', setup);
+</script>

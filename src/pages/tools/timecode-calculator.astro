@@ -1,0 +1,224 @@
+---
+import Tool from '@/layouts/Tool.astro';
+
+const rates = [
+  { value: '24000/1001', label: '23.976 fps' },
+  { value: '24', label: '24 fps' },
+  { value: '25', label: '25 fps' },
+  { value: '30000/1001', label: '29.97 fps' },
+  { value: '30', label: '30 fps' },
+  { value: '50', label: '50 fps' },
+  { value: '60000/1001', label: '59.94 fps' },
+  { value: '60', label: '60 fps' },
+];
+---
+
+<Tool slug="timecode-calculator">
+  <div data-tc-tool>
+    <label class="block max-w-xs">
+      <span class="field-label">Frame rate</span>
+      <select class="input" data-rate>
+        {rates.map((r) => (
+          <option value={r.value} selected={r.value === '30'}>
+            {r.label}
+          </option>
+        ))}
+      </select>
+    </label>
+
+    <h2 class="mt-10 text-[1.125rem] font-medium tracking-[-0.02em]">Convert</h2>
+    <p class="mt-1 text-[14px] text-fg-subtle">Type in any box; the other two follow.</p>
+    <div class="mt-5 grid gap-6 sm:grid-cols-3">
+      <label>
+        <span class="field-label">Timecode (HH:MM:SS:FF)</span>
+        <input
+          class="input"
+          type="text"
+          inputmode="numeric"
+          value="00:01:00:00"
+          spellcheck="false"
+          data-tc
+        />
+      </label>
+      <label>
+        <span class="field-label">Frames</span>
+        <input class="input" type="number" min="0" step="1" data-frames />
+      </label>
+      <label>
+        <span class="field-label">Seconds (clock time)</span>
+        <input class="input" type="number" min="0" step="any" data-seconds />
+      </label>
+    </div>
+    <p class="mt-3 text-[14px] text-fg-subtle" aria-live="polite" data-convert-note></p>
+
+    <h2 class="mt-12 text-[1.125rem] font-medium tracking-[-0.02em]">
+      Duration between two timecodes
+    </h2>
+    <div class="mt-5 grid gap-6 sm:grid-cols-2">
+      <label>
+        <span class="field-label">In</span>
+        <input
+          class="input"
+          type="text"
+          inputmode="numeric"
+          value="00:00:12:10"
+          spellcheck="false"
+          data-in
+        />
+      </label>
+      <label>
+        <span class="field-label">Out</span>
+        <input
+          class="input"
+          type="text"
+          inputmode="numeric"
+          value="00:00:47:05"
+          spellcheck="false"
+          data-out
+        />
+      </label>
+    </div>
+    <div class="readout mt-6" aria-live="polite">
+      <p class="text-[14px] text-fg-muted">Duration</p>
+      <p class="text-stat mt-2 tabular-nums" data-duration>
+        -
+      </p>
+      <p class="mt-2 text-[14px] text-fg-subtle" data-duration-note></p>
+    </div>
+  </div>
+
+  <Fragment slot="about">
+    <h2>Reading a timecode</h2>
+    <p>
+      A timecode names one frame of a video as hours, minutes, seconds and frames:
+      <code>01:02:03:04</code> is one hour, two minutes, three seconds and four frames in. The last
+      pair counts frames inside the second, so it runs from 00 up to one less than the frame rate:
+      00 to 29 at 30 fps, 00 to 24 at 25 fps. Concat's timeline ruler counts the same way.
+    </p>
+    <p>
+      Because the last pair depends on the frame rate, the same timecode is a different moment at a
+      different rate. <code>00:00:10:12</code> is 10.5 seconds at 24 fps and 10.4 seconds at 30 fps.
+      Set the rate to the one your project or camera uses before converting.
+    </p>
+
+    <h2>23.976, 29.97 and 59.94</h2>
+    <p>
+      These rates are a thousandth slower than 24, 30 and 60, a leftover from colour television.
+      Timecode still counts them as if they were 24, 30 and 60 frames a second (non-drop-frame
+      timecode), so it falls slowly behind the clock: at 29.97, an hour of timecode is 3.6 seconds
+      longer than an hour on the wall. The <strong>Seconds</strong> box above is clock time, and
+      accounts for that.
+    </p>
+    <p>
+      Broadcast work at 29.97 and 59.94 often uses drop-frame timecode instead, written with a
+      semicolon before the frames (<code>00:01:00;02</code>). It skips some frame numbers, never
+      frames themselves, so the timecode keeps pace with the clock. This calculator uses
+      non-drop-frame timecode, which is what most editing and nearly all online video uses.
+    </p>
+
+    <h2>Frames and seconds</h2>
+    <p>
+      To turn frames into seconds, divide by the frame rate; to turn seconds into frames, multiply.
+      A 15 second clip at 30 fps is 450 frames, and at 23.976 it is 360 frames (rounded to the
+      nearest whole frame). The duration box gives the length between an in point and an out point,
+      counting the in frame and not the out frame, the way an editor's selection does.
+    </p>
+  </Fragment>
+</Tool>
+
+<script>
+  function setup() {
+    const root = document.querySelector<HTMLElement>('[data-tc-tool]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '';
+    const el = <T extends Element>(sel: string) => root.querySelector<T>(sel)!;
+    const rateSel = el<HTMLSelectElement>('[data-rate]');
+    const tc = el<HTMLInputElement>('[data-tc]');
+    const frames = el<HTMLInputElement>('[data-frames]');
+    const seconds = el<HTMLInputElement>('[data-seconds]');
+    const note = el('[data-convert-note]');
+
+    /** The real rate (24000/1001 for 23.976) and the whole number timecode counts by. */
+    const rate = () => {
+      const [num, den = '1'] = rateSel.value.split('/');
+      const real = Number(num) / Number(den);
+      return { real, nominal: Math.round(real) };
+    };
+
+    const pad = (n: number) => String(n).padStart(2, '0');
+    function toTimecode(total: number) {
+      const { nominal } = rate();
+      const f = total % nominal;
+      const s = Math.floor(total / nominal);
+      return `${pad(Math.floor(s / 3600))}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}:${pad(f)}`;
+    }
+    /** Frames from "HH:MM:SS:FF" (fewer parts count from the right), or null when it is not one. */
+    function fromTimecode(text: string): number | null {
+      const parts = text.trim().split(/[:;.]/).map(Number);
+      if (
+        parts.length === 0 ||
+        parts.length > 4 ||
+        parts.some((p) => !Number.isInteger(p) || p < 0)
+      )
+        return null;
+      const { nominal } = rate();
+      const [ff = 0, ss = 0, mm = 0, hh = 0] = parts.reverse();
+      if (ff >= nominal || ss > 59 || mm > 59) return null;
+      return ((hh * 60 + mm) * 60 + ss) * nominal + ff;
+    }
+
+    function show(total: number, from: 'tc' | 'frames' | 'seconds') {
+      const { real } = rate();
+      if (from !== 'tc') tc.value = toTimecode(total);
+      if (from !== 'frames') frames.value = String(total);
+      if (from !== 'seconds') seconds.value = String(Math.round((total / real) * 1000) / 1000);
+      note.textContent = '';
+    }
+
+    tc.addEventListener('input', () => {
+      const total = fromTimecode(tc.value);
+      if (total === null)
+        note.textContent = `Not a timecode at ${rateSel.selectedOptions[0]!.text}.`;
+      else show(total, 'tc');
+    });
+    frames.addEventListener('input', () => {
+      const total = Math.floor(Number(frames.value));
+      if (total >= 0) show(total, 'frames');
+    });
+    seconds.addEventListener('input', () => {
+      const value = Number(seconds.value);
+      if (value >= 0) show(Math.round(value * rate().real), 'seconds');
+    });
+
+    function duration() {
+      const a = fromTimecode(el<HTMLInputElement>('[data-in]').value);
+      const b = fromTimecode(el<HTMLInputElement>('[data-out]').value);
+      const out = el('[data-duration]');
+      const dnote = el('[data-duration-note]');
+      if (a === null || b === null) {
+        out.textContent = '-';
+        dnote.textContent = 'Enter two timecodes at this frame rate.';
+        return;
+      }
+      const d = Math.abs(b - a);
+      out.textContent = toTimecode(d);
+      dnote.textContent = `${d.toLocaleString('en')} frames, ${(d / rate().real).toFixed(3)} seconds${b < a ? ' (out is before in)' : ''}.`;
+    }
+    root.addEventListener('input', (event) => {
+      if ((event.target as Element).matches('[data-in], [data-out]')) duration();
+    });
+    rateSel.addEventListener('change', () => {
+      const total = fromTimecode(tc.value);
+      if (total === null) tc.value = toTimecode(Number(frames.value) || 0);
+      show(fromTimecode(tc.value) ?? 0, 'tc');
+      duration();
+    });
+
+    show(fromTimecode(tc.value) ?? 0, 'tc');
+    duration();
+  }
+  // Now, since a page's module script can run after the first astro:page-load, and after every
+  // client-side navigation. setup() skips a tool it has already wired.
+  setup();
+  document.addEventListener('astro:page-load', setup);
+</script>

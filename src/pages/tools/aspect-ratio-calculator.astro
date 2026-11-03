@@ -1,0 +1,265 @@
+---
+import Tool from '@/layouts/Tool.astro';
+
+const presets = [
+  { w: 16, h: 9, hint: 'YouTube, TV' },
+  { w: 9, h: 16, hint: 'TikTok, Reels, Shorts' },
+  { w: 1, h: 1, hint: 'Square' },
+  { w: 4, h: 5, hint: 'Feed posts' },
+  { w: 4, h: 3, hint: 'Classic' },
+  { w: 21, h: 9, hint: 'Ultrawide' },
+];
+---
+
+<Tool slug="aspect-ratio-calculator">
+  <div data-ratio-tool>
+    <p class="field-label">Aspect ratio</p>
+    <div class="flex flex-wrap gap-2" role="radiogroup" aria-label="Common ratios">
+      {presets.map((p, i) => (
+        <button
+          type="button"
+          class="chip"
+          role="radio"
+          aria-checked={i === 0 ? 'true' : 'false'}
+          data-preset={`${p.w}:${p.h}`}
+        >
+          {p.w}:{p.h}
+          <span class="chip-hint">{p.hint}</span>
+        </button>
+      ))}
+    </div>
+    <div class="mt-4 flex items-center gap-3">
+      <label class="w-28">
+        <span class="sr-only">Ratio width</span>
+        <input class="input" type="number" min="0.01" step="any" value="16" data-rw />
+      </label>
+      <span class="text-xl text-fg-subtle" aria-hidden="true">
+        :
+      </span>
+      <label class="w-28">
+        <span class="sr-only">Ratio height</span>
+        <input class="input" type="number" min="0.01" step="any" value="9" data-rh />
+      </label>
+      <span class="text-[14px] text-fg-subtle">or type your own</span>
+    </div>
+
+    <div class="mt-8 grid gap-6 sm:grid-cols-2">
+      <label>
+        <span class="field-label">Width (pixels)</span>
+        <input class="input" type="number" min="1" step="1" value="1920" data-w />
+      </label>
+      <label>
+        <span class="field-label">Height (pixels)</span>
+        <input class="input" type="number" min="1" step="1" value="1080" data-h />
+      </label>
+    </div>
+    <p class="mt-3 text-[14px] text-fg-subtle" aria-live="polite" data-note>
+      Change either side and the other follows the ratio.
+    </p>
+
+    <div class="readout mt-8">
+      <p class="text-[14px] text-fg-muted">
+        Standard sizes at <span data-ratio-name>16:9</span>
+      </p>
+      <div class="mt-3 overflow-x-auto">
+        <table class="w-full text-left text-[15px] tabular-nums">
+          <thead class="text-[13px] text-fg-subtle">
+            <tr>
+              <th class="py-2 pr-4 font-medium">Size</th>
+              <th class="py-2 pr-4 font-medium">Width x height</th>
+            </tr>
+          </thead>
+          <tbody data-sizes></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="mt-10 border-t border-line pt-8">
+      <p class="field-label">Find the ratio of a size</p>
+      <div class="flex flex-wrap items-center gap-3">
+        <label class="w-36">
+          <span class="sr-only">Width</span>
+          <input class="input" type="number" min="1" step="1" value="2560" data-sw />
+        </label>
+        <span class="text-fg-subtle" aria-hidden="true">
+          x
+        </span>
+        <label class="w-36">
+          <span class="sr-only">Height</span>
+          <input class="input" type="number" min="1" step="1" value="1080" data-sh />
+        </label>
+        <p class="text-[17px] font-medium" aria-live="polite" data-simplified></p>
+      </div>
+    </div>
+  </div>
+
+  <Fragment slot="about">
+    <h2>What an aspect ratio is</h2>
+    <p>
+      The aspect ratio is a frame's width compared with its height. 16:9 means sixteen units across
+      for every nine down, whether the frame is 1280 by 720 or 3840 by 2160. Change the size and
+      keep the ratio, and the picture scales without stretching. Change the ratio and something has
+      to give: the picture is cropped, squashed, or left with bars around it.
+    </p>
+
+    <h2>Which ratio for which platform</h2>
+    <ul>
+      <li>
+        <strong>16:9</strong> is the shape of YouTube videos, TVs and laptop screens. 1920 by 1080
+        is the common size, 3840 by 2160 for 4K.
+      </li>
+      <li>
+        <strong>9:16</strong> is the same frame stood on its end, the shape of TikTok, Instagram
+        Reels and YouTube Shorts. 1080 by 1920 fills a phone held upright.
+      </li>
+      <li>
+        <strong>1:1</strong> is square, which sits well in a feed on a phone and on a computer.
+      </li>
+      <li>
+        <strong>4:5</strong> is a little taller than square, and takes up more of a feed than 1:1
+        without being a full-screen vertical video.
+      </li>
+      <li>
+        <strong>4:3</strong> is the shape of old TV, many tablets and a lot of phone photos.
+      </li>
+    </ul>
+
+    <h2>Why the sizes are even numbers</h2>
+    <p>
+      Most video is stored with its colour at half the resolution of its brightness, in blocks two
+      pixels wide and two high. Encoders such as H.264 want both sides to be even numbers as a
+      result, and some refuse odd ones. The table above rounds every size to the nearest even pixel,
+      and the calculator says so when an exact answer would not be whole.
+    </p>
+
+    <h2>Sizes in Concat</h2>
+    <p>
+      A new Concat project asks for a shape (16:9, 9:16, 1:1 or 4:3) and a size from 720p to 4K, or
+      Custom. The size names the short edge, so 9:16 at 1080p is 1080 by 1920, the same way the
+      table above counts. You can change both later from the Inspector's <strong>Modify</strong>
+      button. When a wide clip goes into a tall frame,
+      <a href="/guides/vertical-video">the canvas</a> fills the bars with a blur, a colour or a
+      picture, and Fit or Fill sizes the clip without stretching it.
+    </p>
+  </Fragment>
+</Tool>
+
+<script>
+  const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+  const even = (n: number) => Math.max(2, Math.round(n / 2) * 2);
+
+  function setup() {
+    const found = document.querySelector<HTMLElement>('[data-ratio-tool]');
+    if (!found || found.dataset.ready) return;
+    const root: HTMLElement = found;
+    root.dataset.ready = '';
+    const input = (sel: string) => root.querySelector<HTMLInputElement>(sel)!;
+    const rw = input('[data-rw]');
+    const rh = input('[data-rh]');
+    const w = input('[data-w]');
+    const h = input('[data-h]');
+    const note = root.querySelector('[data-note]')!;
+
+    const ratio = () => {
+      const a = Number(rw.value);
+      const b = Number(rh.value);
+      return a > 0 && b > 0 ? a / b : NaN;
+    };
+
+    function follow(changed: 'w' | 'h') {
+      const r = ratio();
+      if (!Number.isFinite(r)) return;
+      if (changed === 'w' && Number(w.value) > 0) {
+        const exact = Number(w.value) / r;
+        h.value = String(Math.round(exact));
+        note.textContent = Number.isInteger(exact)
+          ? 'Exact.'
+          : `Exactly ${exact.toFixed(2)} pixels; rounded. The nearest even height is ${even(exact)}.`;
+      } else if (changed === 'h' && Number(h.value) > 0) {
+        const exact = Number(h.value) * r;
+        w.value = String(Math.round(exact));
+        note.textContent = Number.isInteger(exact)
+          ? 'Exact.'
+          : `Exactly ${exact.toFixed(2)} pixels; rounded. The nearest even width is ${even(exact)}.`;
+      }
+    }
+
+    function sizes() {
+      const a = Number(rw.value);
+      const b = Number(rh.value);
+      const body = root.querySelector('[data-sizes]')!;
+      root.querySelector('[data-ratio-name]')!.textContent = `${rw.value}:${rh.value}`;
+      if (!(a > 0 && b > 0)) {
+        body.innerHTML = '';
+        return;
+      }
+      // The short edge names the size (1080p is 1080 on the short side), as Concat counts.
+      const rows = [
+        ['720p', 720],
+        ['1080p', 1080],
+        ['1440p', 1440],
+        ['4K (2160p)', 2160],
+      ] as const;
+      body.replaceChildren(
+        ...rows.map(([name, short]) => {
+          const [width, height] =
+            a >= b ? [even((short * a) / b), short] : [short, even((short * b) / a)];
+          const tr = document.createElement('tr');
+          tr.className = 'border-t border-line';
+          tr.innerHTML = `<td class="py-2 pr-4 text-fg-muted">${name}</td><td class="py-2 pr-4">${width} x ${height}</td>`;
+          return tr;
+        }),
+      );
+    }
+
+    function simplify() {
+      const a = Math.round(Number(input('[data-sw]').value));
+      const b = Math.round(Number(input('[data-sh]').value));
+      const out = root.querySelector('[data-simplified]')!;
+      if (!(a > 0 && b > 0)) {
+        out.textContent = '';
+        return;
+      }
+      const d = gcd(a, b);
+      out.textContent = `= ${a / d}:${b / d}  (${(a / b).toFixed(3)}:1)`;
+    }
+
+    for (const button of root.querySelectorAll<HTMLButtonElement>('[data-preset]')) {
+      button.addEventListener('click', () => {
+        const [a, b] = button.dataset.preset!.split(':');
+        rw.value = a!;
+        rh.value = b!;
+        for (const other of root.querySelectorAll('[data-preset]'))
+          other.setAttribute('aria-checked', String(other === button));
+        // A preset lands on its 1080p size: 1080 on the short edge.
+        const [x, y] = [Number(a), Number(b)];
+        w.value = String(x >= y ? even((1080 * x) / y) : 1080);
+        h.value = String(x >= y ? 1080 : even((1080 * y) / x));
+        note.textContent =
+          'The 1080p size for this ratio. Change either side and the other follows.';
+        sizes();
+      });
+    }
+    const custom = () => {
+      for (const b of root.querySelectorAll('[data-preset]'))
+        b.setAttribute(
+          'aria-checked',
+          String(b.getAttribute('data-preset') === `${rw.value}:${rh.value}`),
+        );
+      follow('w');
+      sizes();
+    };
+    rw.addEventListener('input', custom);
+    rh.addEventListener('input', custom);
+    w.addEventListener('input', () => follow('w'));
+    h.addEventListener('input', () => follow('h'));
+    input('[data-sw]').addEventListener('input', simplify);
+    input('[data-sh]').addEventListener('input', simplify);
+    sizes();
+    simplify();
+  }
+  // Now, since a page's module script can run after the first astro:page-load, and after every
+  // client-side navigation. setup() skips a tool it has already wired.
+  setup();
+  document.addEventListener('astro:page-load', setup);
+</script>

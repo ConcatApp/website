@@ -10,6 +10,8 @@ import Button from '@/components/Button.astro';
 import ArrowLink from '@/components/ArrowLink.astro';
 import Tour, { type Step } from '@/components/Tour.astro';
 import AdUnit from '@/components/AdUnit.astro';
+import GuideIcon from '@/components/GuideIcon.astro';
+import { TOOLS, toolHref } from '@/lib/tools';
 import {
   ArrowRight,
   AudioLines,
@@ -597,6 +599,36 @@ const ld = [
             </ArrowLink>
           </article>
         ))}
+      </div>
+    </Section>
+
+    <Section
+      id="tools"
+      title={'Quick jobs,\nright in the browser.'}
+      lead="Free tools for the edits that do not need an editor. Your files never leave your device."
+    >
+      <ul class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
+        {TOOLS.filter((t) => t.group === 'Video').map((t) => (
+          <li class="flex">
+            <a
+              href={toolHref(t)}
+              class="card group flex w-full items-start gap-4 rounded-[28px] p-6 sm:rounded-[32px]"
+            >
+              <span class="band grid size-12 shrink-0 place-items-center rounded-[16px]">
+                <GuideIcon name={t.icon} class="size-5 text-white" />
+              </span>
+              <span>
+                <span class="block text-[16px] font-medium tracking-[-0.02em]">{t.title}</span>
+                <span class="mt-1 block text-[14px] leading-snug tracking-[-0.01em] text-fg-muted">
+                  {t.lead}
+                </span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div class="mt-8 text-center">
+        <ArrowLink href="/tools">All free tools</ArrowLink>
       </div>
     </Section>
 

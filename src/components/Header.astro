@@ -1,27 +1,21 @@
 ---
 /**
  * A plain bar along the top of the page, after meltkit.com: the page colour, blurred, with a
- * hairline under it. The mark and the name are the home link; two dropdown menus (Learn,
- * Community) follow it on wide screens. On a pointer device a menu opens on hover; a
+ * hairline under it. The mark and the name are the home link; three dropdown menus (Learn, Free
+ * tools, Community) follow it on wide screens. On a pointer device a menu opens on hover; a
  * click (or Enter on the trigger) toggles it for touch and keyboard users, and Escape, an outside
  * click or focus leaving the menu closes it. Below the md breakpoint the menus fold into a sheet
  * behind the menu button.
  */
 import { siDiscord, siGithub, siX } from 'simple-icons';
-import {
-  BookOpen,
-  Braces,
-  ChevronDown,
-  CircleQuestionMark,
-  Heart,
-  Mail,
-  Menu,
-  X,
-} from '@lucide/astro';
+import { BookOpen, Braces, ChevronDown, Heart, Mail, Menu, Wrench, X } from '@lucide/astro';
 import { Image } from 'astro:assets';
 import Button from '@/components/Button.astro';
 import mark from '@/assets/mark.png';
+import GuideIcon from '@/components/GuideIcon.astro';
 import { DISCORD_URL, REPO_URL, X_URL } from '@/lib/releases';
+import { TOOLS, toolHref } from '@/lib/tools';
+import type { GuideIcon as GuideIconName } from '@/lib/guide-icons';
 
 interface Item {
   href: string;
@@ -29,6 +23,8 @@ interface Item {
   hint: string;
   /** A Lucide component, or a Simple Icons path for a brand mark. */
   icon?: typeof BookOpen;
+  /** A guide or tool icon name (src/lib/guide-icons.ts). */
+  named?: GuideIconName;
   brand?: string;
   external?: boolean;
 }
@@ -44,7 +40,23 @@ const menus: Array<{ label: string; items: Item[] }> = [
         icon: BookOpen,
       },
       { href: '/docs', label: 'Developer docs', hint: 'The API, JSON-RPC and gRPC', icon: Braces },
-      { href: '/#faq', label: 'FAQ', hint: 'Common questions', icon: CircleQuestionMark },
+    ],
+  },
+  {
+    label: 'Free tools',
+    items: [
+      ...TOOLS.filter((t) => t.group === 'Video').map((t) => ({
+        href: toolHref(t),
+        label: t.title,
+        hint: t.lead,
+        named: t.icon,
+      })),
+      {
+        href: '/tools',
+        label: 'All free tools',
+        hint: 'Scripts, subtitles and calculators too',
+        icon: Wrench,
+      },
     ],
   },
   {
@@ -125,6 +137,7 @@ const menus: Array<{ label: string; items: Item[] }> = [
                     >
                       <span class="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-bg-overlay text-fg">
                         {Icon && <Icon class="size-4" aria-hidden="true" />}
+                        {item.named && <GuideIcon name={item.named} class="size-4" />}
                         {item.brand && (
                           <svg
                             viewBox="0 0 24 24"
@@ -216,6 +229,7 @@ const menus: Array<{ label: string; items: Item[] }> = [
               >
                 <span class="flex size-7 items-center justify-center rounded-full bg-bg-overlay text-fg">
                   {Icon && <Icon class="size-3.5" aria-hidden="true" />}
+                  {item.named && <GuideIcon name={item.named} class="size-3.5" />}
                   {item.brand && (
                     <svg
                       viewBox="0 0 24 24"

@@ -1,0 +1,248 @@
+---
+import Tool from '@/layouts/Tool.astro';
+import Button from '@/components/Button.astro';
+---
+
+<Tool slug="subtitle-converter">
+  <div data-subs-tool>
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <span class="field-label mb-0">Subtitles in</span>
+      <label class="chip cursor-pointer">
+        Open a file
+        <input
+          type="file"
+          accept=".srt,.vtt,text/vtt,application/x-subrip"
+          class="sr-only"
+          data-file
+        />
+      </label>
+    </div>
+    <textarea
+      class="input mono mt-3 min-h-[200px]"
+      rows="8"
+      spellcheck="false"
+      placeholder={'1\n00:00:01,000 --> 00:00:03,500\nPaste SRT or WebVTT here, or open a file.'}
+      data-in
+    ></textarea>
+    <p class="mt-2 text-[14px] text-fg-subtle" aria-live="polite" data-detected></p>
+
+    <div class="mt-6 grid gap-6 sm:grid-cols-2">
+      <div>
+        <p class="field-label">Convert to</p>
+        <div class="flex gap-2" role="radiogroup" aria-label="Convert to">
+          <button type="button" class="chip" role="radio" aria-checked="false" data-to="srt">
+            SRT
+          </button>
+          <button type="button" class="chip" role="radio" aria-checked="true" data-to="vtt">
+            WebVTT
+          </button>
+        </div>
+      </div>
+      <label>
+        <span class="field-label">Shift every caption by (seconds)</span>
+        <input class="input" type="number" step="0.1" value="0" data-shift />
+        <span class="mt-1.5 block text-[13px] text-fg-subtle">
+          Positive is later, negative is earlier.
+        </span>
+      </label>
+    </div>
+
+    <div class="mt-8 flex flex-wrap items-center justify-between gap-3">
+      <span class="field-label mb-0">Result</span>
+      <div class="flex gap-2">
+        <button type="button" class="chip" data-copy>
+          Copy
+        </button>
+        <Button size="md" data-download>
+          Download
+        </Button>
+      </div>
+    </div>
+    <textarea
+      class="input mono mt-3 min-h-[200px]"
+      rows="8"
+      readonly
+      spellcheck="false"
+      data-out
+    ></textarea>
+  </div>
+
+  <Fragment slot="about">
+    <h2>SRT and WebVTT</h2>
+    <p>
+      Both formats are plain text: a list of captions, each with a start time, an end time and the
+      words. They differ in small ways that trip up players and upload forms:
+    </p>
+    <ul>
+      <li>
+        <strong>SRT</strong> (<code>.srt</code>) numbers every caption and writes times with a comma
+        before the milliseconds: <code>00:01:02,500</code>. It is the format most video players,
+        editors and upload pages accept.
+      </li>
+      <li>
+        <strong>WebVTT</strong> (<code>.vtt</code>) starts with the line <code>WEBVTT</code>, uses a
+        full stop before the milliseconds (<code>00:01:02.500</code>), and can carry positioning and
+        styling. It is the format the web's own video player reads, so a web page needs VTT.
+      </li>
+    </ul>
+    <p>
+      Converting keeps every caption's text and timing. VTT's positioning and styling settings have
+      no SRT equivalent and are dropped on the way to SRT; voice tags such as
+      <code>&lt;v Sam&gt;</code> are removed and their words kept.
+    </p>
+
+    <h2>Fixing subtitles that are out of sync</h2>
+    <p>
+      If every caption appears too early or too late by the same amount, usually because the video
+      was trimmed or has an intro the subtitles did not count, shift them. Watch for one line you
+      can place exactly, note how far off it is, and type that many seconds: positive moves the
+      captions later, negative earlier. Captions pushed before the start of the video are dropped.
+    </p>
+    <p>
+      If the drift grows over the length of the video, the subtitles were made for a different frame
+      rate, and a single shift will not fix it. Re-timing them against the video is the reliable
+      cure.
+    </p>
+
+    <h2>Making captions in the first place</h2>
+    <p>
+      Concat writes captions for you: <a href="/guides/auto-captions">auto-captions</a> transcribe
+      the speech with Whisper, on your machine, and put a styled title per phrase on the timeline,
+      burned into the video when you export. Nothing is uploaded, and there is no per-minute fee.
+    </p>
+  </Fragment>
+</Tool>
+
+<script>
+  interface Cue {
+    start: number;
+    end: number;
+    text: string;
+  }
+
+  const TIME = /(?:(\d+):)?(\d{1,2}):(\d{2})[,.](\d{1,3})/;
+  const toSeconds = (m: RegExpMatchArray) =>
+    Number(m[1] ?? 0) * 3600 +
+    Number(m[2]) * 60 +
+    Number(m[3]) +
+    Number(m[4]!.padEnd(3, '0')) / 1000;
+
+  function parse(text: string): { cues: Cue[]; kind: 'srt' | 'vtt' | null } {
+    const clean = text.replace(/^﻿/, '').replace(/\r\n?/g, '\n');
+    const kind = /^WEBVTT/.test(clean.trimStart()) ? 'vtt' : /-->/.test(clean) ? 'srt' : null;
+    const cues: Cue[] = [];
+    for (const block of clean.split(/\n{2,}/)) {
+      const lines = block.split('\n').filter((l, i) => i > 0 || l.trim() !== '');
+      const at = lines.findIndex((l) => l.includes('-->'));
+      if (at === -1) continue;
+      const [a, b] = lines[at]!.split('-->');
+      const ma = a?.match(TIME);
+      const mb = b?.match(TIME);
+      if (!ma || !mb) continue;
+      const body = lines
+        .slice(at + 1)
+        .join('\n')
+        .trim();
+      cues.push({ start: toSeconds(ma), end: toSeconds(mb), text: body });
+    }
+    return { cues, kind };
+  }
+
+  function stamp(seconds: number, sep: ',' | '.') {
+    const ms = Math.round(seconds * 1000);
+    const h = Math.floor(ms / 3600000);
+    const m = Math.floor(ms / 60000) % 60;
+    const s = Math.floor(ms / 1000) % 60;
+    const p = (n: number, w = 2) => String(n).padStart(w, '0');
+    return `${p(h)}:${p(m)}:${p(s)}${sep}${p(ms % 1000, 3)}`;
+  }
+
+  function write(cues: Cue[], to: 'srt' | 'vtt') {
+    if (to === 'vtt')
+      return `WEBVTT\n\n${cues.map((c) => `${stamp(c.start, '.')} --> ${stamp(c.end, '.')}\n${c.text}`).join('\n\n')}\n`;
+    return `${cues
+      .map((c, i) => {
+        const text = c.text.replace(/<v(?:\.[^\s>]*)?\s+[^>]*>/g, '').replace(/<\/v>/g, '');
+        return `${i + 1}\n${stamp(c.start, ',')} --> ${stamp(c.end, ',')}\n${text}`;
+      })
+      .join('\n\n')}\n`;
+  }
+
+  function setup() {
+    const root = document.querySelector<HTMLElement>('[data-subs-tool]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '';
+    const input = root.querySelector<HTMLTextAreaElement>('[data-in]')!;
+    const output = root.querySelector<HTMLTextAreaElement>('[data-out]')!;
+    const shift = root.querySelector<HTMLInputElement>('[data-shift]')!;
+    const detected = root.querySelector('[data-detected]')!;
+    let to: 'srt' | 'vtt' = 'vtt';
+    let baseName = 'subtitles';
+
+    function render() {
+      const { cues, kind } = parse(input.value);
+      const by = Number(shift.value) || 0;
+      const moved = cues
+        .map((c) => ({ ...c, start: Math.max(0, c.start + by), end: c.end + by }))
+        .filter((c) => c.end > 0);
+      output.value = moved.length ? write(moved, to) : '';
+      const dropped = cues.length - moved.length;
+      detected.textContent = !input.value.trim()
+        ? ''
+        : cues.length === 0
+          ? 'No captions found. Each needs a line like 00:00:01,000 --> 00:00:03,500.'
+          : `${kind === 'vtt' ? 'WebVTT' : 'SRT'}, ${cues.length} captions${dropped ? `; ${dropped} moved before the start and dropped` : ''}.`;
+    }
+
+    for (const chip of root.querySelectorAll<HTMLButtonElement>('[data-to]')) {
+      chip.addEventListener('click', () => {
+        to = chip.dataset.to as 'srt' | 'vtt';
+        for (const c of root.querySelectorAll('[data-to]'))
+          c.setAttribute('aria-checked', String(c === chip));
+        render();
+      });
+    }
+    root
+      .querySelector<HTMLInputElement>('[data-file]')!
+      .addEventListener('change', async (event) => {
+        const file = (event.target as HTMLInputElement).files?.[0];
+        if (!file) return;
+        baseName = file.name.replace(/\.[^.]+$/, '') || 'subtitles';
+        input.value = await file.text();
+        // Opening an SRT most likely means converting it to VTT, and the other way round.
+        const { kind } = parse(input.value);
+        const target = kind === 'vtt' ? 'srt' : 'vtt';
+        root.querySelector<HTMLButtonElement>(`[data-to="${target}"]`)?.click();
+        render();
+      });
+    input.addEventListener('input', render);
+    shift.addEventListener('input', render);
+    root.querySelector('[data-copy]')!.addEventListener('click', async (event) => {
+      const button = event.currentTarget as HTMLButtonElement;
+      try {
+        await navigator.clipboard.writeText(output.value);
+        button.textContent = 'Copied';
+      } catch {
+        output.select();
+        button.textContent = 'Press Ctrl+C';
+      }
+      setTimeout(() => (button.textContent = 'Copy'), 1500);
+    });
+    root.querySelector('[data-download]')!.addEventListener('click', () => {
+      if (!output.value) return;
+      const blob = new Blob([output.value], {
+        type: to === 'vtt' ? 'text/vtt' : 'application/x-subrip',
+      });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${baseName}.${to}`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    });
+    render();
+  }
+  // Now, since a page's module script can run after the first astro:page-load, and after every
+  // client-side navigation. setup() skips a tool it has already wired.
+  setup();
+  document.addEventListener('astro:page-load', setup);
+</script>
