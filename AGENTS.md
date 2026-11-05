@@ -1,6 +1,6 @@
 # Concat website
 
-Landing page for Concat, the free and open-source CapCut replacement (github.com/jub0t/Concat).
+Landing page for Concat, the free and open-source video editor (github.com/jub0t/Concat).
 Astro 7, Tailwind v4, static output. Product visuals come from the app repo's `assets/` folder, pulled from
 jsDelivr by `npm run assets:prepare` (a local clone at `../timeline` or `CONCAT_REPO` is used when present).
 

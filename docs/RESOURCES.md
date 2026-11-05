@@ -1,6 +1,6 @@
 # Resources for the Concat landing page
 
-Concat: the free, open-source CapCut replacement. Native Rust engine, 100% local, distributed via GitHub Releases.
+Concat: the free, open-source video editor. Native Rust engine, 100% local, distributed via GitHub Releases.
 
 Curated from research on 2026-09-20; direction revised on 2026-09-27, on 2026-10-10 (section 10) and on
 2026-11-02 (section 11). Current direction: dark, after meltkit.com, restrained, one blue. No purple, no

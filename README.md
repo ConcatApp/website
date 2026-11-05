@@ -1,6 +1,6 @@
 # Concat website
 
-Landing page for [Concat](https://github.com/jub0t/Concat), the free and open-source CapCut replacement.
+Landing page for [Concat](https://github.com/jub0t/Concat), the free and open-source video editor.
 Light, premium, static. Live at https://concat.standalones.org. Downloads come straight from GitHub Releases.
 
 **Stack**: Astro 7 · Tailwind CSS 4 · GSAP + ScrollTrigger · Lenis · Motion · Lucide · Mona Sans (self-hosted via Astro Fonts API)

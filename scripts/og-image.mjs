@@ -97,7 +97,7 @@ const html = `<!doctype html>
 <body>
   <div class="copy">
     <div class="brand"><img src="${mark}" alt=""><span>Concat</span></div>
-    <h1><span class="grad grad-a">The free, open-source</span><br><span class="grad grad-b">CapCut replacement.</span></h1>
+    <h1><span class="grad grad-a">The free, open-source</span><br><span class="grad grad-b">video editor.</span></h1>
   </div>
   <div class="band"></div>
   <div class="shot"><img src="${shot}" alt=""></div>
