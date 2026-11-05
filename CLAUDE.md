@@ -187,12 +187,14 @@ Path alias: `@/` maps to `src/`.
   real capture, path relative to the MDX file) with `coverAlt`, and `seoTitle` (the `<title>` for search
   results, phrased the way people search; the h1 stays the plain title).
 - Since 2026-11-03 the guides include articles for search traffic: "Make something" walkthroughs
-  (coming from CapCut, a TikTok/Reel/Short, podcast clips, a screen-recording tutorial) and
+  (a TikTok/Reel/Short, podcast clips, a screen-recording tutorial) and
   "Know-how" explainers (H.264, HEVC or AV1; the editing glossary; editing offline; Linux). They
   follow the same rule as every guide: Concat claims come from the README and the existing guides
-  (never main-only behaviour such as linkage), general video knowledge is stated plainly, and
-  nothing is claimed about CapCut beyond what people open it for. They link the free tools, and
-  the tools' explainers link back.
+  (never main-only behaviour such as linkage), and general video knowledge is stated plainly.
+  They link the free tools, and the tools' explainers link back.
+- Never use another product's name to sell Concat: no "X alternative" or "X replacement", no
+  "as in X", no "coming from X" pages, titles or search titles. The footer's "Not affiliated with CapCut
+  or ByteDance" is the one mention.
 - Links between pages are site-relative (`/docs/api/methods#projectopen`). Use `> [!NOTE]`, `[!TIP]`,
   `[!IMPORTANT]`, `[!WARNING]` or `[!CAUTION]` for callouts. No emoji, including status ticks in tables.
 - Markdown runs on the unified processor from `@astrojs/markdown-remark` (set as `markdown.processor` in
