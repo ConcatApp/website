@@ -37,8 +37,7 @@ such a launch and draws in software from the next start; see
 ## macOS
 
 A disk image for Apple Silicon and for Intel. Open it and drag Concat to Applications. Both need
-macOS 12 or later. On an Intel Mac, the AI features that use ONNX Runtime (background removal,
-the smart brush, Enhance and Chatterbox) need macOS 13.4; on 12 they say so and the rest of the
+macOS 12 or later. On an Intel Mac, background removal, the smart brush, Enhance and Studio voice need macOS 13.4; on 12 they say so and the rest of the
 app works.
 
 The builds are unsigned, so macOS may say the app is damaged or cannot be opened. Clear the
@@ -69,8 +68,8 @@ desktop: see [Concat on a phone](/guides/phone).
 
 > [!WARNING]
 > No automated check has started this APK: the release's emulators run x86_64 and the APK is
-> built for arm64. A phone with no Vulkan driver opens the app on OpenGL ES, a path that has only
-> run on an emulator so far. If it does not open on your phone,
+> built for arm64. Older phones open the app in a fallback mode that has only run
+> on an emulator so far. If it does not open on your phone,
 > [say so](https://github.com/jub0t/Concat/issues).
 
 ## iOS and iPadOS

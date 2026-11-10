@@ -91,7 +91,7 @@ const tour: Step[] = [
 const features = [
   {
     title: 'Auto-captions, offline.',
-    body: 'Local Whisper transcribes on your machine and puts styled captions on the timeline, one title per phrase or per sentence.',
+    body: 'Concat transcribes on your machine and puts styled captions on the timeline, one title per phrase or per sentence.',
     icon: Captions,
     href: '/guides/auto-captions',
     cta: 'How captions work',
@@ -219,7 +219,7 @@ const faq = [
   },
   {
     q: 'What hardware do I need?',
-    a: 'Minimum: any 64-bit processor from 2013 or later, 4 GB of RAM and 500 MB of storage, with no GPU required. For smooth 1080p editing and quick 4K exports: 6 cores or more, a GPU with Metal, DirectX 12 or Vulkan, and 16 GB of RAM.',
+    a: 'Minimum: any 64-bit processor from 2013 or later, 4 GB of RAM and 500 MB of storage, with no graphics card required. For smooth 1080p editing and quick 4K exports: 6 cores or more, a graphics card, and 16 GB of RAM.',
     link: { href: '/guides/system-requirements', label: 'System requirements' },
   },
   {
@@ -257,7 +257,7 @@ const ld = [
     image: site ? new URL('/og.png', site).toString() : undefined,
     screenshot: site ? new URL('/og.png', site).toString() : undefined,
     featureList: [
-      'Auto-captions with local Whisper',
+      'Auto-captions, made on your machine',
       'Text-to-speech and voice cloning',
       'Background removal',
       'Keyframes with a curve editor',
@@ -362,7 +362,7 @@ const ld = [
     <Section
       id="features"
       title={'Built for the edits\npeople make every day.'}
-      lead="Captions, voices, titles and effects on a multi-track timeline, rendered by a native Rust engine with a GPU compositor."
+      lead="Captions, voices, titles and effects on a multi-track timeline, all on your machine."
     >
       <ul class="grid gap-2 md:grid-cols-2 lg:grid-cols-3" data-reveal="stagger">
         {features.map(({ icon: Icon, ...f }) => (

@@ -1,7 +1,7 @@
 ---
 title: 'A free video editor for Linux'
 seoTitle: 'Free video editor for Linux with AI captions: AppImage, deb, rpm, Arch, Flatpak · Concat'
-description: 'Concat runs natively on Linux, x86_64 and ARM64, with GPU rendering through Vulkan, local AI captions and voices, and no watermark. Which package to pick and how to install it.'
+description: 'Concat runs natively on Linux, x86_64 and ARM64, with local AI captions and voices, and no watermark. Which package to pick and how to install it.'
 section: 'Know-how'
 order: 4
 icon: 'linux'
@@ -14,15 +14,15 @@ source under the AGPL-3.0.
 
 ## What you get
 
-- A native editor, not a web app in a wrapper: a Rust engine with a GPU compositor that draws
-  through Vulkan, and falls back to the processor when there is no usable GPU.
-- [Auto-captions](/guides/auto-captions) with Whisper, [text to speech and voice
+- A native editor, not a web app in a wrapper. It uses your graphics card when it can and still
+  runs when there is none.
+- [Auto-captions](/guides/auto-captions), [text to speech and voice
   cloning](/guides/text-to-speech), [background removal](/guides/remove-a-background), all on your
   machine.
 - Keyframes with a curve editor, 100 effects, filters and transitions, multi-track and
   multi-timeline editing, titles, voice cleanup.
-- Export in H.264, HEVC and AV1 up to 4K 60 10-bit, using NVENC, Quick Sync or AMF when the
-  graphics chip has them. No watermark.
+- Export in H.264, HEVC and AV1 up to 4K 60 10-bit, on your graphics chip's encoder when it
+  has one. No watermark.
 - Builds for **x86_64** and **ARM64** alike.
 
 ## Pick a package
@@ -47,9 +47,9 @@ dock entry all work there.
 ## Hardware
 
 Any 64-bit processor runs it, and 4 GB of RAM is the minimum; 16 GB is comfortable for 4K
-timelines and the larger caption models. A GPU with a Vulkan driver makes previews and effects
-fast, and without one the window draws on the processor. The caption transcriber picks the fastest
-code the processor can run, so an old CPU without AVX2 still transcribes. See
+timelines and the larger caption models. A graphics card makes previews and effects fast, and
+without one the window draws on the processor. Captions run on old processors too, at the best
+speed each one allows. See
 [system requirements](/guides/system-requirements).
 
 ## Updates

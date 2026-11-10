@@ -64,13 +64,13 @@ has, beside its strength.
   shows it. On an iPhone or iPad it is added to Photos and kept in the app's **Exports** folder.
 - **Import on iPhone and iPad** asks **Photos** or **Files**. What you pick is copied into the
   app's Documents, which the Files app shows (projects, Imported and Exports).
-- On Android, video decodes on the phone's hardware decoder (MediaCodec) for 8-bit H.264, HEVC,
+- On Android, video decodes on the phone's own hardware for 8-bit H.264, HEVC,
   VP9 and AV1; ten-bit HEVC and anything the decoder refuses fall back to the processor.
 
 ## Known problems
 
 - **Android**: no automated check has started the arm64 APK, since the release's emulators are
-  x86_64. A phone with no Vulkan driver opens the app on OpenGL ES, which has only run on an
+  x86_64. Older phones open the app in a fallback mode that has only run on an
   emulator so far. If the app does not open, [say so](https://github.com/jub0t/Concat/issues)
   with your phone's model.
 - **iOS and iPadOS** is a beta, installed by sideloading.

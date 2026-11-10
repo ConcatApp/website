@@ -1,7 +1,7 @@
 ---
 title: 'Text to speech and voice cloning'
 seoTitle: 'Free text to speech and voice cloning for video, on your computer · Concat'
-description: 'Type a script, pick a voice, and the read lands on the timeline. Where the button is, which of the three voice models to use, and how to clone a voice from a recording.'
+description: 'Type a script, pick a voice, and the read lands on the timeline. Where the button is, which voice to use, and how to clone a voice from a recording.'
 section: 'Captions and voices'
 order: 2
 icon: 'speech'
@@ -40,7 +40,7 @@ shortcut.
 
 <Figure
   src={sheet}
-  alt="The Text to speech sheet: a Script box, Expression tags, a Voice section with Model set to Chatterbox Turbo and Voice set to Bria, a Use sample voice switch and a Generate speech button"
+  alt="The Text to speech sheet: a Script box, Expression tags, a Voice section with a model and a voice picked, a Use sample voice switch and a Generate speech button"
 >
   The panel as 0.2.7 drew it, with the selected title's words already in the script.
 </Figure>
@@ -57,35 +57,33 @@ going. On a phone it is a sheet.
 
 > [!NOTE]
 > If the panel says "Download a voice model in Settings › Speech first", open Settings from the
-> gear at the top right, go to **Speech** and click **Download** on a model. Kokoro (compact,
-> 132 MB) is the quick one to start with.
+> gear at the top right, go to **Speech** and click **Download** on **Studio voice**.
 
-## The three models
+## The voices
 
-| Model                | Good for                                                                                                 | Voices                                                                    | Size         |
-| -------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------ |
-| **Kokoro**           | Built-in speakers, fast. English and Chinese. Has Speed and Pauses sliders.                              | 36 named speakers, American, British and Chinese, female and male         | 132 MB       |
-| **Pocket TTS**       | Any voice from a few seconds of a recording. English. Quick, Balanced or Fine quality.                   | Bria and Loona, two recordings that ship with it, or any clip in your bin | 98 MB        |
-| **Chatterbox Turbo** | The closest to a studio read. Reads at its own pace and acts out `[laugh]`, `[chuckle]`, `[sigh]`. Slow. | Pocket's two recordings, or any clip in your bin                          | About 1.1 GB |
+| Model            | Where              | Good for                                                                                                  | Size         |
+| ---------------- | ------------------ | --------------------------------------------------------------------------------------------------------- | ------------ |
+| **Studio voice** | Desktop            | The closest to a studio read, in English. Reads at its own pace and acts out `[laugh]`, `[chuckle]`, `[sigh]`. Slow. | About 1.1 GB |
+| **Phone voice**  | Android            | Your phone's own voice: instant, in its language, nothing to download.                                    | None         |
 
-The Model picker shows each one with a subtitle: "Built-in speakers · fast", "Any voice, from a
-recording", "Studio voice · slow". With Chatterbox picked, an **Expression** row under the script
+Studio voice comes with four readers, Elizabeth and Mark (American), Ruth (British) and Bob, and reads in
+any voice it is given a few seconds of. With it picked, an **Expression** row under the script
 inserts the three tags at the cursor.
 
-The **Voice** list leads each name with a round picture or initial. For Pocket TTS and Chatterbox
-it lists your [saved voices](/guides/sounds-and-voices#voices) after the named ones and ends in
+The **Voice** list leads each name with a round picture or initial, lists your
+[saved voices](/guides/sounds-and-voices#voices) after the named ones and ends in
 **Clone from a sample…**, which turns on the sample voice below.
 
 ## Clone a voice
 
-Pocket TTS and Chatterbox can read in any voice they are given a few seconds of.
+Studio voice can read in any voice it is given a few seconds of.
 
 1. Import a recording of the voice, or use a clip that is already in the bin. Ten seconds of
    clean speech is plenty.
-2. In Text to speech, pick **Pocket TTS** or **Chatterbox Turbo**.
+2. In Text to speech, pick **Studio voice**.
 3. Turn on **Use sample voice** (or pick **Clone from a sample…** at the end of the Voice list).
 4. Pick the recording under **Sample**, and drag **Voice from** to a point where the person is
-   talking: the model listens to the ten seconds from there.
+   talking: Concat listens to the ten seconds from there.
 5. Generate.
 
 If a clip with sound is selected on the timeline when you open the panel, it is already the
@@ -96,10 +94,6 @@ joins the Voice list of every project and the Library's Audio page. See
 [your sounds and voices](/guides/sounds-and-voices#voices). A **Style** picked on the Audio page
 (Chipmunk, Robot and the rest) shows under the voice; the read lands with its effects on the
 clip.
-
-> [!TIP]
-> Chatterbox has no voice of its own. With Pocket TTS installed it borrows Bria; otherwise
-> turn on Use sample voice and give it a recording.
 
 ## Put the words on screen too
 

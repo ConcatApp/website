@@ -57,10 +57,9 @@ The button at the bottom reads **Export · ~size**. While it runs the sheet show
 
 ## Speed and hardware
 
-On a Mac the encoders are VideoToolbox. On Windows and Linux, NVENC, Quick Sync and AMF encode
-HEVC and AV1 when the machine has the chip, ahead of the software encoders. 4K 60 10-bit is the
-ceiling. An export whose GPU device dies carries on, on a fresh device or then the software
-adapter, and the frame that came back black is drawn again.
+Concat exports on your graphics chip's encoder when it has one, and on the processor when it
+does not. 4K 60 10-bit is the ceiling. If the graphics card drops out mid-export, the export
+carries on and redraws the frame it lost.
 
 ## Just the sound
 
