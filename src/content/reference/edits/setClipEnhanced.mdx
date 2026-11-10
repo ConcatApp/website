@@ -1,0 +1,12 @@
+Shows a clip's enhanced copy, or its original again, without running the
+model a second time. The clip must have an Enhance already: a copy added
+with `replaceClipMedia` and `enhanced: true`.
+
+<Api of="command:setClipEnhanced" />
+
+```json
+{ "op": "setClipEnhanced", "clipId": "c4", "on": false }
+```
+
+A clip Enhance has not made a copy for is a no-op. The clip's `enhanced`
+field (an [Enhanced](/docs/api/types/enhanced)) says which media it shows.

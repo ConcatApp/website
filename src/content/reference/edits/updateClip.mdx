@@ -1,0 +1,23 @@
+Applies a patch: only the fields present change.
+
+<Api of="command:updateClip" />
+
+The patch is a [ClipPatch](/docs/api/types/clip-patch); every field of it is optional. Volume is floored at 0 but not capped at 1, opacity is held to 0..=1, and `filters` and `videoEffects` **replace** the whole audio or video chain. A `text` patch also renames the clip after its first line.
+
+> [!IMPORTANT]
+> `crop`, `mask`, `motion`, `background`, `transitionIn`, `text` and `audioStream` have three states:
+> **absent** leaves the value alone, **`null`** clears it, a **value**
+> replaces it.
+
+```json
+{
+  "op": "updateClip",
+  "clipId": "c2",
+  "patch": {
+    "volume": 0.5,
+    "fadeIn": 0.5,
+    "videoEffects": [{ "id": "concat.gaussian-blur", "params": { "radius": 4 } }],
+    "transitionIn": { "id": "concat.dissolve", "duration": 0.75 }
+  }
+}
+```

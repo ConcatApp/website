@@ -1,0 +1,37 @@
+Composites the true frame at one instant, titles and effects included, as
+a PNG.
+
+<Api of="method:preview.frame" />
+
+```json
+{
+  "method": "preview.frame",
+  "path": "/edits/Reel",
+  "time": 1.5,
+  "output": "/edits/frames/1.5.png",
+  "width": 640,
+  "height": 360
+}
+```
+
+**Reply with `output`**, a [Written](/docs/api/types/written):
+
+```json
+{ "path": "/edits/frames/1.5.png", "width": 640, "height": 360 }
+```
+
+**Reply without**, a [Picture](/docs/api/types/picture):
+
+```json
+{ "width": 640, "height": 360, "png": "iVBORw0KGgo…" }
+```
+
+Rules:
+
+- `width` and `height` count only **together**. Give both or neither;
+  neither means the timeline's size.
+- Zero for either is `invalid`, and so is anything over 8192 a side.
+- Over a socket, `output` must lie under one of the server's write roots,
+  or the request is `refused`.
+- The PNG is RGBA, 8 bits a channel, base64 in the standard alphabet with
+  padding.

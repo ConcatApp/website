@@ -1,0 +1,24 @@
+What this build serves. **Call it first.**
+
+<Api of="method:version" />
+
+```json
+{ "method": "version" }
+```
+
+An example reply:
+
+```json
+{
+  "apiVersion": "0.2",
+  "concat": "0.2.10",
+  "dirs": {
+    "config": "/Users/ada/Library/Application Support/app.concat.editor",
+    "data": "/Users/ada/Library/Application Support/app.concat.editor"
+  },
+  "capabilities": ["events", "gpu", "json-rpc"]
+}
+```
+
+The capability names and the bump rules are in the
+[overview](/docs/api/overview#versioning-and-capabilities).

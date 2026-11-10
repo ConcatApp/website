@@ -1,0 +1,10 @@
+Places a clip of a bin item on a named track.
+
+<Api of="command:addClip" />
+
+Duration comes from the media: its own length for video and audio, 5 s
+for a still or a file with no reported length.
+
+```json
+{ "op": "addClip", "mediaId": "m1", "trackId": "T1", "start": 2.5 }
+```

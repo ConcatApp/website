@@ -1,0 +1,11 @@
+A probed file, as `addMedia`, `fillSlot`, `replaceClipMedia` and `freezeFrame`
+take it: a [MediaItem](/docs/api/types/media-item) without its `id`.
+
+<Api of="type:NewMedia" />
+
+> [!TIP]
+> Build one from a `media.probe` reply: copy `path`, `duration`, `kind`
+> and `audioTracks`; take `width`, `height`, `frameRate`,
+> `frameRateFraction` and `videoCodec` from its `video`; `audioCodec`
+> from its `audio`; `hasAudio` is whether `audio` is present; `name` is
+> the file's basename. Or skip all that with `media.import`.

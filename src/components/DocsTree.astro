@@ -1,0 +1,84 @@
+---
+/**
+ * The docs sidebar as a tree: each section's pages, and under an API index page its reference
+ * pages in groups that fold. The branch holding the page being read starts open; every other
+ * one starts shut, so a 150-page reference reads as a short list until it is opened.
+ */
+import { ChevronRight } from '@lucide/astro';
+import { cn } from '@/lib/cn';
+import type { NavGroup, NavItem } from '@/lib/docs';
+
+interface Props {
+  groups: NavGroup[];
+  current: string;
+  label: string;
+}
+
+const { groups, current, label } = Astro.props;
+const holds = (item: NavItem) =>
+  item.href === current || !!item.children?.some((g) => g.items.some((c) => c.href === current));
+const link = (item: NavItem) =>
+  cn('docs-tree-link', item.code && 'is-code', item.href === current && 'is-current');
+---
+
+<nav class="docs-tree" aria-label={label}>
+  {groups.map((group) => (
+    <div class="docs-tree-section">
+      <p class="docs-tree-heading">{group.title}</p>
+      <ul>
+        {group.items.map((item) => (
+          <li>
+            {item.children ? (
+              <details class="docs-tree-fold" open={holds(item)}>
+                <summary>
+                  <a
+                    href={item.href}
+                    class={link(item)}
+                    aria-current={item.href === current ? 'page' : undefined}
+                  >
+                    {item.title}
+                  </a>
+                  <ChevronRight class="docs-tree-chevron" aria-hidden="true" />
+                </summary>
+                <div class="docs-tree-branch">
+                  {item.children.map((sub) => (
+                    <details
+                      class="docs-tree-fold docs-tree-sub"
+                      open={sub.items.some((c) => c.href === current)}
+                    >
+                      <summary>
+                        <span class="docs-tree-group">{sub.title}</span>
+                        <ChevronRight class="docs-tree-chevron" aria-hidden="true" />
+                      </summary>
+                      <ul>
+                        {sub.items.map((c) => (
+                          <li>
+                            <a
+                              href={c.href}
+                              class={link(c)}
+                              aria-current={c.href === current ? 'page' : undefined}
+                            >
+                              {c.title}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  ))}
+                </div>
+              </details>
+            ) : (
+              <a
+                href={item.href}
+                class={link(item)}
+                aria-current={item.href === current ? 'page' : undefined}
+              >
+                {item.title}
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</nav>

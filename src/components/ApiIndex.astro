@@ -1,0 +1,37 @@
+---
+/**
+ * The index of one kind of API reference page, group by group: each entry's name, linked to
+ * its page, with the first sentence the app's schema says about it. Read from the schema, so a
+ * method or command synced in is listed without anyone writing it in.
+ */
+import { entry, groupsOf, hrefOf, prose, summary, type PagedKind } from '@/lib/api';
+
+interface Props {
+  kind: PagedKind;
+}
+
+const { kind } = Astro.props;
+const groups = groupsOf(kind);
+const slug = (title: string) => title.toLowerCase().replace(/[^\w]+/g, '-');
+---
+
+<div class="api-index not-prose">
+  {groups.map((group) => (
+    <section class="api-index-group" aria-labelledby={`group-${slug(group.title)}`}>
+      <h2 id={`group-${slug(group.title)}`} class="api-index-title">
+        {group.title}
+      </h2>
+      {group.lead && <div class="api-index-lead" set:html={prose(group.lead)} />}
+      <ul class="api-index-list">
+        {group.names.map((name) => (
+          <li>
+            <a class="api-index-item" href={hrefOf(kind, name)}>
+              <code class="api-index-name">{name}</code>
+              <span class="api-index-summary" set:html={summary(entry(kind, name).description)} />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</div>

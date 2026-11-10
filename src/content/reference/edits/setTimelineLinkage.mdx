@@ -1,0 +1,10 @@
+Linkage keeps a timeline's other lanes in step with its main lane: with it
+on, an edit that closes up or opens a gap on the main lane (a ripple
+delete, a trim, an insert) moves the captions, titles and sounds above it
+along with it.
+
+<Api of="command:setTimelineLinkage" />
+
+```json
+{ "op": "setTimelineLinkage", "timelineId": "TL1", "on": true }
+```

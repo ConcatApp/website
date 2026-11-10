@@ -1,0 +1,24 @@
+Makes a project from a template with every slot filled, and opens it.
+
+<Api of="method:template.instantiate" />
+
+```json
+{
+  "method": "template.instantiate",
+  "template": "/Users/ada/Library/Application Support/app.concat.editor/templates/Intro",
+  "location": "/edits",
+  "name": "My intro",
+  "fills": [
+    { "mediaId": "m1", "file": "/footage/logo.png" },
+    { "mediaId": "m2", "file": "/footage/take1.mp4" }
+  ]
+}
+```
+
+Good to know:
+
+- **Every slot must be filled.** A set that leaves one empty makes nothing.
+- Every file is probed first, so a bad path refuses the whole request and
+  leaves no folder behind.
+- Over a socket, `location` must lie under one of the server's write
+  roots, or the request is `refused`.

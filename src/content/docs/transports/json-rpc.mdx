@@ -7,7 +7,7 @@ order: 5
 
 **On this page:** [The envelope](#the-envelope) · [Over stdin](#over-stdin-concat-cli-api)
 · [Over a socket](#over-a-socket-concat-cli-serve) · [From the window](#from-the-window)
-· [The token](#the-token) · [Events](#events) · [Security](#security) ·
+· [The token](#the-token) · [Events](/docs/api/events) · [Security](#security) ·
 [Python client](#a-minimal-python-client)
 
 ---
@@ -17,7 +17,12 @@ order: 5
 A call, its response, and an event, as JSON-RPC 2.0:
 
 ```json
-{ "jsonrpc": "2.0", "id": 1, "method": "project.open", "params": { "path": "/edits/Reel" } }
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "project.open",
+  "params": { "path": "/edits/Reel" }
+}
 ```
 
 ```json
@@ -49,7 +54,13 @@ A call, its response, and an event, as JSON-RPC 2.0:
 {
   "jsonrpc": "2.0",
   "method": "export.progress",
-  "params": { "job": "j1", "path": "/edits/Reel", "frame": 30, "total": 150, "stage": "video" }
+  "params": {
+    "job": "j1",
+    "path": "/edits/Reel",
+    "frame": 30,
+    "total": 150,
+    "stage": "video"
+  }
 }
 ```
 
@@ -175,7 +186,12 @@ Every connection, **loopback included**, presents the token as its
 **first line**, as a call to `auth`:
 
 ```json
-{ "jsonrpc": "2.0", "id": 0, "method": "auth", "params": { "token": "3f9c1e…" } }
+{
+  "jsonrpc": "2.0",
+  "id": 0,
+  "method": "auth",
+  "params": { "token": "3f9c1e…" }
+}
 ```
 
 ```json

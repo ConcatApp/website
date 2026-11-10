@@ -40,7 +40,7 @@ cargo run -p concat-cli -- api '{"method":"version"}'
   "id": null,
   "result": {
     "apiVersion": "0.2",
-    "concat": "0.2.8",
+    "concat": "0.2.10",
     "dirs": { "config": "…", "data": "…" },
     "capabilities": ["events"]
   }
@@ -123,8 +123,11 @@ client. A plugin built on the API may carry its own licence under
 
 ## Keeping these pages true
 
-These pages live in the [website repository](https://github.com/ConcatApp/website) under
-`src/content/docs`. A pull request that adds or changes a method, command, event, error or
-transport in the app updates the page that describes it here. The `apiVersion` a build reports is
-`API_VERSION` in `message.rs`; the rules for bumping it are in the
-[overview](/docs/api/overview#versioning-and-capabilities).
+Every method, edit command and type has a page of its own, built from the contract the app
+prints with `concat --schema` (see [the contract as JSON Schema](/docs/api/overview#the-contract-as-json-schema)):
+its parameters and fields, their types, defaults and descriptions are the app's own. A new
+command appears here with its fields the day the schema is synced, and the site does not build
+while a page names something the app no longer has. The prose around them (what a method is
+for, examples, caveats) lives in the [website repository](https://github.com/ConcatApp/website)
+under `src/content`. The `apiVersion` a build reports is `API_VERSION` in `message.rs`; the rules
+for bumping it are in the [overview](/docs/api/overview#versioning-and-capabilities).

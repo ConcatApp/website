@@ -1,0 +1,26 @@
+Places a shape: a clip with no media behind it that draws one figure over
+the picture. It lands the way a title does, above the picture, and is
+placed and scaled like a still, so `setClipTransform` and keyframes work
+on it.
+
+<Api of="command:addShapeClip" />
+
+```json
+{
+  "op": "addShapeClip",
+  "above": true,
+  "start": 2,
+  "duration": 3,
+  "style": {
+    "kind": "arrow",
+    "width": 0.2,
+    "stroke": "#ffcc00",
+    "strokeWidth": 0.02
+  },
+  "name": "Arrow"
+}
+```
+
+The figures are listed under [ShapeKind](/docs/api/types/shape-kind), and
+everything a shape can wear (fill, gradient, outline, corners, line heads,
+trim, shadow) under [ShapeStyle](/docs/api/types/shape-style).

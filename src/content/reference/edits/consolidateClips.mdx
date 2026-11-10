@@ -1,0 +1,9 @@
+Replaces two or more video clips on one track with a file the host has
+already rendered from them, as one undo step. The earliest clip keeps its
+id, track and span; properties baked into the render are reset. The window's
+**Merge selected clips** renders the file and then sends this.
+
+<Api of="command:consolidateClips" />
+
+**Refused** with fewer than two clips, a clip that is not a video, clips on
+different tracks, or an unselected clip inside their span.

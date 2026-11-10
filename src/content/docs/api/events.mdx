@@ -1,0 +1,42 @@
+---
+title: 'Events and errors'
+description: 'What a running job tells every caller as it goes, and how a request that fails says why.'
+section: 'API'
+order: 5
+---
+
+## Events
+
+Every event carries `job` and `path`. As a bare object the tag is `event`;
+in the JSON-RPC envelope the tag becomes the notification's `method` and
+the rest its `params`.
+
+### `cutout.progress`
+
+<Api of="event:cutout.progress" />
+
+### `stabilize.progress`
+
+A stabilized clip's media is being measured ahead of an export.
+
+<Api of="event:stabilize.progress" />
+
+### `export.progress`
+
+<Api of="event:export.progress" />
+
+### `export.done`
+
+<Api of="event:export.done" />
+
+### `export.failed`
+
+<Api of="event:export.failed" />
+
+---
+
+## Errors
+
+<ApiErrors />
+
+Every error a method replies with is an [ApiError](/docs/api/types/api-error).

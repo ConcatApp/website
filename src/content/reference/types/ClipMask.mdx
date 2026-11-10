@@ -1,0 +1,23 @@
+The shape of a picture a clip keeps; the rest is transparent. Measured on the
+picture as drawn (after the crop and a stabilized clip's warp); a canvas
+background behind the clip is never masked.
+
+<Api of="type:ClipMask" />
+
+Every number but `invert` can be keyed with [`setClipKey`](/docs/api/edits/set-clip-key)
+(`maskX`, `maskY`, `maskWidth`, `maskHeight`, `maskRotation`, `maskRoundness`,
+`maskFeather`). A new mask starts in the middle: two thirds of the shorter
+side across for a circle, heart or star, a band a third thick for a mirror.
+
+```json
+{
+  "shape": "circle",
+  "x": 0,
+  "y": 0,
+  "width": 0.66,
+  "height": 0.66,
+  "rotation": 0,
+  "roundness": 0,
+  "feather": 0.1
+}
+```

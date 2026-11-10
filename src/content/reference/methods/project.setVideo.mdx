@@ -1,0 +1,21 @@
+Sets the active timeline's frame and rate, as an **undoable** edit.
+
+<Api of="method:project.setVideo" />
+
+```json
+{
+  "method": "project.setVideo",
+  "path": "/edits/Reel",
+  "video": {
+    "width": 3840,
+    "height": 2160,
+    "rateNum": 60,
+    "rateDen": 1
+  }
+}
+```
+
+A zero dimension or rate is `refused`.
+
+`colorSpace` is part of [VideoSettings](/docs/api/types/video-settings) (`sdr`, `hlg` or `pq`) and absent means `sdr`, so a call
+that leaves it out puts an HDR timeline back to SDR. Send the timeline's current value to keep it.

@@ -98,7 +98,12 @@ else:
 To stop it from another connection:
 
 ```json
-{ "jsonrpc": "2.0", "id": 9, "method": "export.cancel", "params": { "job": "j1" } }
+{
+  "jsonrpc": "2.0",
+  "id": 9,
+  "method": "export.cancel",
+  "params": { "job": "j1" }
+}
 ```
 
 The job then ends with `export.failed` and `error.code` = `cancelled`.
@@ -117,7 +122,7 @@ third.
 
 Only the style fields you set change; the rest are the window's defaults
 (white, bold, centred, with a shadow). All of them are in
-[Types → TextStyle](/docs/api/types#textstyle).
+[Types → TextStyle](/docs/api/types/text-style).
 
 Change a title later with a patch. Absent fields stay, `null` clears:
 
@@ -160,7 +165,13 @@ Notes:
 The same over everything at once, as a layer instead of per clip:
 
 ```json
-{ "op": "addLayerClip", "start": 0, "duration": 60, "effectId": "concat.film", "name": "Film look" }
+{
+  "op": "addLayerClip",
+  "start": 0,
+  "duration": 60,
+  "effectId": "concat.film",
+  "name": "Film look"
+}
 ```
 
 ---

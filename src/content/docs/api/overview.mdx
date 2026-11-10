@@ -159,6 +159,22 @@ Capability names:
 | `unix-socket` | Listening for JSON-RPC lines on a Unix socket     |
 | `grpc`        | Listening for gRPC                                |
 
+### The contract as JSON Schema
+
+Every request, reply, edit command, event and error code is published as one
+JSON Schema (draft 2020-12), printed by the app itself:
+
+```sh
+concat --schema > concat-api.schema.json
+```
+
+The same file is served at
+[`/concat-api.schema.json`](/concat-api.schema.json), for the latest
+release. Generate a typed client from it, validate requests before you
+send them, or give it to an agent. The reference pages on this site are
+built from it, so a method, command or field the app has is never missing
+here.
+
 When `apiVersion` changes:
 
 - Bumped when a method's **shape changes** in a way an old caller would

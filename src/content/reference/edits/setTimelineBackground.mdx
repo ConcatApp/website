@@ -1,0 +1,19 @@
+Sets what fills a timeline's frame behind the pictures on its lowest picture
+lane, the main lane. A clip's own `background` ([`updateClip`](/docs/api/edits/update-clip))
+draws over it.
+
+<Api of="command:setTimelineBackground" />
+
+#### Framing and background
+
+[Background](/docs/api/types/background) is tagged by `kind`:
+
+| Value                                   | Draws                                                                          |
+| --------------------------------------- | ------------------------------------------------------------------------------ |
+| `{"kind": "none"}`                      | Black. Every timeline's default                                                |
+| `{"kind": "blur", "amount": 0.5}`       | The clip's own picture enlarged to cover the frame and blurred; `amount` 0..=1 |
+| `{"kind": "color", "color": "#1a1a1a"}` | One flat colour; one that does not read becomes black                          |
+| `{"kind": "image", "mediaId": "m4"}`    | A still from the bin, enlarged to cover the frame                              |
+
+The background travels with its picture through transitions, and a picture
+that already covers the frame gets none. See also [`frameClip`](/docs/api/edits/frame-clip).

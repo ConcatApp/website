@@ -1,0 +1,45 @@
+Every effect package the build knows, with its parameters. Enough to build
+a valid effect chain without reading a manifest.
+
+<Api of="method:catalogue.list" />
+
+```json
+{ "method": "catalogue.list", "kind": "effect" }
+```
+
+**Reply:** an array of [PackageInfo](/docs/api/types/package-info), in id order.
+
+```json
+[
+  {
+    "id": "concat.gaussian-blur",
+    "name": "Gaussian Blur",
+    "kind": "effect",
+    "category": "Blur",
+    "description": "A soft, even blur.",
+    "intensity": "radius",
+    "params": [
+      {
+        "key": "radius",
+        "label": "Radius",
+        "type": "float",
+        "min": 1.0,
+        "max": 50.0,
+        "default": 10.0,
+        "step": 1.0,
+        "unit": "px",
+        "animate": false,
+        "values": [],
+        "labels": []
+      }
+    ]
+  }
+]
+```
+
+How to use it:
+
+- `id` is what a clip's chain stores: in `videoEffects`, `filters`, or a
+  `transitionIn`.
+- each param's `key` is what the chain entry's `params` object stores it
+  under. See [Types → AppliedFilter](/docs/api/types/applied-filter).

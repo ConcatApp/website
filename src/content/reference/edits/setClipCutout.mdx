@@ -1,0 +1,10 @@
+Sets or clears a picture's cutout: the mask that removes its background.
+
+<Api of="command:setClipCutout" />
+
+[Cutout](/docs/api/types/cutout) fields: `mode` (`auto` or `custom`), `subject` (`auto`, `person`,
+`object`; default `auto`), `feather` (edge softness as a fraction of the
+picture's width), `strokes` (corrections, see next).
+
+Masks are found at export time; `export.run` reports it as
+`cutout.progress`.

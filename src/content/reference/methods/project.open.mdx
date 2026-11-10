@@ -1,0 +1,18 @@
+Opens a project folder.
+
+<Api of="method:project.open" />
+
+```json
+{ "method": "project.open", "path": "/edits/Reel" }
+```
+
+Good to know:
+
+- Opening a folder already open returns its state as it stands, edits and
+  all. The history is untouched.
+- A folder another Concat process has open (a second window,
+  `concat --mcp`, `concat-cli`) is `refused`, naming that process: each
+  process locks the folders it opens with `concat.lock`. When the holder
+  is a window, the message says to go through it instead (Settings ›
+  Automation, then `concat --mcp window`). See
+  [One process per project](/docs/transports/json-rpc#one-process-per-project).

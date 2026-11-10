@@ -4,6 +4,7 @@
  * landing page (/docs or /guides).
  */
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { FOLDER, groupsOf, hrefOf, type PagedKind } from '@/lib/api';
 
 export type Kind = 'docs' | 'guides';
 export type Entry = CollectionEntry<'docs'> | CollectionEntry<'guides'>;
@@ -27,6 +28,10 @@ export interface NavItem {
   id: string;
   title: string;
   href: string;
+  /** Set out in code type: an API name rather than a page title. */
+  code?: boolean;
+  /** The pages under this one, in groups that fold: the API reference's methods, commands, types. */
+  children?: NavGroup[];
 }
 export interface NavGroup {
   title: string;
@@ -57,10 +62,33 @@ export async function getNav(kind: Kind): Promise<{ groups: NavGroup[]; flat: Na
       title,
       items: sorted
         .filter((e) => e.data.section === title)
-        .map((e) => ({ id: e.id, title: e.data.title, href: hrefFor(kind, e.id) })),
+        .map((e): NavItem => ({
+          id: e.id,
+          title: e.data.title,
+          href: hrefFor(kind, e.id),
+          children: kind === 'docs' ? referenceUnder(e.id) : undefined,
+        })),
     }))
     .filter((g) => g.items.length > 0);
-  return { groups, flat: groups.flatMap((g) => g.items) };
+  const flat = groups.flatMap((g) =>
+    g.items.flatMap((item) => [item, ...(item.children ?? []).flatMap((c) => c.items)]),
+  );
+  return { groups, flat };
+}
+
+/** The reference pages under an index page (api/methods, api/edits, api/types), by group. */
+function referenceUnder(id: string): NavGroup[] | undefined {
+  const kind = (Object.keys(FOLDER) as PagedKind[]).find((k) => id === `api/${FOLDER[k]}`);
+  if (!kind) return undefined;
+  return groupsOf(kind).map((group) => ({
+    title: group.title,
+    items: group.names.map((name) => ({
+      id: `${id}/${name}`,
+      title: name,
+      href: hrefOf(kind, name),
+      code: true,
+    })),
+  }));
 }
 
 /** Minutes to read a page at 220 words a minute, counting prose only (no imports or tags). */

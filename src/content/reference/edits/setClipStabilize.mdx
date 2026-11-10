@@ -1,0 +1,18 @@
+Turns stabilization on, changes its settings, or takes it off.
+
+<Api of="command:setClipStabilize" />
+
+The settings are a [Stabilize](/docs/api/types/stabilize); `null` takes stabilization off.
+
+The camera's movement is measured by the host the first time a clip of that
+media asks for it; until then the clip renders as shot. `export.run`
+measures any stabilized clip still unmeasured before it renders, reporting
+[`stabilize.progress`](/docs/api/events) events.
+
+```json
+{
+  "op": "setClipStabilize",
+  "clipId": "c2",
+  "stabilize": { "smoothness": 0.6, "maxZoom": 1.25 }
+}
+```

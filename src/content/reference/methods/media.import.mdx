@@ -1,0 +1,20 @@
+Probes a file and adds it to the project's bin. What dropping a file on
+the window does.
+
+<Api of="method:media.import" />
+
+```json
+{
+  "method": "media.import",
+  "path": "/edits/Reel",
+  "file": "/footage/take1.mp4"
+}
+```
+
+**Reply:** an [EditorView](/docs/api/types/editor-view). `createdId` is the new media id (`m1`, `m2`, …).
+
+Good to know:
+
+- A path already in the bin is a no-op, and `createdId` is absent.
+- This is `media.probe` + the `addMedia` command, as one request.
+- The bin item's fields are in [Types → MediaItem](/docs/api/types/media-item).

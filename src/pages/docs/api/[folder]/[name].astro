@@ -1,0 +1,72 @@
+---
+/**
+ * One API reference page: a method, an edit command or a type, at
+ * /docs/api/<methods|edits|types>/<name>. Every name the schema has gets its page; the
+ * hand-written prose, when there is any, comes from src/content/reference/<folder>/<name>.mdx
+ * and places the <Api> block itself. With none, the schema's own description stands above it.
+ */
+import { getCollection, render } from 'astro:content';
+import Docs from '@/layouts/Docs.astro';
+import Api from '@/components/Api.astro';
+import {
+  FOLDER,
+  commandNames,
+  entry,
+  methodNames,
+  plainSummary,
+  slugOf,
+  typeNames,
+  type PagedKind,
+} from '@/lib/api';
+
+const TITLE: Record<PagedKind, { badge: string; index: string }> = {
+  method: { badge: 'Method', index: 'Methods' },
+  command: { badge: 'Edit command', index: 'Edit commands' },
+  type: { badge: 'Type', index: 'Types' },
+};
+
+export async function getStaticPaths() {
+  const prose = new Map((await getCollection('reference')).map((e) => [e.id, e]));
+  const names: Record<PagedKind, string[]> = {
+    method: methodNames,
+    command: commandNames,
+    type: typeNames,
+  };
+  return (Object.keys(FOLDER) as PagedKind[]).flatMap((kind) =>
+    names[kind].map((name) => ({
+      params: { folder: FOLDER[kind], name: slugOf(name) },
+      props: { kind, name, page: prose.get(`${FOLDER[kind]}/${name}`) },
+    })),
+  );
+}
+
+const { kind, name, page } = Astro.props;
+const e = entry(kind, name);
+const rendered = page ? await render(page) : undefined;
+const Content = rendered?.Content;
+const seoTitle =
+  kind === 'method'
+    ? `${name} method`
+    : kind === 'command'
+      ? `${name} edit command`
+      : `${name} type`;
+const editUrl = page?.filePath
+  ? `https://github.com/ConcatApp/website/edit/main/${page.filePath}`
+  : 'https://github.com/jub0t/Concat/tree/main/src/crates/concat-api';
+---
+
+<Docs
+  kind="docs"
+  title={name}
+  code
+  badge={TITLE[kind].badge}
+  description={plainSummary(e.description) + '.'}
+  hideLead
+  seoTitle={seoTitle}
+  parent={{ title: TITLE[kind].index, href: `/docs/api/${FOLDER[kind]}` }}
+  current={`/docs/api/${FOLDER[kind]}/${slugOf(name)}`}
+  headings={rendered?.headings ?? []}
+  editUrl={editUrl}
+>
+  {Content ? <Content components={{ Api }} /> : <Api of={`${kind}:${name}`} describe />}
+</Docs>

@@ -1,0 +1,30 @@
+Applies **one edit command** and records one undo step.
+
+<Api of="method:edit.apply" />
+
+```json
+{
+  "method": "edit.apply",
+  "path": "/edits/Reel",
+  "command": {
+    "op": "addClip",
+    "mediaId": "m1",
+    "trackId": "T1",
+    "start": 2.5
+  }
+}
+```
+
+**Reply:** an [EditorView](/docs/api/types/editor-view) of the project after the edit.
+
+Good to know:
+
+- `createdId` in the reply is the id of what the command made: a clip
+  `c…`, track `t…`, timeline `tl…` or media `m…`. For a `batch` it is the
+  last id minted inside.
+- A **refusal** is a `refused` error. Its message is the sentence the
+  window would show. Nothing changed.
+- An edit that names something no longer there is, for most commands, a
+  **tolerated no-op**: unchanged view, no undo step.
+- Several commands as one undo step: wrap them in `{"op": "batch",
+"commands": [...]}`.

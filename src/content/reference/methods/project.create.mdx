@@ -1,0 +1,27 @@
+Creates a project folder and opens it.
+
+<Api of="method:project.create" />
+
+```json
+{
+  "method": "project.create",
+  "location": "/edits",
+  "name": "Reel",
+  "video": {
+    "width": 1080,
+    "height": 1920,
+    "rateNum": 30,
+    "rateDen": 1
+  }
+}
+```
+
+Good to know:
+
+- A fresh project has one timeline `TL1` with four tracks `T1`–`T4`.
+- It is added to the recents list, like one the window made.
+- A folder that already holds a project is refused (`failed`).
+- Over a socket, `location` must lie under one of the server's write
+  roots, or the request is `refused`; see the JSON-RPC transport's
+  [Security](/docs/transports/json-rpc#security). A folder the window has
+  open is `refused` too.

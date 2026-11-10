@@ -1,0 +1,14 @@
+Closes an open project.
+
+<Api of="method:project.close" />
+
+```json
+{ "method": "project.close", "path": "/edits/Reel", "save": true }
+```
+
+**Reply:** `{}`.
+
+> [!WARNING]
+> Without `save: true`, unsaved edits are dropped.
+
+A running export is not affected; it holds its own copy of what it needs.

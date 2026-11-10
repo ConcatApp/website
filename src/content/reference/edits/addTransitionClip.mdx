@@ -1,0 +1,19 @@
+Places a transition as a clip of its own, on a lane above the pictures it
+acts on. Over a cut beneath it, it carries the outgoing picture into the
+incoming one; over a single shot, it plays over that shot. It starts at
+its package's defaults.
+
+<Api of="command:addTransitionClip" />
+
+```json
+{
+  "op": "addTransitionClip",
+  "transitionId": "concat.push",
+  "name": "Push",
+  "start": 4.5,
+  "duration": 0.8
+}
+```
+
+The packages are listed by `catalogue.list`; a transition's `kind` is
+`transition`.

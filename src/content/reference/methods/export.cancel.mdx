@@ -1,0 +1,8 @@
+Stops a running export at its next frame.
+
+<Api of="method:export.cancel" />
+
+**Reply:** `{}`. The job then ends with `export.failed` whose `error.code`
+is `cancelled`.
+
+A job that is not running (finished, or never existed) is `notFound`.

@@ -1,0 +1,7 @@
+Cuts each named clip in two at one time.
+
+<Api of="command:splitClips" />
+
+- The head keeps the id and the transition; the tail is minted fresh and
+  stays source-continuous.
+- A clip the time misses, or grazes within 1/60 s of an edge, is skipped.

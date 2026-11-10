@@ -1,0 +1,32 @@
+Several commands as one atomic edit and one undo step.
+
+<Api of="command:batch" />
+
+- Applied to a staged copy; committed only if **every** command succeeds.
+- `createdId` in the reply is the last id minted inside.
+
+```json
+{
+  "op": "batch",
+  "commands": [
+    { "op": "addTrack" },
+    {
+      "op": "addTextClip",
+      "start": 0,
+      "duration": 2,
+      "style": { "content": "One" }
+    },
+    {
+      "op": "addTextClip",
+      "start": 2,
+      "duration": 2,
+      "style": { "content": "Two" }
+    }
+  ]
+}
+```
+
+> [!NOTE]
+> A batch cannot refer to an id it mints, because the id is not known
+> until the batch is applied. Use `addClipAtFirstFree` / `addTextClip`
+> with `duration` rather than add-then-trim.

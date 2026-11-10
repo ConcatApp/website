@@ -1,0 +1,10 @@
+Drags one edge of a clip.
+
+<Api of="command:trimClip" />
+
+How the edges differ:
+
+- **`start`** moves the in-point with the edge (scaled by speed), so the
+  remaining frames stay where they were.
+- **`end`** only lengthens or shortens.
+- Either edge stops at the 1/60 s minimum duration.

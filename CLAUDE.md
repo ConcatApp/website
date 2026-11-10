@@ -81,8 +81,25 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../timeline` or `CONCAT_
 
 - `src/layouts/Base.astro` head/meta (Open Graph, Twitter card, canonical, robots, a `head` slot), fonts,
   ClientRouter, loads the scroll script
-- `src/layouts/Docs.astro` long-form page frame for /docs: search trigger, sidebar, breadcrumb, prose
-  column, "On this page", previous/next, edit link, the ad slot.
+- `src/layouts/Docs.astro` page frame for /docs (since 2026-11-09): search trigger, the `DocsTree`
+  sidebar (folds the API reference under Methods, Edit commands and Types, the open branch being the
+  page read; the rail scrolls on its own, `data-lenis-prevent`), breadcrumb, a kind badge and a code
+  title on reference pages, a 50rem prose column, "On this page", previous/next, edit link, the ad slot.
+- API reference, one page per method, edit command and type (about 150), built from the app's contract:
+  `src/data/concat-api.schema.json` is what `concat --schema` prints (`npm run api:sync` reads a build in
+  `../timeline` or `CONCAT_BIN`; sync it when a release ships). `src/lib/api.ts` reads it (fields,
+  types, defaults, descriptions with rustdoc links made readable; groups from `src/data/api-groups.json`,
+  anything unplaced listed under "More"). `src/pages/docs/api/[folder]/[name].astro` makes the pages at
+  `/docs/api/{methods,edits,types}/<kebab-name>`; `src/components/Api.astro` renders an entry's fields,
+  `ApiIndex` an index page's groups, `ApiErrors` the error codes. Hand-written prose for an entry is
+  `src/content/reference/<methods|edits|types>/<name>.mdx` (the `reference` collection), which places its
+  own `<Api of="kind:name" />`; with no file the page shows the schema's description. Field meanings are
+  the app's doc comments: fix wording there, not here. `/concat-api.schema.json` serves the file.
+  `npm run build` runs `scripts/check-api-docs.mjs` first (reference files name real entries, events are
+  covered, every JSON request example uses only fields the schema has) and `scripts/check-links.mjs`
+  after (every internal link and #fragment lands).
+- Code blocks are framed by `src/lib/code-frame.mjs` (a Shiki transformer: language label and a Copy
+  button, wired by `src/scripts/copy-code.ts`). Keep JSON examples within 72 columns.
 - `src/layouts/Guide.astro` a guide as a blog article (since 2026-11-03, the owner asked for "breathable
   full-page-width blog/guides for normal users", not developer docs): no sidebar, a centred head
   (breadcrumb, `text-display` title, description, reading time, a search link), the cover on the band
@@ -98,7 +115,7 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../timeline` or `CONCAT_
   code does: no cookies, storage or analytics of the site's own, search and OS detection in the browser,
   self-hosted fonts, AdSense with Google's required cookie disclosures and opt-out links, Cloudflare
   hosting, GitHub downloads. Update it and its date whenever a script, tracker or third party is added
-- `src/content.config.ts` the `docs` and `guides` collections (MDX or Markdown under `src/content/`)
+- `src/content.config.ts` the `docs`, `guides` and `reference` collections (MDX or Markdown under `src/content/`)
 - `src/pages/docs/[...slug].astro`, `src/pages/guides/[...slug].astro` render the collections
 - `src/lib/docs.ts` sidebar sections, ordering and prev/next for both collections
 - `src/lib/remark-alerts.mjs` turns GitHub-style `> [!TIP]` blockquotes into `.alert` asides
@@ -175,8 +192,9 @@ Path alias: `@/` maps to `src/`.
   theme and drop those caption notes. `src/assets/guides/start.png` is the 0.2.7 start screen and is no
   longer used.
 - `/docs` is the developer reference (API, transports, recipes). It was migrated from the app repository's
-  `docs/` folder on 2026-09-28 and that folder is gone, so these pages are the source of truth: a change to a
-  method, command, event, error or transport in the app updates the page here. `/guides` is for people using
+  `docs/` folder on 2026-09-28 and that folder is gone. The reference pages' fields come from the schema
+  (see Structure); the prose (overview, transports, recipes, each entry's notes and examples) is the source
+  of truth here, and a change to a method, command, event, error or transport in the app updates it. `/guides` is for people using
   the app; every claim in a guide comes from the app README, except model names and sizes, which come from
   `models/manifest.toml` in the app repo (Chatterbox is nine files, about 1.1 GB; everything installed is about 3.4 GB).
 - Pages are MDX (Markdown works too) in `src/content/docs/` and `src/content/guides/`. Frontmatter: `title`,

@@ -1,0 +1,15 @@
+One link of an effect chain, in `filters` or `videoEffects`.
+
+<Api of="type:AppliedFilter" />
+
+```json
+{
+  "id": "concat.gaussian-blur",
+  "params": { "radius": 4 },
+  "enabled": true
+}
+```
+
+Every parameter is stored as a number, whatever its `type` in the
+catalogue: a `bool` is 0 or 1, an `enum` is one of its `values`, a `color`
+is packed RGBA, a `point` is two keys `<key>.x` and `<key>.y` in 0..1.

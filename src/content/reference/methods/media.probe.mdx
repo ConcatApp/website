@@ -1,0 +1,53 @@
+What is inside a media file. Touches no project.
+
+<Api of="method:media.probe" />
+
+```json
+{ "method": "media.probe", "path": "/footage/take1.mp4" }
+```
+
+```json
+{
+  "path": "/footage/take1.mp4",
+  "duration": 6.121029,
+  "kind": "video",
+  "video": {
+    "index": 0,
+    "codec": "h264",
+    "width": 854,
+    "height": 480,
+    "frameRate": 30.0,
+    "frameRateFraction": "30/1"
+  },
+  "audio": {
+    "index": 1,
+    "codec": "aac",
+    "sampleRate": 48000,
+    "channels": 2,
+    "title": "",
+    "language": "und"
+  },
+  "audioTracks": [
+    {
+      "index": 1,
+      "codec": "aac",
+      "sampleRate": 48000,
+      "channels": 2,
+      "title": "",
+      "language": "und"
+    },
+    {
+      "index": 2,
+      "codec": "aac",
+      "sampleRate": 48000,
+      "channels": 2,
+      "title": "",
+      "language": "und"
+    }
+  ]
+}
+```
+
+A file that cannot be read or decoded is `failed`. `video` also carries `colorRange` when the
+file tags its levels, and `colorSpace` (`hlg` or `pq`) for an HDR file; both are left out
+otherwise. See [MediaSummary](/docs/api/types/media-summary).

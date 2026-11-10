@@ -1,0 +1,23 @@
+Gives some of a title's words a look of their own: a word in another
+colour, one heavier. Each field of `patch` is laid over the characters
+`start` to `end`; anything it leaves out stays as it was. The title's own
+style is untouched, so the rest of its words keep following it.
+
+<Api of="command:styleTextRange" />
+
+`start` and `end` count characters (Unicode scalar values), not bytes,
+the way most languages count a string; `end` is one past the last. Both
+are clamped to the words.
+
+```json
+{
+  "op": "styleTextRange",
+  "clipId": "c7",
+  "start": 6,
+  "end": 11,
+  "patch": { "color": "#ffcc00", "fontWeight": 700 }
+}
+```
+
+The runs are kept on the title's [TextStyle](/docs/api/types/text-style) as `runs`
+([TextRun](/docs/api/types/text-run)).

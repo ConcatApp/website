@@ -1,0 +1,15 @@
+---
+/** Every error code a request can fail with, in the app's words, read from the schema. */
+import { errorCodes, prose } from '@/lib/api';
+---
+
+<ul class="api-fields not-prose">
+  {errorCodes.map((e) => (
+    <li class="api-field" id={`error-${e.code}`}>
+      <div class="api-field-head">
+        <code class="api-name">{e.code}</code>
+      </div>
+      <div class="api-field-body" set:html={prose(e.description)} />
+    </li>
+  ))}
+</ul>

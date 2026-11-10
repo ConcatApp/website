@@ -1,0 +1,102 @@
+---
+/**
+ * One method, edit command, event or type, read from the API schema (src/lib/api.ts): its
+ * fields as a list, each with its type, whether it may be left out and its default, and the
+ * app's own words for it. `of` is "method:project.open", "command:addClip", "event:export.done"
+ * or "type:Clip". `describe` adds the schema's description above the fields, for an entry the
+ * page has no prose of its own for.
+ */
+import { entry, prose, typeHtml, type Field, type Kind } from '@/lib/api';
+
+interface Props {
+  of: string;
+  describe?: boolean;
+}
+
+const { of, describe = false } = Astro.props;
+const [kind, name] = of.split(/:(.*)/s) as [Kind, string];
+const e = entry(kind, name);
+const showDescription = describe && e.description;
+const heading = kind === 'method' ? 'Parameters' : kind === 'event' ? 'Payload' : 'Fields';
+
+function fieldNote(f: Field): string {
+  if (f.required) return 'required';
+  return f.fallback === undefined ? 'optional' : `optional · default ${f.fallback}`;
+}
+---
+
+<div class="api not-prose" data-api={of}>
+  {showDescription && <div class="api-desc" set:html={prose(e.description)} />}
+
+  {e.values && (
+    <ul class="api-fields">
+      {e.values.map((v) => (
+        <li class="api-field">
+          <div class="api-field-head">
+            <code class="api-name">{v.value}</code>
+          </div>
+          {v.description && <div class="api-field-body" set:html={prose(v.description)} />}
+        </li>
+      ))}
+    </ul>
+  )}
+
+  {e.shapes &&
+    e.shapes.map((shape) => (
+      <div class="api-shape">
+        <p class="api-shape-tag">
+          <code>{shape.tag}</code>
+        </p>
+        {shape.description && <div class="api-desc" set:html={prose(shape.description)} />}
+        {shape.fields.length > 0 && (
+          <ul class="api-fields">
+            {shape.fields.map((f) => (
+              <li class="api-field">
+                <div class="api-field-head">
+                  <code class="api-name">{f.name}</code>
+                  <span class="api-type" set:html={typeHtml(f.type)} />
+                  <span class:list={['api-flag', f.required && 'is-required']}>{fieldNote(f)}</span>
+                </div>
+                {f.description && <div class="api-field-body" set:html={prose(f.description)} />}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    ))}
+
+  {e.alias && (
+    <p class="api-alias">
+      Same as <span class="api-type" set:html={typeHtml(e.alias)} />
+    </p>
+  )}
+
+  {!e.values && !e.shapes && !e.alias && (
+    <>
+      <p class="api-label">{heading}</p>
+      {e.fields.length === 0 ? (
+        <p class="api-none">None.</p>
+      ) : (
+        <ul class="api-fields">
+          {e.fields.map((f) => (
+            <li class="api-field">
+              <div class="api-field-head">
+                <code class="api-name">{f.name}</code>
+                <span class="api-type" set:html={typeHtml(f.type)} />
+                <span class:list={['api-flag', f.required && 'is-required']}>{fieldNote(f)}</span>
+              </div>
+              {f.description && <div class="api-field-body" set:html={prose(f.description)} />}
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  )}
+
+  {e.reply && (
+    <p class="api-reply">
+      <span class="api-label">Reply</span>
+      <span class="api-type" set:html={typeHtml(e.reply)} />
+    </p>
+  )}
+</div>

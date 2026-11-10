@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import { unified } from '@astrojs/markdown-remark';
 import remarkAlerts from './src/lib/remark-alerts.mjs';
+import { codeFrame } from './src/lib/code-frame.mjs';
 
 import sitemap from '@astrojs/sitemap';
 import { fileURLToPath } from 'node:url';
@@ -16,7 +17,8 @@ export default defineConfig({
   // remark plugin for GitHub-style alerts runs; MDX inherits it. Shiki in a dark theme, like the page.
   markdown: {
     processor: unified({ remarkPlugins: [remarkAlerts] }),
-    shikiConfig: { theme: 'github-dark-default' },
+    // Every block framed with its language and a Copy button (src/lib/code-frame.mjs).
+    shikiConfig: { theme: 'github-dark-default', transformers: [codeFrame] },
   },
 
   // Production origin: canonical URLs, absolute Open Graph image URLs and the sitemap all derive

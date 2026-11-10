@@ -1,0 +1,68 @@
+Renders the active timeline to a file, as a **job**. Exactly what the
+window's Export sheet does: cutouts analysed, stabilized clips' camera
+shake measured, titles painted, then the frame loop and the mix.
+
+<Api of="method:export.run" />
+
+```json
+{
+  "method": "export.run",
+  "path": "/edits/Reel",
+  "output": "/edits/reel.mp4",
+  "crf": 18,
+  "codec": "hevc"
+}
+```
+
+An example reply, at once:
+
+```json
+{ "job": "j1", "path": "/edits/Reel", "output": "/edits/reel.mp4" }
+```
+
+**Then events**, until the job ends:
+
+```jsonl
+{"event":"cutout.progress","job":"j1","path":"/edits/Reel","mediaId":"m3","fetching":true,"fraction":0.4}
+{"event":"export.progress","job":"j1","path":"/edits/Reel","frame":30,"total":150,"stage":"video"}
+{"event":"export.progress","job":"j1","path":"/edits/Reel","frame":150,"total":150,"stage":"mux"}
+{"event":"export.done","job":"j1","path":"/edits/Reel","output":"/edits/reel.mp4","width":1920,"height":1080}
+```
+
+or
+
+```json
+{
+  "event": "export.failed",
+  "job": "j1",
+  "path": "/edits/Reel",
+  "error": { "code": "failed", "message": "…" }
+}
+```
+
+Rules:
+
+- **One export at a time.** A second is refused with `busy`. From the
+  window's Automation page the slot is the window's own, so an export
+  begun in the Export sheet counts.
+- An empty timeline is `refused`.
+- HDR follows the timeline. An HDR timeline exported with `hdr` on (the
+  default) needs `hevc` or `av1`; `h264` is `invalid`, since H.264 does not
+  carry HDR. A PQ file carries its mastering-display, MaxCLL and MaxFALL
+  metadata. The timeline's colour is set with `project.setVideo` or
+  `setTimelineVideo`, and the first HDR clip dropped on an SDR timeline
+  turns it HLG.
+- `rateNum` and `rateDen` must both be positive, or the request is `invalid`.
+- Over a socket, `output` must lie under one of the server's write roots,
+  or the request is `refused`.
+- `width` and `height` are at most 8192 a side, the frame rate at most
+  240 a second, `crf` at most 63: anything larger is `invalid`.
+- `cutout.progress` only appears for clips with an automatic cutout whose
+  masks are not cached yet. `fetching` is true while the model downloads.
+- `stabilize.progress` appears for each stabilized clip's media whose
+  camera movement is not measured yet; the export measures it before
+  rendering. `export.cancel` stops that phase too.
+- A caller that was not listening when the events came can ask
+  [`export.status`](/docs/api/methods/export-status) instead.
+- Event shapes are in [Types → Events](/docs/api/events). The job model is
+  in the [overview](/docs/api/overview#jobs-and-events).

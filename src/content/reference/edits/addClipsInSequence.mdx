@@ -1,0 +1,15 @@
+Several bin items one after another on one lane, as one undo step: what a
+selection of cards dragged from the bin, or added at the playhead, lands
+as. Each clip starts where the one before it ends.
+
+<Api of="command:addClipsInSequence" />
+
+`createdId` is the first clip's id.
+
+```json
+{
+  "op": "addClipsInSequence",
+  "mediaIds": ["m1", "m2", "m3"],
+  "start": 0
+}
+```

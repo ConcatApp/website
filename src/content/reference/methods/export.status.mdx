@@ -1,0 +1,28 @@
+How a job stands: running and how far along, or how it ended. The same
+news the events carry, for a caller that was not listening when it came
+(a script that reconnected, an agent that asks in turns). The last 32
+finished jobs are remembered.
+
+<Api of="method:export.status" />
+
+```json
+{ "method": "export.status", "job": "j1" }
+```
+
+An example reply:
+
+```json
+{
+  "job": "j1",
+  "path": "/edits/Reel",
+  "output": "/edits/reel.mp4",
+  "state": "running",
+  "stage": "video",
+  "frame": 30,
+  "total": 150,
+  "fraction": 0.2
+}
+```
+
+A job that never ran, or ended long enough ago to be forgotten, is
+`notFound`.

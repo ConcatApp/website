@@ -1,46 +1,73 @@
 ---
 /**
- * Long-form page inside the gridline frame: section navigation on the left, the page in the
- * middle, an "On this page" list on the right from 1280px up. Below 1024px the navigation folds
- * into a disclosure above the page. The search dialog (Ctrl+K) covers both collections; Pagefind
- * indexes only the article, so the menus, the footer and the neighbour links stay out of it.
+ * A developer docs page inside the gridline frame: the section tree on the left (DocsTree, which
+ * folds the API reference's methods, commands and types under their index pages), the page in
+ * the middle, an "On this page" list on the right from 1280px up. Below 1024px the tree folds
+ * into a disclosure above the page. The search dialog (Ctrl+K) covers both collections;
+ * Pagefind indexes only the article, so the menus, the footer and the neighbour links stay out
+ * of it.
  */
 import type { MarkdownHeading } from 'astro';
-import { ArrowLeft, ArrowRight, ChevronDown, Search } from '@lucide/astro';
+import { ArrowLeft, ArrowRight, ChevronRight, Search } from '@lucide/astro';
 import Base from '@/layouts/Base.astro';
 import { article, breadcrumbs, lastModified } from '@/lib/seo';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import SearchDialog from '@/components/Search.astro';
 import AdUnit from '@/components/AdUnit.astro';
+import DocsTree from '@/components/DocsTree.astro';
 import { cn } from '@/lib/cn';
-import { BASE, LABEL, getNav, hrefFor, type Entry, type Kind } from '@/lib/docs';
+import { BASE, LABEL, getNav, type Kind } from '@/lib/docs';
 
 interface Props {
   kind: Kind;
-  entry: Entry;
+  /** The page's h1. */
+  title: string;
+  description?: string;
+  /** Where the page sits, for the breadcrumb: its sidebar section, or its index page. */
+  parent?: { title: string; href?: string };
+  /** A reference page's kind: Method, Edit command, Type. */
+  badge?: string;
+  /** The title is an API name, set in code type. */
+  code?: boolean;
+  /** The page's path without a trailing slash, as the sidebar links it. */
+  current: string;
   headings: MarkdownHeading[];
+  editUrl?: string;
+  /** The <title> for search results, when the h1 alone says too little. */
+  seoTitle?: string;
+  /** The description is for search results only: the page's own prose opens with the same. */
+  hideLead?: boolean;
 }
 
-const { kind, entry, headings } = Astro.props;
+const {
+  kind,
+  title,
+  description,
+  parent,
+  badge,
+  code,
+  current,
+  headings,
+  editUrl,
+  seoTitle,
+  hideLead,
+} = Astro.props;
 const { groups, flat } = await getNav(kind);
-const current = hrefFor(kind, entry.id);
 const index = flat.findIndex((item) => item.href === current);
 const prev = index > 0 ? flat[index - 1] : undefined;
 const next = index >= 0 && index < flat.length - 1 ? flat[index + 1] : undefined;
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
-const editUrl = entry.filePath
-  ? `https://github.com/ConcatApp/website/edit/main/${entry.filePath}`
-  : undefined;
-const title = entry.id === 'index' ? LABEL[kind] : `${entry.data.title} · ${LABEL[kind]}`;
+const isHome = current === BASE[kind];
+const pageTitle = seoTitle ?? (isHome ? LABEL[kind] : `${title} · ${LABEL[kind]}`);
 const path = `${current}/`;
 const modified = lastModified(path);
 const ld = [
   article({
     site: Astro.site,
     path,
-    headline: entry.data.title,
-    description: entry.data.description,
+    headline: title,
+    description,
     image: '/og.png',
     modified,
     type: 'TechArticle',
@@ -48,14 +75,23 @@ const ld = [
   breadcrumbs(Astro.site, [
     ['Concat', '/'],
     [LABEL[kind], `${BASE[kind]}/`],
-    ...(entry.id === 'index' ? [] : ([[entry.data.title, path]] as Array<[string, string]>)),
+    ...(parent?.href ? ([[parent.title, `${parent.href}/`]] as Array<[string, string]>) : []),
+    ...(isHome ? [] : ([[title, path]] as Array<[string, string]>)),
   ]),
 ];
+const label = `${LABEL[kind]} pages`;
+// A description may name code in backticks: set as code in the lead, plain in search results.
+const escapeHtml = (text: string) =>
+  text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const leadHtml = description
+  ? escapeHtml(description).replace(/`([^`]+)`/g, '<code>$1</code>')
+  : undefined;
+const metaDescription = description?.replace(/`/g, '');
 ---
 
 <Base
-  title={`${title} · Concat`}
-  description={entry.data.description}
+  title={`${pageTitle} · Concat`}
+  description={metaDescription}
   type="article"
   modified={modified}
 >
@@ -63,14 +99,10 @@ const ld = [
   <Header />
 
   <main class="pt-16">
-    <div class="container-x py-10 lg:py-14">
-      <div class="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-14 xl:grid-cols-[13rem_minmax(0,1fr)_11rem] xl:gap-16">
+    <div class="container-x py-8 lg:py-12">
+      <div class="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[15rem_minmax(0,50rem)_12rem] xl:justify-between xl:gap-10">
         <div class="mb-3 lg:hidden">
-          <button
-            type="button"
-            class="flex h-10 w-full items-center gap-2.5 rounded-full border border-line-strong bg-bg-subtle px-4 text-sm text-fg-muted transition-colors duration-150 hover:bg-bg-overlay hover:text-fg"
-            data-search-open
-          >
+          <button type="button" class="docs-search" data-search-open>
             <Search class="size-4" aria-hidden="true" />
             Search
             <kbd class="kbd ml-auto text-[11px] text-fg-subtle" data-search-key>
@@ -78,97 +110,54 @@ const ld = [
             </kbd>
           </button>
         </div>
-        <details class="group mb-8 rounded-lg border border-line lg:hidden">
+
+        <details class="group/nav mb-8 rounded-lg border border-line lg:hidden">
           <summary class="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-medium [&::-webkit-details-marker]:hidden">
             {LABEL[kind]}
-            <ChevronDown
-              class="size-4 text-fg-subtle transition-transform duration-300 ease-out-expo group-open:rotate-180"
+            <ChevronRight
+              class="size-4 text-fg-subtle transition-transform duration-300 ease-out-expo group-open/nav:rotate-90"
               aria-hidden="true"
             />
           </summary>
-          <nav class="border-t border-line px-4 py-3" aria-label={`${LABEL[kind]} pages`}>
-            {groups.map((group) => (
-              <div class="py-2">
-                <p class="text-xs font-medium text-fg-subtle">{group.title}</p>
-                <ul class="mt-1.5 space-y-0.5">
-                  {group.items.map((item) => (
-                    <li>
-                      <a
-                        href={item.href}
-                        class={cn(
-                          'block rounded-md px-2 py-1 text-sm',
-                          item.href === current
-                            ? 'bg-accent-soft font-medium text-accent-ink'
-                            : 'text-fg-muted hover:text-fg',
-                        )}
-                        aria-current={item.href === current ? 'page' : undefined}
-                      >
-                        {item.title}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </nav>
+          <div class="border-t border-line px-2 py-3">
+            <DocsTree groups={groups} current={current} label={label} />
+          </div>
         </details>
 
-        <nav class="hidden lg:block" aria-label={`${LABEL[kind]} pages`}>
-          <div class="sticky top-24 space-y-6">
-            <button
-              type="button"
-              class="flex h-10 w-full items-center gap-2.5 rounded-full border border-line-strong bg-bg-subtle px-4 text-sm text-fg-muted transition-colors duration-150 hover:bg-bg-overlay hover:text-fg"
-              data-search-open
-            >
+        <aside class="hidden lg:block">
+          <div class="docs-rail" data-lenis-prevent>
+            <button type="button" class="docs-search" data-search-open>
               <Search class="size-4" aria-hidden="true" />
               Search
               <kbd class="kbd ml-auto text-[11px] text-fg-subtle" data-search-key>
                 Ctrl K
               </kbd>
             </button>
-            <p class="text-sm font-medium">{LABEL[kind]}</p>
-            {groups.map((group) => (
-              <div>
-                <p class="text-xs font-medium text-fg-subtle">{group.title}</p>
-                <ul class="mt-2 space-y-0.5">
-                  {group.items.map((item) => (
-                    <li>
-                      <a
-                        href={item.href}
-                        class={cn(
-                          'block rounded-md px-2 py-1 text-sm transition-colors duration-200',
-                          item.href === current
-                            ? 'bg-accent-soft font-medium text-accent-ink'
-                            : 'text-fg-muted hover:text-fg',
-                        )}
-                        aria-current={item.href === current ? 'page' : undefined}
-                      >
-                        {item.title}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            <div class="mt-6">
+              <DocsTree groups={groups} current={current} label={label} />
+            </div>
           </div>
-        </nav>
+        </aside>
 
         <article class="min-w-0" data-pagefind-body data-pagefind-meta={`kind:${LABEL[kind]}`}>
-          <p class="text-sm text-fg-subtle">
-            {LABEL[kind]}
-            {entry.id !== 'index' && entry.data.section !== LABEL[kind] && (
+          <nav class="docs-crumbs" aria-label="Breadcrumb" data-pagefind-ignore>
+            <a href={BASE[kind]}>{LABEL[kind]}</a>
+            {parent && !isHome && (
               <>
-                <span class="mx-1.5">/</span>
-                {entry.data.section}
+                <ChevronRight class="size-3.5" aria-hidden="true" />
+                {parent.href ? (
+                  <a href={parent.href}>{parent.title}</a>
+                ) : (
+                  <span>{parent.title}</span>
+                )}
               </>
             )}
-          </p>
-          <h1 class="text-display-sm mt-3">{entry.data.title}</h1>
-          {entry.data.description && (
-            <p class="text-lead mt-4 text-fg-muted">{entry.data.description}</p>
-          )}
+          </nav>
+          {badge && <p class="docs-badge">{badge}</p>}
+          <h1 class={cn('docs-title', code && 'is-code')}>{title}</h1>
+          {leadHtml && !hideLead && <p class="docs-lead" set:html={leadHtml} />}
 
-          <div class="prose mt-10 max-w-none">
+          <div class="prose docs-prose mt-8 max-w-none">
             <slot />
           </div>
 
@@ -176,29 +165,27 @@ const ld = [
 
           <nav
             data-pagefind-ignore
-            class="mt-16 grid gap-4 border-t border-line pt-8 sm:grid-cols-2"
+            class="mt-16 grid gap-3 border-t border-line pt-8 sm:grid-cols-2"
             aria-label="Neighbouring pages"
           >
             {prev && (
-              <a
-                href={prev.href}
-                class="group flex flex-col gap-1 rounded-lg border border-line p-4 transition-colors duration-200 hover:border-line-strong"
-              >
+              <a href={prev.href} class="docs-neighbour">
                 <span class="flex items-center gap-1 text-xs text-fg-subtle">
                   <ArrowLeft class="size-3.5" aria-hidden="true" /> Previous
                 </span>
-                <span class="text-sm font-medium">{prev.title}</span>
+                <span class={cn('text-sm font-medium', prev.code && 'font-mono')}>
+                  {prev.title}
+                </span>
               </a>
             )}
             {next && (
-              <a
-                href={next.href}
-                class="group flex flex-col gap-1 rounded-lg border border-line p-4 text-right transition-colors duration-200 hover:border-line-strong sm:col-start-2"
-              >
+              <a href={next.href} class="docs-neighbour text-right sm:col-start-2">
                 <span class="flex items-center justify-end gap-1 text-xs text-fg-subtle">
                   Next <ArrowRight class="size-3.5" aria-hidden="true" />
                 </span>
-                <span class="text-sm font-medium">{next.title}</span>
+                <span class={cn('text-sm font-medium', next.code && 'font-mono')}>
+                  {next.title}
+                </span>
               </a>
             )}
           </nav>
@@ -217,17 +204,17 @@ const ld = [
           )}
         </article>
 
-        {toc.length > 0 && (
+        {toc.length > 1 && (
           <aside class="hidden xl:block">
-            <nav class="sticky top-24" aria-label="On this page">
-              <p class="text-xs font-medium text-fg-subtle">On this page</p>
-              <ul class="mt-2 space-y-1 border-l border-line text-sm">
+            <nav class="docs-rail" aria-label="On this page" data-lenis-prevent>
+              <p class="docs-tree-heading">On this page</p>
+              <ul class="mt-2 space-y-0.5 border-l border-line text-[13px]">
                 {toc.map((h) => (
                   <li>
                     <a
                       href={`#${h.slug}`}
                       class={cn(
-                        '-ml-px block border-l border-transparent py-0.5 text-fg-muted transition-colors duration-200 hover:border-line-strong hover:text-fg',
+                        '-ml-px block border-l border-transparent py-1 leading-snug text-fg-muted transition-colors duration-200 hover:border-line-strong hover:text-fg',
                         h.depth === 2 ? 'pl-3' : 'pl-6',
                       )}
                     >

@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && pagefind --site dist",
+    "build": "node scripts/check-api-docs.mjs && astro build && node scripts/check-links.mjs && pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
@@ -17,7 +17,10 @@
     "shots": "node scripts/screenshot.mjs",
     "og:image": "node scripts/og-image.mjs",
     "deploy": "npm run build && wrangler deploy",
-    "deploy:pages": "npm run build && wrangler pages deploy dist --project-name concatenate --branch main"
+    "deploy:pages": "npm run build && wrangler pages deploy dist --project-name concatenate --branch main",
+    "api:sync": "node scripts/sync-api-schema.mjs",
+    "api:check": "node scripts/check-api-docs.mjs",
+    "links:check": "node scripts/check-links.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.1",

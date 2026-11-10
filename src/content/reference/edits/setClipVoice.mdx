@@ -1,0 +1,17 @@
+Voice isolation: the voice in a clip's sound and everything else (music,
+noise, the room) at levels of their own. Both at 1 is the clip as
+recorded; a `background` of 0 keeps the voice alone; a `voice` of 0 takes
+it out. `null` plays the clip as recorded again.
+
+<Api of="command:setClipVoice" />
+
+```json
+{
+  "op": "setClipVoice",
+  "clipId": "c3",
+  "voice": { "voice": 1, "background": 0 }
+}
+```
+
+The two parts are worked out the first time a clip of that file asks for
+them; the clip plays as recorded until they are ready.

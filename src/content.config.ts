@@ -2,6 +2,10 @@
  * Two collections of Markdown/MDX pages:
  *   docs    developer reference at /docs (API, transports, recipes), migrated from the app repo
  *   guides  articles for people using the app at /guides
+ *   reference  the hand-written part of one API reference page (/docs/api/<kind>/<name>): what a
+ *              method or command is for, examples and caveats, around its <Api> block. The
+ *              fields come from the schema (src/lib/api.ts); a page with no file here shows the
+ *              schema's own description. The id is "<methods|edits|types>/<name>".
  * `section` groups the sidebar (docs) and the guides index, `order` sorts within a section. The
  * sections are listed in src/lib/docs.ts. A docs `index` entry becomes the section's landing page;
  * the guides landing page is src/pages/guides/index.astro.
@@ -36,4 +40,13 @@ const guides = defineCollection({
     }),
 });
 
-export const collections = { docs, guides };
+const reference = defineCollection({
+  loader: glob({
+    base: './src/content/reference',
+    pattern: '**/*.{md,mdx}',
+    generateId: ({ entry }) => entry.replace(/\.mdx?$/, ''),
+  }),
+  schema: z.object({}),
+});
+
+export const collections = { docs, guides, reference };

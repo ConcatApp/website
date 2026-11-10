@@ -1,0 +1,12 @@
+Reply to `media.probe`.
+
+<Api of="type:MediaSummary" />
+
+**VideoStreamInfo:** `index`, `codec`, `width`, `height`, `frameRate`
+(decimal), `frameRateFraction` (exact, e.g. `"30/1"`), and `colorRange`
+(`limited` or `full`, present only when the file says; a file that says
+nothing is played as limited), and `colorSpace` (`hlg` or `pq` for an HDR
+file; absent for SDR).
+
+**AudioStreamInfo:** `index`, `codec`, `sampleRate`, `channels`, `title`,
+`language`.
