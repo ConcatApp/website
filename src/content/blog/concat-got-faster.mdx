@@ -1,6 +1,6 @@
 ---
 title: Concat got much faster, and here are the numbers
-description: Titles 45 times quicker, effects that show at once, lighter imports and faster exports. Every number measured before and after, on the same machine.
+description: Titles 45x faster, effects that show at once, lighter imports and faster exports. Every number measured before and after, on the same machine.
 date: 2026-11-10
 icon: speed
 ---
@@ -12,14 +12,14 @@ and arrive in the next release.
 
 ## The numbers
 
-| What you do                                          | Before                         | After          | Faster                                            |
-| ---------------------------------------------------- | ------------------------------ | -------------- | ------------------------------------------------- |
-| A title or caption appears for the first time        | 77 ms                          | 1.7 ms         | 45 times                                          |
-| Open a project with 500 captions                     | about 38 seconds               | under 1 second | about 42 times                                    |
-| Drag a title on a timeline with 500 captions         | 754 ms a step                  | 0.8 ms a step  | about 940 times                                   |
-| Show an effect for the first time after installing   | 86 ms on average, up to 583 ms | under 1 ms     | about 150 times                                   |
-| Import a 4K clip and a 1080p clip                    | 5.0 seconds                    | 3.3 seconds    | 1.5 times, with less than half the processor time |
-| Export 10 seconds with 10 cuts on two stacked tracks | 2.8 seconds                    | 2.3 seconds    | 18 percent quicker                                |
+| What you do                                          | Before                         | After          | Faster   |
+| ---------------------------------------------------- | ------------------------------ | -------------- | -------- |
+| A title or caption appears for the first time        | 77 ms                          | 1.7 ms         | **45x**  |
+| Open a project with 500 captions                     | about 38 seconds               | under 1 second | **42x**  |
+| Drag a title on a timeline with 500 captions         | 754 ms a step                  | 0.8 ms a step  | **940x** |
+| Show an effect for the first time after installing   | 86 ms on average, up to 583 ms | under 1 ms     | **150x** |
+| Import a 4K clip and a 1080p clip                    | 5.0 seconds                    | 3.3 seconds    | **1.5x** |
+| Export 10 seconds with 10 cuts on two stacked tracks | 2.8 seconds                    | 2.3 seconds    | **1.2x** |
 
 A millisecond (ms) is a thousandth of a second. Anything over about 16 ms is a frame you can
 see the editor miss.
@@ -30,7 +30,7 @@ Auto-captions turns a long recording into hundreds of captions, and each one is 
 has to paint. A title used to be painted on a canvas the size of the whole frame, and its soft
 shadow was blurred across all of it, even though the words cover a thin strip. Now the shadow
 is blurred only where it falls, the finished picture is saved faster, and Concat paints many
-titles at once, on every core your computer has.
+titles at once, using the whole computer.
 
 A transcribed interview with 500 captions now opens in under a second instead of over half a
 minute, and dragging a title stays smooth however many captions sit on the timeline. Concat
@@ -56,8 +56,8 @@ have them.
 
 When you import a clip, Concat draws the strip of small pictures you see along it on the
 timeline. For pictures that small, it now skips work you could never see at that size. An
-import of a 4K clip and a 1080p clip finished in 3.3 seconds instead of 5.0, using less than
-half the processor time, which leaves more of your computer for playback while a big import
+import of a 4K clip and a 1080p clip finished in 3.3 seconds instead of 5.0, doing less than
+half the work, which leaves more of your computer for playback while a big import
 fills in. A tile can land a few hundredths of a second from its exact moment, which is too small
 to show.
 
@@ -66,14 +66,14 @@ to show.
 An export used to read each clip's footage one piece at a time, and every cut paused while the
 next file opened. Now each clip is read alongside the drawing, and a clip's file is opened half
 a second before its cut. Exports with many cuts or with clips stacked over each other finished
-13 to 18 percent sooner, frame for frame identical to before.
+up to **1.2x** faster, frame for frame identical to before.
 
 ## What we checked, and what we did not ship
 
 We kept a change only when the measurement showed it helped. Four ideas looked good on paper
 and made Concat no faster, or slower, in our tests, so they are not in.
 
-These numbers come from one fast computer. A laptop with fewer cores, or a phone, will see
+These numbers come from one fast computer. A slower laptop, or a phone, will see
 different times, and some of these changes should help those machines even more, because they
 share the work across whatever the machine has. The tests that produced this table are part of
 Concat's code, so anyone can run them.
