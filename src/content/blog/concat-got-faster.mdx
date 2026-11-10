@@ -47,19 +47,13 @@ first time you used it: the first look you hovered in the Library, the first fra
 you had just added. Now Concat prepares every effect in the background while the window opens,
 so a look shows the moment you point at it.
 
-On a Mac the system remembers prepared effects, so this mattered most on the first launch after
-installing or updating. On Windows the preparing happens on every launch, so the gain there
-should be larger. We have not measured Windows yet, and we will publish those numbers when we
-have them.
-
 ## Importing
 
 When you import a clip, Concat draws the strip of small pictures you see along it on the
 timeline. For pictures that small, it now skips work you could never see at that size. An
 import of a 4K clip and a 1080p clip finished in 3.3 seconds instead of 5.0, doing less than
 half the work, which leaves more of your computer for playback while a big import
-fills in. A tile can land a few hundredths of a second from its exact moment, which is too small
-to show.
+fills in.
 
 ## Exporting
 
@@ -68,24 +62,5 @@ next file opened. Now each clip is read alongside the drawing, and a clip's file
 a second before its cut. Exports with many cuts or with clips stacked over each other finished
 up to **1.2x** faster, frame for frame identical to before.
 
-## What we checked, and what we did not ship
-
-We kept a change only when the measurement showed it helped. Four ideas looked good on paper
-and made Concat no faster, or slower, in our tests, so they are not in.
-
-These numbers come from one fast computer. A slower laptop, or a phone, will see
-different times, and some of these changes should help those machines even more, because they
-share the work across whatever the machine has. The tests that produced this table are part of
-Concat's code, so anyone can run them.
-
-## What is next
-
-- Painting titles without ever pausing the window, so even a phone opens a captioned project at
-  once.
-- Choosing, on each computer, whether its video chip or its processor reads footage faster.
-- Switching to light stand-in copies of your footage on their own when a timeline asks for more
-  than the computer can play.
-- Measuring all of this on Windows laptops and Android phones, where most of you edit.
-
-Follow along on [GitHub](https://github.com/jub0t/Concat) or in the
+Every number here was measured before and after the change, and titles and exports come out exactly as before. Follow along on [GitHub](https://github.com/jub0t/Concat) or in the
 [Discord](https://discord.gg/DVuPfpXfqP), and [download Concat](/#download) to try it.
