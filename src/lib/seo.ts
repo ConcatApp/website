@@ -38,9 +38,20 @@ export function article(options: {
   description?: string;
   image: string;
   modified?: string;
-  type?: 'Article' | 'TechArticle' | 'HowTo';
+  /** The day it was first published, for a dated post. */
+  published?: string;
+  type?: 'Article' | 'TechArticle' | 'HowTo' | 'BlogPosting';
 }) {
-  const { site, path, headline, description, image, modified, type = 'Article' } = options;
+  const {
+    site,
+    path,
+    headline,
+    description,
+    image,
+    modified,
+    published,
+    type = 'Article',
+  } = options;
   const url = site ? new URL(path, site).toString() : path;
   return {
     '@context': 'https://schema.org',
@@ -51,6 +62,7 @@ export function article(options: {
     url,
     mainEntityOfPage: url,
     inLanguage: 'en',
+    ...(published && { datePublished: published }),
     ...(modified && { dateModified: modified }),
     author: ORGANIZATION(site),
     publisher: ORGANIZATION(site),

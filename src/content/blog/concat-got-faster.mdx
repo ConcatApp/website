@@ -1,0 +1,91 @@
+---
+title: Concat got much faster, and here are the numbers
+description: Titles 45 times quicker, effects that show at once, lighter imports and faster exports. Every number measured before and after, on the same machine.
+date: 2026-11-10
+icon: speed
+---
+
+We spent the last two days finding where Concat makes you wait, then fixing the biggest
+waits first. Every number on this page was measured before and after each change, on the same
+machine (a Mac with Apple's M5 chip), with the same files. The changes are in Concat's code now
+and arrive in the next release.
+
+## The numbers
+
+| What you do                                          | Before                         | After          | Faster                                            |
+| ---------------------------------------------------- | ------------------------------ | -------------- | ------------------------------------------------- |
+| A title or caption appears for the first time        | 77 ms                          | 1.7 ms         | 45 times                                          |
+| Open a project with 500 captions                     | about 38 seconds               | under 1 second | about 42 times                                    |
+| Drag a title on a timeline with 500 captions         | 754 ms a step                  | 0.8 ms a step  | about 940 times                                   |
+| Show an effect for the first time after installing   | 86 ms on average, up to 583 ms | under 1 ms     | about 150 times                                   |
+| Import a 4K clip and a 1080p clip                    | 5.0 seconds                    | 3.3 seconds    | 1.5 times, with less than half the processor time |
+| Export 10 seconds with 10 cuts on two stacked tracks | 2.8 seconds                    | 2.3 seconds    | 18 percent quicker                                |
+
+A millisecond (ms) is a thousandth of a second. Anything over about 16 ms is a frame you can
+see the editor miss.
+
+## Captions and titles
+
+Auto-captions turns a long recording into hundreds of captions, and each one is a title Concat
+has to paint. A title used to be painted on a canvas the size of the whole frame, and its soft
+shadow was blurred across all of it, even though the words cover a thin strip. Now the shadow
+is blurred only where it falls, the finished picture is saved faster, and Concat paints many
+titles at once, on every core your computer has.
+
+A transcribed interview with 500 captions now opens in under a second instead of over half a
+minute, and dragging a title stays smooth however many captions sit on the timeline. Concat
+also keeps more of the painted titles in memory on computers that have more to give, so moving
+one title no longer repaints the others.
+
+The titles come out exactly as before. Tests compare every pixel of the new painting with the
+old one.
+
+## Effects
+
+Each effect has to be prepared before its first frame can be drawn, and that used to happen the
+first time you used it: the first look you hovered in the Library, the first frame of an effect
+you had just added. Now Concat prepares every effect in the background while the window opens,
+so a look shows the moment you point at it.
+
+On a Mac the system remembers prepared effects, so this mattered most on the first launch after
+installing or updating. On Windows the preparing happens on every launch, so the gain there
+should be larger. We have not measured Windows yet, and we will publish those numbers when we
+have them.
+
+## Importing
+
+When you import a clip, Concat draws the strip of small pictures you see along it on the
+timeline. For pictures that small, it now skips work you could never see at that size. An
+import of a 4K clip and a 1080p clip finished in 3.3 seconds instead of 5.0, using less than
+half the processor time, which leaves more of your computer for playback while a big import
+fills in. A tile can land a few hundredths of a second from its exact moment, which is too small
+to show.
+
+## Exporting
+
+An export used to read each clip's footage one piece at a time, and every cut paused while the
+next file opened. Now each clip is read alongside the drawing, and a clip's file is opened half
+a second before its cut. Exports with many cuts or with clips stacked over each other finished
+13 to 18 percent sooner, frame for frame identical to before.
+
+## What we checked, and what we did not ship
+
+We kept a change only when the measurement showed it helped. Four ideas looked good on paper
+and made Concat no faster, or slower, in our tests, so they are not in.
+
+These numbers come from one fast computer. A laptop with fewer cores, or a phone, will see
+different times, and some of these changes should help those machines even more, because they
+share the work across whatever the machine has. The tests that produced this table are part of
+Concat's code, so anyone can run them.
+
+## What is next
+
+- Painting titles without ever pausing the window, so even a phone opens a captioned project at
+  once.
+- Choosing, on each computer, whether its video chip or its processor reads footage faster.
+- Switching to light stand-in copies of your footage on their own when a timeline asks for more
+  than the computer can play.
+- Measuring all of this on Windows laptops and Android phones, where most of you edit.
+
+Follow along on [GitHub](https://github.com/jub0t/Concat) or in the
+[Discord](https://discord.gg/DVuPfpXfqP), and [download Concat](/#download) to try it.

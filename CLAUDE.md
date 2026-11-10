@@ -109,6 +109,15 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../timeline` or `CONCAT_
   reading" (`relatedGuides` in `src/lib/docs.ts`). `src/pages/guides/index.astro` is the blog-style
   index: search, section links, the Start section led by a large card, then every section's cards.
   The Docs and Guide articles are the only `data-pagefind-body` on the site
+- Blog (since 2026-11-10, the owner asked for one to publish progress): posts are MDX in
+  `src/content/blog/` (the `blog` collection: `title`, `description`, `date`, an `icon` from
+  `src/lib/guide-icons.ts`, an optional `cover` and `coverAlt`). `src/layouts/Post.astro` is the guide
+  article's reading layout with the date (`BlogPosting` JSON-LD with `datePublished`), the download band
+  and "More from the blog"; `src/pages/blog/index.astro` lists posts newest first, the newest as a large
+  card (`PostCard`); `src/pages/blog/rss.xml.ts` is the feed, written by hand; `src/lib/blog.ts` sorts
+  and dates them. Linked from the Learn menu, the footer and the HTML sitemap; Pagefind indexes posts
+  (`kind:Blog`). Posts follow the guides' rules (no em dashes, no emoji, no other products' or
+  technologies' names) and every number in one is measured, with the machine named.
 - `src/layouts/Page.astro` standalone long-form page without a sidebar, the `layout` for MDX pages under
   `src/pages/`: `privacy.mdx` (the roadmap page was removed on 2026-11-02, and nothing links to it)
 - `src/pages/privacy.mdx` the privacy policy, linked from the footer. AdSense requires it. It states what the

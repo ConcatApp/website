@@ -10,6 +10,7 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import { LABEL, getNav, type Kind } from '@/lib/docs';
 import { TOOLS, toolHref } from '@/lib/tools';
+import { postHref, posts } from '@/lib/blog';
 
 const kinds: Kind[] = ['guides', 'docs'];
 // Each collection's landing page is its title link, so it is left out of the groups, and a group
@@ -35,6 +36,7 @@ const site = [
   { href: '/privacy', title: 'Privacy' },
 ];
 const tools = TOOLS.map((t) => ({ href: toolHref(t), title: t.title }));
+const blog = (await posts()).map((p) => ({ href: postHref(p), title: p.data.title }));
 ---
 
 <Base
@@ -75,6 +77,25 @@ const tools = TOOLS.map((t) => ({ href: toolHref(t), title: t.title }));
             </h2>
             <ul class="mt-4 grid gap-2 text-[15px]">
               {tools.map((page) => (
+                <li>
+                  <a
+                    href={page.href}
+                    class="text-fg-muted transition-colors duration-150 hover:text-fg"
+                  >
+                    {page.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+          <section class="card rounded-[28px] p-7 sm:rounded-[32px] sm:p-8">
+            <h2 class="text-[20px] tracking-[-0.02em]">
+              <a href="/blog" class="transition-colors duration-150 hover:text-accent-ink">
+                Blog
+              </a>
+            </h2>
+            <ul class="mt-4 grid gap-2 text-[15px]">
+              {blog.map((page) => (
                 <li>
                   <a
                     href={page.href}

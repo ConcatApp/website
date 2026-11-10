@@ -1,0 +1,80 @@
+---
+/**
+ * A post on the blog index and under "More from the blog": the band with the post's cover or its
+ * icon, then the date, the title, the description and the reading time. `large` is the newest
+ * post's layout on the index: the band beside the text from lg up.
+ */
+import { Image } from 'astro:assets';
+import GuideIcon from '@/components/GuideIcon.astro';
+import { readingMinutes } from '@/lib/docs';
+import { postDate, postHref, type Post } from '@/lib/blog';
+import { cn } from '@/lib/cn';
+
+interface Props {
+  post: Post;
+  large?: boolean;
+  /** The heading level of the title, so the card fits the outline it sits in. */
+  as?: 'h2' | 'h3';
+  class?: string;
+}
+
+const { post, large = false, as: Heading = 'h3', class: className } = Astro.props;
+const { title, description, date, cover, coverAlt, icon } = post.data;
+const minutes = readingMinutes(post.body);
+---
+
+<a
+  href={postHref(post)}
+  class={cn(
+    'card group flex flex-col overflow-hidden rounded-[28px]',
+    large && 'lg:grid lg:grid-cols-[1.25fr_1fr] lg:rounded-[40px]',
+    className,
+  )}
+>
+  <div
+    class={cn(
+      'band relative m-2 overflow-hidden rounded-[22px]',
+      large
+        ? 'aspect-[16/10] lg:m-3 lg:aspect-auto lg:min-h-[340px] lg:rounded-[30px]'
+        : 'aspect-[16/10]',
+    )}
+  >
+    {cover ? (
+      <Image
+        src={cover}
+        alt={coverAlt ?? ''}
+        widths={large ? [640, 960, 1280] : [480, 720]}
+        sizes={large ? '(min-width: 1024px) 600px, 100vw' : '(min-width: 1024px) 340px, 100vw'}
+        class="absolute top-[12%] left-[8%] h-auto w-[115%] max-w-none rounded-[12px] shadow-frame ring-1 ring-white/14 transition-transform duration-700 ease-out-expo group-hover:-translate-y-1"
+      />
+    ) : (
+      <span class="absolute inset-0 grid place-items-center">
+        <span class="grid size-16 place-items-center rounded-[20px] bg-white/14 text-white ring-1 ring-white/20 backdrop-blur-sm transition-transform duration-700 ease-out-expo group-hover:-translate-y-1">
+          <GuideIcon name={icon} class="size-7" />
+        </span>
+      </span>
+    )}
+  </div>
+  <div class={cn('flex flex-1 flex-col px-6 pt-4 pb-6', large && 'lg:justify-center lg:p-10')}>
+    <p class="eyebrow">
+      <time datetime={date.toISOString().slice(0, 10)}>{postDate(date)}</time>
+    </p>
+    <Heading
+      class={cn(
+        'mt-3 font-medium tracking-[-0.02em] text-balance',
+        large ? 'text-title' : 'text-[1.25rem] leading-tight',
+      )}
+    >
+      {title}
+    </Heading>
+    <p
+      class={cn(
+        'mt-2.5 text-[15px] leading-relaxed text-fg-muted',
+        large ? 'lg:text-[1.0625rem]' : 'line-clamp-3',
+      )}
+    >
+      {description}
+    </p>
+    <p class="mt-auto pt-5 text-[13px] text-fg-subtle">{minutes} min read</p>
+  </div>
+</a>

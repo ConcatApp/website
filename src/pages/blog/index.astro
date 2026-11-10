@@ -1,0 +1,63 @@
+---
+/**
+ * The blog: a centred head with the feed link, the newest post as a large card, then every other
+ * post, newest first.
+ */
+import { Rss } from '@lucide/astro';
+import Base from '@/layouts/Base.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import SearchDialog from '@/components/Search.astro';
+import PostCard from '@/components/PostCard.astro';
+import { posts } from '@/lib/blog';
+
+const [newest, ...rest] = await posts();
+---
+
+<Base
+  title="Blog · Concat"
+  description="What is new in Concat, the free, open-source video editor: what changed, why, and what it means when you edit."
+>
+  <link
+    slot="head"
+    rel="alternate"
+    type="application/rss+xml"
+    title="Concat blog"
+    href="/blog/rss.xml"
+  />
+  <Header />
+
+  <main class="pt-16">
+    <header class="container-x grid justify-items-center pt-[clamp(56px,7vw,104px)] text-center">
+      <h1 class="text-display">Blog</h1>
+      <p class="text-lead mt-6 max-w-[34rem] text-balance text-fg-muted">
+        What changed in Concat, why, and what it means when you edit.
+      </p>
+      <a
+        href="/blog/rss.xml"
+        class="mt-8 flex h-9 items-center gap-2 rounded-full bg-bg-subtle px-4 text-[14px] text-fg-muted transition-colors duration-150 hover:bg-bg-overlay hover:text-fg"
+      >
+        <Rss class="size-3.5" aria-hidden="true" />
+        Follow by RSS
+      </a>
+    </header>
+
+    {newest && (
+      <section class="container-x mt-[clamp(56px,7vw,96px)]" aria-label="Posts">
+        <PostCard post={newest} large as="h2" />
+        {rest.length > 0 && (
+          <ul class="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            {rest.map((p) => (
+              <li class="flex">
+                <PostCard post={p} as="h2" class="w-full" />
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    )}
+  </main>
+
+  <SearchDialog />
+  <Footer />
+</Base>

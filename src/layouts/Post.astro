@@ -1,0 +1,173 @@
+---
+/**
+ * A blog post: the guide article's reading layout with a date. A centred head (the blog, the
+ * title, the description, the day and the reading time), the cover on the band when the post has
+ * one, one reading column (`.guide-prose`), then the download call to action and the newest
+ * posts besides this one. Pagefind indexes the article.
+ */
+import type { MarkdownHeading } from 'astro';
+import { Image, getImage } from 'astro:assets';
+import Base from '@/layouts/Base.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import SearchDialog from '@/components/Search.astro';
+import AdUnit from '@/components/AdUnit.astro';
+import PostCard from '@/components/PostCard.astro';
+import TryConcat from '@/components/TryConcat.astro';
+import { readingMinutes } from '@/lib/docs';
+import { postDate, postHref, posts, type Post } from '@/lib/blog';
+import { article, breadcrumbs, lastModified } from '@/lib/seo';
+
+interface Props {
+  entry: Post;
+  headings: MarkdownHeading[];
+}
+
+const { entry, headings } = Astro.props;
+const { title, description, date, cover, coverAlt } = entry.data;
+const minutes = readingMinutes(entry.body);
+const toc = headings.filter((h) => h.depth === 2);
+const others = (await posts()).filter((p) => p.id !== entry.id).slice(0, 3);
+const share = cover
+  ? (
+      await getImage({
+        src: cover,
+        width: 1200,
+        height: 630,
+        fit: 'cover',
+        position: 'left top',
+        format: 'png',
+      })
+    ).src
+  : '/og.png';
+const path = `${postHref(entry)}/`;
+const modified = lastModified(path);
+const published = date.toISOString().slice(0, 10);
+const ld = [
+  article({
+    site: Astro.site,
+    path,
+    headline: title,
+    description,
+    image: share,
+    modified,
+    published,
+    type: 'BlogPosting',
+  }),
+  breadcrumbs(Astro.site, [
+    ['Concat', '/'],
+    ['Blog', '/blog/'],
+    [title, path],
+  ]),
+];
+---
+
+<Base
+  title={`${title} · Concat blog`}
+  description={description}
+  type="article"
+  image={share}
+  imageAlt={cover ? (coverAlt ?? title) : undefined}
+  modified={modified}
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)}></script>
+  <link
+    slot="head"
+    rel="alternate"
+    type="application/rss+xml"
+    title="Concat blog"
+    href="/blog/rss.xml"
+  />
+  <Header />
+
+  <main class="pt-16">
+    <article data-pagefind-body data-pagefind-meta="kind:Blog">
+      <header class="container-x grid justify-items-center pt-[clamp(48px,7vw,96px)] text-center">
+        <nav
+          class="flex items-center gap-2 text-[14px] text-fg-muted"
+          aria-label="Breadcrumb"
+          data-pagefind-ignore
+        >
+          <a href="/blog" class="transition-colors duration-150 hover:text-fg">
+            Blog
+          </a>
+        </nav>
+        <h1 class="text-display mt-6 max-w-[16em]">{title}</h1>
+        <p class="text-lead mt-6 max-w-[36rem] text-balance text-fg-muted">{description}</p>
+        <div class="mt-8 flex items-center gap-3 text-[14px] text-fg-subtle" data-pagefind-ignore>
+          <time datetime={published}>{postDate(date)}</time>
+          <span aria-hidden="true">·</span>
+          <span>{minutes} min read</span>
+        </div>
+      </header>
+
+      {cover && (
+        <div class="container-x mt-[clamp(40px,6vw,72px)]">
+          <div class="band overflow-hidden rounded-[28px] px-[clamp(16px,6vw,80px)] pt-[clamp(16px,5vw,64px)] sm:rounded-[40px]">
+            <div class="frame relative mx-auto max-w-[56rem] rounded-b-none">
+              <Image
+                src={cover}
+                alt={coverAlt ?? ''}
+                widths={[640, 960, 1280, 1680]}
+                sizes="(min-width: 1080px) 900px, 100vw"
+                loading="eager"
+                class="block h-auto w-full"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div class="guide-prose prose mt-[clamp(48px,6vw,80px)]">
+        {toc.length >= 3 && (
+          <nav class="toc not-prose" aria-label="In this post" data-pagefind-ignore>
+            <p class="eyebrow">In this post</p>
+            <ol class="mt-4 grid gap-x-8 gap-y-2.5 sm:grid-cols-2">
+              {toc.map((h) => (
+                <li>
+                  <a
+                    href={`#${h.slug}`}
+                    class="text-[15px] text-fg-muted transition-colors duration-150 hover:text-fg"
+                  >
+                    {h.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+        <slot />
+      </div>
+    </article>
+
+    <AdUnit class="container-x mt-16" />
+
+    <TryConcat />
+
+    {others.length > 0 && (
+      <section class="container-x mt-[clamp(64px,8vw,112px)]" aria-labelledby="more-posts">
+        <div class="flex items-end justify-between gap-4">
+          <h2 id="more-posts" class="text-title">
+            More from the blog
+          </h2>
+          <a
+            href="/blog"
+            class="text-[15px] font-medium text-accent-ink transition-colors duration-200 hover:text-fg"
+          >
+            All posts
+          </a>
+        </div>
+        <ul class="mt-8 grid gap-3 md:grid-cols-3">
+          {others.map((p) => (
+            <li class="flex">
+              <PostCard post={p} class="w-full" />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </main>
+
+  <SearchDialog />
+  <Footer />
+</Base>

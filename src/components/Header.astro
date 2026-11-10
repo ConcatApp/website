@@ -8,7 +8,17 @@
  * behind the menu button.
  */
 import { siDiscord, siGithub, siX } from 'simple-icons';
-import { BookOpen, Braces, ChevronDown, Heart, Mail, Menu, Wrench, X } from '@lucide/astro';
+import {
+  BookOpen,
+  Braces,
+  ChevronDown,
+  Heart,
+  Mail,
+  Menu,
+  Newspaper,
+  Wrench,
+  X,
+} from '@lucide/astro';
 import { Image } from 'astro:assets';
 import Button from '@/components/Button.astro';
 import mark from '@/assets/mark.png';
@@ -40,6 +50,7 @@ const menus: Array<{ label: string; items: Item[] }> = [
         icon: BookOpen,
       },
       { href: '/docs', label: 'Developer docs', hint: 'The API, JSON-RPC and gRPC', icon: Braces },
+      { href: '/blog', label: 'Blog', hint: 'What changed, and why', icon: Newspaper },
     ],
   },
   {

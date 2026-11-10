@@ -2,6 +2,7 @@
  * Two collections of Markdown/MDX pages:
  *   docs    developer reference at /docs (API, transports, recipes), migrated from the app repo
  *   guides  articles for people using the app at /guides
+ *   blog    posts at /blog: what changed and why, dated, newest first
  *   reference  the hand-written part of one API reference page (/docs/api/<kind>/<name>): what a
  *              method or command is for, examples and caveats, around its <Api> block. The
  *              fields come from the schema (src/lib/api.ts); a page with no file here shows the
@@ -40,6 +41,22 @@ const guides = defineCollection({
     }),
 });
 
+const blog = defineCollection({
+  loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      description: z.string(),
+      /** The day it was published. */
+      date: z.coerce.date(),
+      /** The icon on the post's card when it has no cover (src/lib/guide-icons.ts). */
+      icon: z.enum(GUIDE_ICONS).default('book'),
+      /** A real app capture, shown on the band on the card and at the top of the post. */
+      cover: image().optional(),
+      coverAlt: z.string().optional(),
+    }),
+});
+
 const reference = defineCollection({
   loader: glob({
     base: './src/content/reference',
@@ -49,4 +66,4 @@ const reference = defineCollection({
   schema: z.object({}),
 });
 
-export const collections = { docs, guides, reference };
+export const collections = { docs, guides, blog, reference };

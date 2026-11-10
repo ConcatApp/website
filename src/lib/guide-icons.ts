@@ -48,6 +48,7 @@ export const GUIDE_ICONS = [
   'compress',
   'gif',
   'count',
+  'speed',
 ] as const;
 
 export type GuideIcon = (typeof GUIDE_ICONS)[number];
