@@ -1,0 +1,27 @@
+One of a clip's masks. A clip keeps a list of them in `masks`, top first. Each one keeps part of
+the picture, takes part away, or, with the mode `none`, cuts nothing and waits for a layer or an
+effect to use it.
+
+<Api of="type:Mask" />
+
+[`updateClip`](/docs/api/edits/update-clip) sets the whole list: a list replaces it, an empty
+list takes every mask off. [`setMaskKey`](/docs/api/edits/set-mask-key) keys one number of one
+mask, named by its `id`: `x`, `y`, `rotation`, `scale`, `feather`, `expand`, `opacity`, `width`,
+`height` or `roundness`. The keys belong to the mask, so a mask moved to another clip takes its
+animation with it. A new mask starts in the middle, two thirds of the shorter side across.
+
+```json
+{
+  "id": "m1",
+  "mode": "subtract",
+  "source": {
+    "kind": "shape",
+    "shape": "circle",
+    "width": 0.66,
+    "height": 0.66,
+    "roundness": 0
+  },
+  "x": 0.2,
+  "feather": 0.1
+}
+```

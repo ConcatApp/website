@@ -358,16 +358,12 @@
           "default": "video",
           "description": "What this clip renders as. Follows the media's kind, and is rewritten\nwhen a template slot is filled with a different kind of file."
         },
-        "mask": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/ClipMask"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "description": "The shape that keeps part of the picture; see [`ClipMask`]."
+        "masks": {
+          "description": "The shapes that keep part of the picture, top first; see [`Mask`].",
+          "items": {
+            "$ref": "#/$defs/Mask"
+          },
+          "type": "array"
         },
         "mediaId": {
           "default": "",
@@ -652,63 +648,6 @@
       ],
       "type": "object"
     },
-    "ClipMask": {
-      "description": "A shape that keeps part of a clip's picture: the Mask. Drawn over\nthe picture as it is seen - after the crop and the flips, before the\nplacement - so it moves, scales and turns with the clip, and multiplies\nwith the cutout's matte and everything else that weighs the picture.\n\nIts numbers other than the shape and the invert can be keyed, as the\nplacement's can (`KeyProperty::MaskX` and on); a keyed number's keys\nreplace the constant here.",
-      "properties": {
-        "feather": {
-          "default": 0,
-          "description": "How soft the edge is, `0..=1`: one fades across half the picture's\nshorter side.",
-          "format": "double",
-          "type": "number"
-        },
-        "height": {
-          "default": 0.66,
-          "description": "The box's height, on the same terms; a mirror's thickness.",
-          "format": "double",
-          "type": "number"
-        },
-        "invert": {
-          "description": "Keeps the outside of the shape instead of the inside.",
-          "type": "boolean"
-        },
-        "rotation": {
-          "default": 0,
-          "description": "Clockwise degrees about the mask's centre.",
-          "format": "double",
-          "type": "number"
-        },
-        "roundness": {
-          "default": 0,
-          "description": "How round a rectangle's corners are, `0..=1`.",
-          "format": "double",
-          "type": "number"
-        },
-        "shape": {
-          "$ref": "#/$defs/MaskShape",
-          "default": "circle",
-          "description": "What it keeps."
-        },
-        "width": {
-          "default": 0.66,
-          "description": "The box's width, as a fraction of the picture's shorter side - the\nunit that keeps a circle round on any aspect.",
-          "format": "double",
-          "type": "number"
-        },
-        "x": {
-          "default": 0,
-          "description": "The centre's offset from the picture's centre, as a fraction of the\npicture's width; positive is right.",
-          "format": "double",
-          "type": "number"
-        },
-        "y": {
-          "default": 0,
-          "description": "The same down the picture's height; positive is down.",
-          "format": "double",
-          "type": "number"
-        }
-      },
-      "type": "object"
-    },
     "ClipMotion": {
       "description": "How a clip comes on, goes off and moves in between: an entrance, an\nexit and a loop, any of them. Each is applied where the clip is placed,\nover its keys, so the whole picture moves - a picture-in-picture slides\nas a card, a title pops as a title. See `concat_core::motion` for what\neach move does; a name the app does not know is kept and ignored.",
       "properties": {
@@ -856,16 +795,15 @@
             "null"
           ]
         },
-        "mask": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/ClipMask"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "description": "The mask, same three-way wire semantics as `crop`: absent leaves it\nalone, null takes it off, a value replaces it, tidied on the way in.\nIts keys are the clip's own (`setClipKey` with `maskX` and on), and\nstay when it is taken off, for a mask put back on to ride again."
+        "masks": {
+          "description": "The masks, top first: absent leaves them alone, a list replaces\nthem, empty takes them all off. Tidied on the way in; an empty or\nrepeated id is minted anew. Each carries its own keys\n(`setMaskKey`).",
+          "items": {
+            "$ref": "#/$defs/Mask"
+          },
+          "type": [
+            "array",
+            "null"
+          ]
         },
         "motion": {
           "anyOf": [
@@ -1657,6 +1595,118 @@
             "clipId",
             "entry",
             "key"
+          ],
+          "type": "object"
+        },
+        {
+          "description": "Puts a key on one number of one of a clip's masks, replacing\nwhichever key on it was already within a hair of `at`. The value is\nthe number's own, held to its range.",
+          "properties": {
+            "at": {
+              "description": "Where in the clip, `0..=1`.",
+              "format": "double",
+              "type": "number"
+            },
+            "clipId": {
+              "description": "The clip.",
+              "type": "string"
+            },
+            "ease": {
+              "$ref": "#/$defs/KeyEase",
+              "default": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "description": "How the key is approached from the one before it."
+            },
+            "maskId": {
+              "description": "The mask's id. One the clip does not have is a no-op.",
+              "type": "string"
+            },
+            "number": {
+              "description": "Which number: one of `model::Mask::NUMBERS`.",
+              "type": "string"
+            },
+            "op": {
+              "const": "setMaskKey",
+              "type": "string"
+            },
+            "value": {
+              "description": "The value there.",
+              "format": "double",
+              "type": "number"
+            }
+          },
+          "required": [
+            "op",
+            "clipId",
+            "maskId",
+            "number",
+            "at",
+            "value"
+          ],
+          "type": "object"
+        },
+        {
+          "description": "Takes the key at `at` off one number of one mask, if there is one.",
+          "properties": {
+            "at": {
+              "description": "Where in the clip the key to remove sits, `0..=1`.",
+              "format": "double",
+              "type": "number"
+            },
+            "clipId": {
+              "description": "The clip.",
+              "type": "string"
+            },
+            "maskId": {
+              "description": "The mask's id.",
+              "type": "string"
+            },
+            "number": {
+              "description": "Which number.",
+              "type": "string"
+            },
+            "op": {
+              "const": "clearMaskKey",
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "clipId",
+            "maskId",
+            "number",
+            "at"
+          ],
+          "type": "object"
+        },
+        {
+          "description": "Takes every key off one number of one mask, returning it to the\nvalue it holds.",
+          "properties": {
+            "clipId": {
+              "description": "The clip.",
+              "type": "string"
+            },
+            "maskId": {
+              "description": "The mask's id.",
+              "type": "string"
+            },
+            "number": {
+              "description": "Which number.",
+              "type": "string"
+            },
+            "op": {
+              "const": "clearMaskKeys",
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "clipId",
+            "maskId",
+            "number"
           ],
           "type": "object"
         },
@@ -3219,41 +3269,6 @@
           "const": "volume",
           "description": "`Clip::volume`.",
           "type": "string"
-        },
-        {
-          "const": "maskX",
-          "description": "`ClipMask::x`.",
-          "type": "string"
-        },
-        {
-          "const": "maskY",
-          "description": "`ClipMask::y`.",
-          "type": "string"
-        },
-        {
-          "const": "maskWidth",
-          "description": "`ClipMask::width`.",
-          "type": "string"
-        },
-        {
-          "const": "maskHeight",
-          "description": "`ClipMask::height`.",
-          "type": "string"
-        },
-        {
-          "const": "maskRotation",
-          "description": "`ClipMask::rotation`.",
-          "type": "string"
-        },
-        {
-          "const": "maskRoundness",
-          "description": "`ClipMask::roundness`.",
-          "type": "string"
-        },
-        {
-          "const": "maskFeather",
-          "description": "`ClipMask::feather`.",
-          "type": "string"
         }
       ]
     },
@@ -3283,6 +3298,118 @@
         {
           "const": "bar",
           "description": "A short bar across.",
+          "type": "string"
+        }
+      ]
+    },
+    "Mask": {
+      "description": "One of a clip's masks: a shape that keeps part of its picture, takes\npart away, or - set to cut nothing - waits for a layer or an effect to\nuse it. Drawn over the picture as it is seen - after the crop and the\nflips, before the placement - so it moves, scales and turns with the\nclip, and multiplies with the cutout's matte and everything else that\nweighs the picture.\n\nA mask is its own: its keys are in [`Mask::keys`], not the clip's, so\none taken to another clip takes its animation with it, and a tracker\nwrites its path there.",
+      "properties": {
+        "expand": {
+          "default": 0,
+          "description": "How far the edge is moved out, in the picture's shorter side; in\nwhen negative.",
+          "format": "double",
+          "type": "number"
+        },
+        "feather": {
+          "default": 0,
+          "description": "How soft the edge is, `0..=1`: one fades across half the picture's\nshorter side.",
+          "format": "double",
+          "type": "number"
+        },
+        "id": {
+          "default": "",
+          "description": "Unique among the clip's masks; what a layer or an effect that uses\nit names it by. Left out, one is minted.",
+          "type": "string"
+        },
+        "invert": {
+          "description": "Keeps the outside of the shape instead of the inside.",
+          "type": "boolean"
+        },
+        "keys": {
+          "additionalProperties": {
+            "items": {
+              "$ref": "#/$defs/ParamKey"
+            },
+            "type": "array"
+          },
+          "description": "The numbers that ride rather than hold, by [`Mask::NUMBERS`] name,\neach `at` a fraction of the clip like a `ClipKey`'s. A number with\nkeys is played from them, and the field above is only what it falls\nback to with the keys taken off.",
+          "type": "object"
+        },
+        "mode": {
+          "$ref": "#/$defs/MaskMode",
+          "default": "add",
+          "description": "How it joins the masks above it."
+        },
+        "name": {
+          "description": "What the panel calls it; empty for the panel's own numbering.",
+          "type": "string"
+        },
+        "opacity": {
+          "default": 1,
+          "description": "How much it counts, `0..=1`.",
+          "format": "double",
+          "type": "number"
+        },
+        "rotation": {
+          "default": 0,
+          "description": "Clockwise degrees about the mask's centre.",
+          "format": "double",
+          "type": "number"
+        },
+        "scale": {
+          "default": 1,
+          "description": "A factor on its size, both ways.",
+          "format": "double",
+          "type": "number"
+        },
+        "source": {
+          "$ref": "#/$defs/MaskSource",
+          "default": {
+            "height": 0.66,
+            "kind": "shape",
+            "roundness": 0,
+            "shape": "circle",
+            "width": 0.66
+          },
+          "description": "What it is drawn from. Left out, a circle."
+        },
+        "x": {
+          "default": 0,
+          "description": "The centre's offset from the picture's centre, as a fraction of the\npicture's width; positive is right.",
+          "format": "double",
+          "type": "number"
+        },
+        "y": {
+          "default": 0,
+          "description": "The same down the picture's height; positive is down.",
+          "format": "double",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "MaskMode": {
+      "description": "How a mask joins the masks above it in its clip's list. The names are\nwritten into project files, so they are stable for ever. See\n`concat_core::mask::MaskMode` for what each does.",
+      "oneOf": [
+        {
+          "const": "add",
+          "description": "Keeps what it covers as well: the default.",
+          "type": "string"
+        },
+        {
+          "const": "subtract",
+          "description": "Takes away what it covers.",
+          "type": "string"
+        },
+        {
+          "const": "intersect",
+          "description": "Keeps only what it and the masks above it share.",
+          "type": "string"
+        },
+        {
+          "const": "none",
+          "description": "Cuts nothing: kept for a layer or an effect to use.",
           "type": "string"
         }
       ]
@@ -3319,6 +3446,47 @@
           "const": "star",
           "description": "A five-pointed star, point up.",
           "type": "string"
+        }
+      ]
+    },
+    "MaskSource": {
+      "description": "What a mask is drawn from. One kind today; the pen's outline and the\nsubject a click picks join it, each with its own numbers.",
+      "oneOf": [
+        {
+          "description": "A shape in a box: a line, a band, an ellipse, a box, a heart, a\nstar.",
+          "properties": {
+            "height": {
+              "default": null,
+              "description": "The box's height on the same terms; a band's thickness.",
+              "format": "double",
+              "type": "number"
+            },
+            "kind": {
+              "const": "shape",
+              "type": "string"
+            },
+            "roundness": {
+              "default": 0,
+              "description": "How round a box's corners are, `0..=1`.",
+              "format": "double",
+              "type": "number"
+            },
+            "shape": {
+              "$ref": "#/$defs/MaskShape",
+              "description": "Which shape."
+            },
+            "width": {
+              "default": null,
+              "description": "The box's width, in the picture's shorter side - the unit that\nkeeps a circle round on any aspect - before the mask's scale.\nLeft out, a new mask of the shape's.",
+              "format": "double",
+              "type": "number"
+            }
+          },
+          "required": [
+            "kind",
+            "shape"
+          ],
+          "type": "object"
         }
       ]
     },

@@ -13,6 +13,8 @@ import { enrich, sitemapXml } from './src/lib/sitemap.mjs';
 
 // https://astro.build/config
 export default defineConfig({
+  // Reference pages whose type was renamed in a release: the old address keeps working.
+  redirects: { '/docs/api/types/clip-mask': '/docs/api/types/mask' },
   // Docs and guides are MDX. The unified processor (rather than Astro 7's default Sätteri) so the
   // remark plugin for GitHub-style alerts runs; MDX inherits it. Shiki in a dark theme, like the page.
   markdown: {
