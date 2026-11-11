@@ -11,20 +11,27 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../timeline` or `CONCAT_
 - Features the README claims, and nothing else: auto-captions (local Whisper), text-to-speech and voice cloning,
   background removal, keyframes with a curve editor, 100 effects, filters and transitions (not "170+ ... and
   text animations", which the README dropped on 2026-10-15), multi-track and multi-timeline editing, titles,
-  one-switch voice cleanup, export in H.264, HEVC and AV1 up to 4K 60 10-bit, 25 languages, and (0.2.8) a
+  one-switch voice cleanup, export in H.264, HEVC and AV1 up to 4K 60 10-bit, 26 languages, and a
   built-in MCP server for AI agents.
-- The current release is 0.2.8 (tag v0.2.8, commit 79116bd, published 2026-10-20). Describe what that tag
-  ships, checked with `git show v0.2.8:<path>` in the app repo, never what is only on its main branch. Its
-  release notes' line "Q and E cut the selected clip" is wrong: Q and W are Delete left and Delete right,
-  and E is unbound; do not repeat it. The Audio page's Concat sounds shelf says "Sound library coming
-  soon" in 0.2.8, because the sound list is not published yet.
+- The current release is 0.2.10 (tag v0.2.10, commit 71efe1f4, published 2026-11-11; 0.2.9 came out on
+  2026-11-05 with no site update). Describe what that tag ships, checked with `git show v0.2.10:<path>` in the app repo, never
+  what is only on its main branch. Its curated notes are `notes/release-notes-0.2.10.md` in the app repo.
+  New in it: In, Out and Loop animations for clips, pictures, titles and shapes; voice isolation (keep or
+  remove a clip's voice, each part at its own level); a Shake & Motion shelf; a stack of masks per clip,
+  each with a mode and keyframes; editable shapes; fades on a curve; twelve more caption language
+  presets; Generate Captions in the Library; titles and captions painted in the background (about 45x
+  faster); a new Welcome screen with a What's new card; a rebuilt Audio tab; Settings as a full-window
+  page; `concat --schema`. The Audio page's Concat sounds shelf still says the library is coming soon,
+  because the sound list is not published yet.
 - API: every desktop release serves JSON-RPC over TCP from the window (Settings › Automation, the "Scripts
   and apps" switch; called Remote up to 0.2.7) and, from 0.2.8, is an MCP server over stdio when started as
   `concat --mcp` (through the window's server when Automation is on, headless otherwise; the app repo's
-  `docs/MCP.md`). Live mode, an agent on the project open in the window, is still planned (#337). gRPC and
+  `docs/MCP.md`). From 0.2.10 `concat --schema` prints the whole API as JSON Schema; the site's copy was
+  synced from an installed 0.2.10 on 2026-11-11 (`CONCAT_BIN=/Applications/Concat.app/Contents/MacOS/concat
+  npm run api:sync` works on a Mac with the release installed). Live mode, an agent on the project open in the window, is still planned (#337). gRPC and
   `concat-cli` need a build from source; no release ships them. No release check launches `concat --mcp`
   from a packaged build yet; CI tests the server built from source.
-- Platforms shown on the site are whatever the release manifest ships. 0.2.8: Windows (x64 only; ARM64 is
+- Platforms shown on the site are whatever the release manifest ships. 0.2.10 (the same set as 0.2.8): Windows (x64 only; ARM64 is
   paused, #326; not code-signed, so SmartScreen asks and Smart App Control refuses), macOS (Apple Silicon,
   Intel, unsigned; macOS 12, and on Intel the ONNX Runtime features need 13.4), Linux (AppImage/deb/rpm/Arch,
   x86_64 and aarch64), Android (arm64 APK, Android 8.0+; no CI run has launched the arm64 APK, and the
@@ -32,16 +39,17 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../timeline` or `CONCAT_
   iOS 15+). The picker builds its list from the manifest, so a paused architecture drops out by itself; the
   Windows card's summary is worked out from the architectures shipped.
 - Distribution is GitHub Releases. Linux also has an Arch package in the manifest and a community Flatpak
-  on Flatpark (linked as text in the picker note). 0.2.6 shipped to the Microsoft Store; 0.2.7 and 0.2.8 do
+  on Flatpark (linked as text in the picker note). 0.2.6 shipped to the Microsoft Store; 0.2.7 to 0.2.10 do
   not, and the site has no store link. Not on the App Store or Google Play; never show store badges.
 - Each release ships `manifest.json` with per-platform URLs, sizes and sha256. `src/lib/releases.ts` fetches
-  the latest one at build time and falls back to `src/data/release-manifest.json` (refreshed to 0.2.8 on
-  2026-10-20; refresh it with each release). The SHA256SUMS link is `checksumsUrl(manifest)`, the
+  the latest one at build time and falls back to `src/data/release-manifest.json` (refreshed to 0.2.10 on
+  2026-11-11 from the release's own `manifest.json`; refresh it with each release). The SHA256SUMS link is `checksumsUrl(manifest)`, the
   `releases/download/<tag>/SHA256SUMS` of the same release as the download links; never point it at
   `releases/latest`, which a stale build would pair with an older release's files.
-- The app links into this site: the 0.2.8 home page opens `https://concat.standalones.org/guides/`,
-  `/guides/first-edit/` and `/guides/report-a-problem/` (`src/crates/concat/src/panes/start.rs`). Keep those
-  pages at those paths.
+- The app links into this site: the home page opens `https://concat.standalones.org/guides/`,
+  `/guides/first-edit/` and `/guides/report-a-problem/`, and from 0.2.10 its What's new card opens
+  `/blog/whats-new-in-<version>/` (`src/crates/concat/src/panes/start.rs`). Keep those pages at those
+  paths; see "Release posts" below.
 - The fact tiles use real numbers only: `src/lib/stats.ts` fetches GitHub stars and the download total
   across every asset of every release at build time (the figure GitHub and the README's Downloads badge
   show; 409K and 13.9K stars on 2026-11-03), falling back to `src/data/github-stats.json`. `GITHUB_TOKEN`
@@ -84,7 +92,12 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../timeline` or `CONCAT_
 - `src/layouts/Docs.astro` page frame for /docs (since 2026-11-09): search trigger, the `DocsTree`
   sidebar (folds the API reference under Methods, Edit commands and Types, the open branch being the
   page read; the rail scrolls on its own, `data-lenis-prevent`), breadcrumb, a kind badge and a code
-  title on reference pages, a 50rem prose column, "On this page", previous/next, edit link, the ad slot.
+  title on reference pages, "On this page", previous/next cards, edit link, the ad slot. Since
+  2026-11-11 (the owner asked for "spacious", full width, larger and clearer) it spans the window up to
+  1920px (`container-wide`; the header takes the same width through `Header wide`): tree, page and "On
+  this page" side by side, the page centred in its track at up to 66rem, running text held to a 46rem
+  measure in 17px type while code, tables, field lists and index cards use the full width. "On this
+  page" marks the section being read; below 1280px it and (below 1024px) the tree are disclosures.
 - API reference, one page per method, edit command and type (about 150), built from the app's contract:
   `src/data/concat-api.schema.json` is what `concat --schema` prints (`npm run api:sync` reads a build in
   `../timeline` or `CONCAT_BIN`; sync it when a release ships). `src/lib/api.ts` reads it (fields,
@@ -180,7 +193,11 @@ Path alias: `@/` maps to `src/`.
 
 ## Docs and guides
 
-- Guides describe the shipping release (0.2.8, 20 October 2026), with no version marks: the 0.2.8 marks and
+- Guides were written for 0.2.8 (20 October 2026) and have not had their 0.2.10 pass yet. The pages that
+  need it most: masks (now a stack with modes), the Audio tab and sounds, Settings (a full-window page),
+  captions (Generate Captions moved to the Library; more language presets), titles and text (In, Out
+  and Loop animations), shapes, Enhance (any scale up to 2K) and the start screen (the Welcome screen).
+  Until then the guides index states no version. Earlier history: guides carry no version marks: the 0.2.8 marks and
   the 0.2.7-only text were dropped on 2026-10-20. When the app's main branch has something no release has,
   mark it with a `> [!NOTE]` callout that opens "**New in 0.2.9 (coming in the next release).**" (or a
   "(0.2.9)" tag in a table row), keep the shipping behaviour described beside it, and drop the marks when it
@@ -230,6 +247,21 @@ Path alias: `@/` maps to `src/`.
 - Search: Pagefind indexes every docs and guides article after the build; the dialog shows each result's
   title, its collection (`data-pagefind-meta` kind) and the excerpt. Under `astro dev` there is no index, and
   the dialog says to run `npm run build`. The neighbour links and the edit link are `data-pagefind-ignore`.
+
+## Release posts
+
+- Every release needs a blog post at exactly `src/content/blog/whats-new-in-<version>.mdx`, the
+  version's dots turned to dashes (0.2.10 is `whats-new-in-0-2-10`). The app's Welcome screen opens
+  `https://concat.standalones.org/blog/whats-new-in-<version>/` from its What's new card, so the post must
+  be live the day the release is published; a missing post is a 404 inside the app.
+- Write it from the release's curated notes (`notes/release-notes-<version>.md` in the app repo) and
+  check each claim against the tag. Title "What's new in Concat <version>", `date` the release day,
+  `icon: update`. It holds: a two-line opening that says what the release is about; an h2 for each
+  headline feature, saying what a person can now do and where to find it; the measured speed wins as a
+  table with bold multipliers (**45x**) and the machine named; a short list of the smaller things that
+  got better; and "Get it": the release link and how to update from Settings › Version.
+- Good news only: what got better, no known problems, caveats, roadmap or rejected ideas. Say "Concat
+  does X", never what it is built on. A cover only from a real capture of that release.
 
 ## Metadata and search
 
