@@ -26,6 +26,14 @@ import GuideIcon from '@/components/GuideIcon.astro';
 import { DISCORD_URL, REPO_URL, X_URL } from '@/lib/releases';
 import { TOOLS, toolHref } from '@/lib/tools';
 import type { GuideIcon as GuideIconName } from '@/lib/guide-icons';
+import { cn } from '@/lib/cn';
+
+interface Props {
+  /** Span the window, as the developer docs do, instead of the 1080px content column. */
+  wide?: boolean;
+}
+
+const { wide = false } = Astro.props;
 
 interface Item {
   href: string;
@@ -107,7 +115,13 @@ const menus: Array<{ label: string; items: Item[] }> = [
 ---
 
 <header class="glass fixed inset-x-0 top-0 z-40" data-header>
-  <nav class="container-x flex h-16 items-center justify-between gap-4" aria-label="Main">
+  <nav
+    class={cn(
+      wide ? 'container-wide' : 'container-x',
+      'flex h-16 items-center justify-between gap-4',
+    )}
+    aria-label="Main"
+  >
     <div class="flex items-center gap-6">
       <a href="/" aria-label="Concat home" class="flex items-center gap-2.5">
         <Image

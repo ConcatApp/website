@@ -1,9 +1,11 @@
 ---
 /**
- * A developer docs page inside the gridline frame: the section tree on the left (DocsTree, which
- * folds the API reference's methods, commands and types under their index pages), the page in
- * the middle, an "On this page" list on the right from 1280px up. Below 1024px the tree folds
- * into a disclosure above the page. The search dialog (Ctrl+K) covers both collections;
+ * A developer docs page across the window's width (`container-wide`, up to 1920px): the
+ * section tree on the left (DocsTree, which folds the API reference's methods, commands and
+ * types under their index pages), the page in the middle with its prose held to a reading
+ * measure, and an "On this page" list on the right from 1280px up that marks the section being
+ * read. Below 1024px the tree folds into a disclosure above the page; below 1280px "On this
+ * page" is a disclosure under the title. The search dialog (Ctrl+K) covers both collections;
  * Pagefind indexes only the article, so the menus, the footer and the neighbour links stay out
  * of it.
  */
@@ -96,102 +98,116 @@ const metaDescription = description?.replace(/`/g, '');
   modified={modified}
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)}></script>
-  <Header />
+  <Header wide />
 
   <main class="pt-16">
-    <div class="container-x py-8 lg:py-12">
-      <div class="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[15rem_minmax(0,50rem)_12rem] xl:justify-between xl:gap-10">
-        <div class="mb-3 lg:hidden">
+    <div class="container-wide docs-frame">
+      <aside class="docs-side">
+        <div class="docs-rail" data-lenis-prevent>
           <button type="button" class="docs-search" data-search-open>
-            <Search class="size-4" aria-hidden="true" />
-            Search
+            <Search class="size-[18px]" aria-hidden="true" />
+            Search the docs
             <kbd class="kbd ml-auto text-[11px] text-fg-subtle" data-search-key>
               Ctrl K
             </kbd>
           </button>
-        </div>
-
-        <details class="group/nav mb-8 rounded-lg border border-line lg:hidden">
-          <summary class="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-medium [&::-webkit-details-marker]:hidden">
-            {LABEL[kind]}
-            <ChevronRight
-              class="size-4 text-fg-subtle transition-transform duration-300 ease-out-expo group-open/nav:rotate-90"
-              aria-hidden="true"
-            />
-          </summary>
-          <div class="border-t border-line px-2 py-3">
+          <div class="mt-8">
             <DocsTree groups={groups} current={current} label={label} />
           </div>
-        </details>
+        </div>
+      </aside>
 
-        <aside class="hidden lg:block">
-          <div class="docs-rail" data-lenis-prevent>
-            <button type="button" class="docs-search" data-search-open>
-              <Search class="size-4" aria-hidden="true" />
-              Search
-              <kbd class="kbd ml-auto text-[11px] text-fg-subtle" data-search-key>
-                Ctrl K
-              </kbd>
-            </button>
-            <div class="mt-6">
+      <div class="docs-main">
+        <div class="docs-mobile-nav">
+          <button type="button" class="docs-search" data-search-open>
+            <Search class="size-[18px]" aria-hidden="true" />
+            Search the docs
+            <kbd class="kbd ml-auto text-[11px] text-fg-subtle" data-search-key>
+              Ctrl K
+            </kbd>
+          </button>
+          <details class="docs-disclosure group/nav">
+            <summary>
+              <span>{LABEL[kind]} pages</span>
+              <ChevronRight
+                class="size-5 text-fg-subtle transition-transform duration-300 ease-out-expo group-open/nav:rotate-90"
+                aria-hidden="true"
+              />
+            </summary>
+            <div class="docs-disclosure-body">
               <DocsTree groups={groups} current={current} label={label} />
             </div>
-          </div>
-        </aside>
+          </details>
+        </div>
 
-        <article class="min-w-0" data-pagefind-body data-pagefind-meta={`kind:${LABEL[kind]}`}>
-          <nav class="docs-crumbs" aria-label="Breadcrumb" data-pagefind-ignore>
-            <a href={BASE[kind]}>{LABEL[kind]}</a>
-            {parent && !isHome && (
-              <>
-                <ChevronRight class="size-3.5" aria-hidden="true" />
-                {parent.href ? (
-                  <a href={parent.href}>{parent.title}</a>
-                ) : (
-                  <span>{parent.title}</span>
-                )}
-              </>
-            )}
-          </nav>
-          {badge && <p class="docs-badge">{badge}</p>}
-          <h1 class={cn('docs-title', code && 'is-code')}>{title}</h1>
-          {leadHtml && !hideLead && <p class="docs-lead" set:html={leadHtml} />}
+        <article class="docs-article" data-pagefind-body data-pagefind-meta={`kind:${LABEL[kind]}`}>
+          <header class="docs-head">
+            <nav class="docs-crumbs" aria-label="Breadcrumb" data-pagefind-ignore>
+              <a href={BASE[kind]}>{LABEL[kind]}</a>
+              {parent && !isHome && (
+                <>
+                  <ChevronRight class="size-4" aria-hidden="true" />
+                  {parent.href ? (
+                    <a href={parent.href}>{parent.title}</a>
+                  ) : (
+                    <span>{parent.title}</span>
+                  )}
+                </>
+              )}
+            </nav>
+            {badge && <p class="docs-badge">{badge}</p>}
+            <h1 class={cn('docs-title', code && 'is-code')}>{title}</h1>
+            {leadHtml && !hideLead && <p class="docs-lead" set:html={leadHtml} />}
+          </header>
 
-          <div class="prose docs-prose mt-8 max-w-none">
+          {toc.length > 1 && (
+            <details class="docs-disclosure docs-toc-mobile group/toc" data-pagefind-ignore>
+              <summary>
+                <span>On this page</span>
+                <ChevronRight
+                  class="size-5 text-fg-subtle transition-transform duration-300 ease-out-expo group-open/toc:rotate-90"
+                  aria-hidden="true"
+                />
+              </summary>
+              <ul class="docs-toc docs-disclosure-body" data-toc>
+                {toc.map((h) => (
+                  <li>
+                    <a href={`#${h.slug}`} class={cn('docs-toc-link', h.depth === 3 && 'is-sub')}>
+                      {h.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
+
+          <div class="prose docs-prose max-w-none">
             <slot />
           </div>
 
-          <AdUnit class="mt-16" />
+          <AdUnit class="mt-20" />
 
-          <nav
-            data-pagefind-ignore
-            class="mt-16 grid gap-3 border-t border-line pt-8 sm:grid-cols-2"
-            aria-label="Neighbouring pages"
-          >
+          <nav data-pagefind-ignore class="docs-neighbours" aria-label="Neighbouring pages">
             {prev && (
               <a href={prev.href} class="docs-neighbour">
-                <span class="flex items-center gap-1 text-xs text-fg-subtle">
-                  <ArrowLeft class="size-3.5" aria-hidden="true" /> Previous
+                <span class="docs-neighbour-label">
+                  <ArrowLeft class="size-4" aria-hidden="true" /> Previous
                 </span>
-                <span class={cn('text-sm font-medium', prev.code && 'font-mono')}>
-                  {prev.title}
-                </span>
+                <span class={cn('docs-neighbour-title', prev.code && 'is-code')}>{prev.title}</span>
               </a>
             )}
             {next && (
-              <a href={next.href} class="docs-neighbour text-right sm:col-start-2">
-                <span class="flex items-center justify-end gap-1 text-xs text-fg-subtle">
-                  Next <ArrowRight class="size-3.5" aria-hidden="true" />
+              <a href={next.href} class="docs-neighbour is-next">
+                <span class="docs-neighbour-label">
+                  Next <ArrowRight class="size-4" aria-hidden="true" />
                 </span>
-                <span class={cn('text-sm font-medium', next.code && 'font-mono')}>
-                  {next.title}
-                </span>
+                <span class={cn('docs-neighbour-title', next.code && 'is-code')}>{next.title}</span>
               </a>
             )}
           </nav>
 
           {editUrl && (
-            <p class="mt-8 text-sm text-fg-subtle" data-pagefind-ignore>
+            <p class="mt-10 text-[15px] text-fg-subtle" data-pagefind-ignore>
               <a
                 href={editUrl}
                 class="underline underline-offset-4 transition-colors duration-200 hover:text-accent-ink"
@@ -203,33 +219,61 @@ const metaDescription = description?.replace(/`/g, '');
             </p>
           )}
         </article>
-
-        {toc.length > 1 && (
-          <aside class="hidden xl:block">
-            <nav class="docs-rail" aria-label="On this page" data-lenis-prevent>
-              <p class="docs-tree-heading">On this page</p>
-              <ul class="mt-2 space-y-0.5 border-l border-line text-[13px]">
-                {toc.map((h) => (
-                  <li>
-                    <a
-                      href={`#${h.slug}`}
-                      class={cn(
-                        '-ml-px block border-l border-transparent py-1 leading-snug text-fg-muted transition-colors duration-200 hover:border-line-strong hover:text-fg',
-                        h.depth === 2 ? 'pl-3' : 'pl-6',
-                      )}
-                    >
-                      {h.text}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </aside>
-        )}
       </div>
+
+      {toc.length > 1 && (
+        <aside class="docs-aside">
+          <nav class="docs-rail" aria-label="On this page" data-lenis-prevent>
+            <p class="docs-tree-heading">On this page</p>
+            <ul class="docs-toc" data-toc>
+              {toc.map((h) => (
+                <li>
+                  <a href={`#${h.slug}`} class={cn('docs-toc-link', h.depth === 3 && 'is-sub')}>
+                    {h.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </aside>
+      )}
     </div>
   </main>
 
   <SearchDialog />
   <Footer />
 </Base>
+
+<script>
+  // "On this page" marks the section being read: the last heading whose top has passed under
+  // the header bar. Set up on every page load (view transitions) and torn down before a swap.
+  let stop: AbortController | undefined;
+  const setup = () => {
+    stop?.abort();
+    const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-toc] a'));
+    if (!links.length) return;
+    stop = new AbortController();
+    const ids = [...new Set(links.map((a) => decodeURIComponent(a.hash.slice(1))))];
+    const heads = ids.map((id) => document.getElementById(id)).filter((h): h is HTMLElement => !!h);
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      let current = heads[0]?.id;
+      for (const h of heads) if (h.getBoundingClientRect().top < 140) current = h.id;
+      for (const a of links) {
+        const on = decodeURIComponent(a.hash.slice(1)) === current;
+        a.classList.toggle('is-active', on);
+        if (on) a.setAttribute('aria-current', 'location');
+        else a.removeAttribute('aria-current');
+      }
+    };
+    const queue = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    window.addEventListener('scroll', queue, { passive: true, signal: stop.signal });
+    window.addEventListener('resize', queue, { passive: true, signal: stop.signal });
+    update();
+  };
+  document.addEventListener('astro:page-load', setup);
+  document.addEventListener('astro:before-swap', () => stop?.abort());
+</script>
