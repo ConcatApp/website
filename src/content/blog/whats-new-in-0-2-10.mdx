@@ -5,67 +5,109 @@ date: 2026-11-11
 icon: update
 ---
 
-Concat 0.2.10 is out. It adds the animations people asked for most, a way to pull a voice out of
-its background, and a lot of speed. Here is what you get when you update.
+Concat 0.2.10 is out. Things on screen can now move in, move out and loop, a voice can be
+pulled out of its background, and titles and captions got a lot faster. Here is what you get
+when you update.
 
 ## Animations: In, Out and Loop
 
-Every clip, picture, title and shape can now arrive, leave and move while it is on screen. Open
-the Animate panel and you get a wall of cards, and each card plays its move so you can see it
-before you pick it. There are three pages: In for how something arrives, Out for how it leaves,
-and Loop for what it does in between. Titles and captions play them too.
+Every clip, picture, title and shape can now arrive, leave and move while it is on screen.
+
+- **In** is how something arrives.
+- **Out** is how it leaves.
+- **Loop** is what it does in between.
+
+Pick a clip and open the **Animate** panel. You get a wall of cards, and each card plays its
+move, so you see it before you pick it. Titles and captions play them too.
 
 ## Voice isolation
 
-Pick a clip and Concat splits its sound into the voice and everything else. Keep the voice alone,
-take it out, or set each part to its own level. It works on a song, where the rest is music, and
-on a recording, where the rest is noise. It runs on your computer, like everything in Concat.
+Concat can split a clip's sound into the voice and everything else. Keep the voice alone, take
+it out, or set each part to its own level. On a song the rest is the music. On a recording the
+rest is the noise. It all runs on your computer, like everything in Concat.
 
 ## Shake and motion
 
-A new Shake & Motion shelf holds Shake, Impact, Beat Shake and Prism Shake, for the hits and
+A new **Shake & Motion** shelf holds Shake, Impact, Beat Shake and Prism Shake, for the hits and
 drops in an edit.
 
 ## Masks and shapes
 
-A clip now carries a stack of masks. Each mask has its own mode and its own keyframes, so you can
-add one area and cut another out of it.
+A clip now carries a stack of masks, not just one. Each mask has its own mode and its own
+keyframes, so you can keep one area, cut another out of it, and move each one on its own.
 
-Shapes are figures you edit: size, corners, polygons, stars, gradients, outlines, line ends, trim
-and shadow.
+Shapes are figures you can edit: size, corners, polygons, stars, gradients, outlines, line ends,
+trim and shadow.
 
 ## Sound
 
-The Audio tab is rebuilt around three controls: a gain fader, a mixer for the parts of a sound,
-and fades drawn on the sound itself. Fades follow a curve you can hear and see.
+The **Audio** tab is rebuilt around three controls: a gain fader, a mixer for the parts of a
+sound, and fades you draw on the sound itself. Fades follow a curve you can hear and see, with a
+red zone on the fader and on every waveform.
 
-## Speed
+## Faster
 
-| What you do                                        | Before         | After          | Faster   |
-| -------------------------------------------------- | -------------- | -------------- | -------- |
-| A title or caption appears for the first time      | 77 ms          | 1.7 ms         | **45x**  |
-| Open a project with 500 captions                   | about 38 s     | under 1 s      | **42x**  |
-| Drag a title on a timeline with 500 captions       | 754 ms a step  | 0.8 ms a step  | **940x** |
-| Show an effect for the first time after installing | 86 ms          | under 1 ms     | **150x** |
-| Import a 4K clip and a 1080p clip                  | 5.0 s          | 3.3 s          | **1.5x** |
+Titles and captions are now painted in the background, so they no longer freeze the window. We
+measured each change before and after, on the same Mac with Apple's M5 chip and the same files:
 
-The full story of how those numbers were measured is in
+| What you do                                        | Before        | After         | Faster   |
+| -------------------------------------------------- | ------------- | ------------- | -------- |
+| A title or caption appears for the first time      | 77 ms         | 1.7 ms        | **45x**  |
+| Open a project with 500 captions                   | about 38 s    | under 1 s     | **42x**  |
+| Drag a title on a timeline with 500 captions       | 754 ms a step | 0.8 ms a step | **940x** |
+| Show an effect for the first time after installing | 86 ms         | under 1 ms    | **150x** |
+| Import a 4K clip and a 1080p clip                  | 5.0 s         | 3.3 s         | **1.5x** |
+| Export 10 seconds with 10 cuts on two tracks       | 2.8 s         | 2.3 s         | **1.2x** |
+
+Effects are ready when the window opens, so the first one you use shows at once. Filmstrips of
+long footage appear sooner. The whole story is in
 [Concat got much faster](/blog/concat-got-faster/).
 
-## Smaller things you will notice
+## Captions
 
-- A new Welcome screen.
-- Captions on Windows start reliably.
+- Generating captions on Windows starts reliably.
 - Caption presets for twelve more languages: Chinese, Korean, Arabic, Persian, Urdu, Hindi,
   Bengali, Thai, Vietnamese, Russian, Ukrainian and Greek.
-- Generate Captions lives in the Library, under Text & Captions.
-- Your computer stays awake, and your phone's screen stays on, while a job runs.
-- Enhance takes any scale up to 2K and shows its progress.
+- **Generate Captions** now lives in the Library, under **Text & Captions**.
+
+## Easier to use
+
+- A new Welcome screen, with a What's new card that opens this page.
+- Settings is a page over the whole window, like Export.
+- Layers, effects, grades and transitions each have a colour of their own, so you can tell them
+  apart at a glance.
 - The panels and the window open where you left them.
-- The speed curve graph is taller, on a labelled grid, and lets you pick several points at once.
+- A setting that only takes effect at launch offers a restart, which saves and reopens your
+  project.
+- Dragging past the edge of the timeline scrolls gently or fast, depending on how far you go, and
+  the scrollbar is bigger.
+- OK and Cancel sit in the order your system uses.
+- Your computer stays awake, and your phone's screen stays on, while a job runs.
+- Enhance takes any scale up to 2K, shows its progress, and says what it will make before it
+  starts.
+- The speed curve graph is taller, sits on a labelled grid, and lets you pick several points at
+  once. A speed curve now plays smoothly.
+
+## Fixed
+
+- Chroma Key works on the Windows PCs where it used to turn the preview black.
+- An animation picked in the Animate panel sticks.
+- The Library's sidebar scrolls, so Audio Effects is always in reach.
+- The New Project sheet fits a short or narrow window.
+- The missing media dialog fits its files, closes from its ×, and lets you remove each missing
+  file.
+
+## For scripts and agents
+
+- `concat --schema` prints the whole Concat API as JSON Schema.
+- An agent can give a clip a stack of masks and keyframe each one.
+- `concat preview` draws an effect at any moment of its clip (`--moment`) and a transition at any
+  point of its cut (`--progress`).
+
+The [developer docs](/docs) cover every method and edit command.
 
 ## Get it
 
-[Download Concat 0.2.10](https://github.com/jub0t/Concat/releases/tag/v0.2.10) for Windows, macOS,
-Linux, Android and iOS. If you already have Concat on a computer, Settings › Version will offer
-the update.
+[Download Concat 0.2.10](https://github.com/jub0t/Concat/releases/tag/v0.2.10) for Windows,
+macOS, Linux, Android and iOS, or pick your system on the [download page](/#download). If you
+already have Concat on a computer, **Settings › Version** offers the update.
