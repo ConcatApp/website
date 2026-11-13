@@ -13,10 +13,17 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../timeline` or `CONCAT_
   text animations", which the README dropped on 2026-10-15), multi-track and multi-timeline editing, titles,
   one-switch voice cleanup, export in H.264, HEVC and AV1 up to 4K 60 10-bit, 26 languages, and a
   built-in MCP server for AI agents.
-- The current release is 0.2.10 (tag v0.2.10, commit 71efe1f4, published 2026-11-11; 0.2.9 came out on
-  2026-11-05 with no site update). Describe what that tag ships, checked with `git show v0.2.10:<path>` in the app repo, never
+- The current release is 0.2.11 (tag v0.2.11, commit 6584d349, published 2026-11-13), a release of fixes
+  on top of 0.2.10: clips cut between frames meet on the frame grid and can be merged; the preview steps
+  down to the processor (without effects, the monitor says so once) when no graphics device lasts; a
+  rewritten log (Settings › About › Show the log; Share the log on Android); stills read once per
+  export. Its curated notes are `notes/release-notes-0.2.11.md` in the app repo; the manifest, the API
+  schema and the version lines were synced from the release on 2026-11-13. The app's own What's new card
+  still carries 0.2.10's one-line note in 0.2.11.
+- 0.2.10 (tag v0.2.10, commit 71efe1f4, published 2026-11-11; 0.2.9 came out on
+  2026-11-05 with no site update). Describe what a tag ships, checked with `git show v0.2.11:<path>` in the app repo, never
   what is only on its main branch. Its curated notes are `notes/release-notes-0.2.10.md` in the app repo.
-  New in it: In, Out and Loop animations for clips, pictures, titles and shapes; voice isolation (keep or
+  New in 0.2.10: In, Out and Loop animations for clips, pictures, titles and shapes; voice isolation (keep or
   remove a clip's voice, each part at its own level); a Shake & Motion shelf; a stack of masks per clip,
   each with a mode and keyframes; editable shapes; fades on a curve; twelve more caption language
   presets; Generate Captions in the Library; titles and captions painted in the background (about 45x

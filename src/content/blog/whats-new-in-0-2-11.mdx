@@ -1,0 +1,82 @@
+---
+title: What's new in Concat 0.2.11
+description: Clean cuts with no black frames, a preview that keeps drawing when the graphics chip gives up, a log you can read and share from your phone, and quicker exports of titles.
+date: 2026-11-13
+icon: update
+---
+
+Concat 0.2.11 is out. Cuts land exactly on the frame, the preview keeps drawing when a
+computer's graphics chip gives up, and Concat now keeps a log you can read. Here is what you get
+when you update.
+
+## Clean cuts
+
+Split or trim a clip anywhere, even between two frames, and the cut is clean: the clips on both
+sides meet on the same frame, in the preview and in the exported file. Footage that is slower
+than your export, or slowed down, holds its last frame to the end.
+
+**Merge** now takes clips cut between frames too, both halves of a split clip included.
+
+## A preview that keeps drawing
+
+When a computer's graphics chip stops answering, Concat lets it go, tries it again, then steps
+down to the next way of drawing. The last step is the processor itself, which always draws. On
+that step the monitor shows your picture without effects and says so once, and your edit goes on.
+
+It is quick, too. On a Mac with Apple's M5 chip, a 1280x720 clip under six captions draws at the
+monitor's size in 3.6 ms on ten cores.
+
+## A log you can read
+
+Concat writes down what it does, and now you can read it. Every line says when, how serious,
+what about and what happened:
+
+- what you did, in the words the interface uses
+- how each run started and how it ended
+- each export: what was asked, every stage, and one closing line that says where the time went
+
+Each line is in the file as soon as it is written, so the log is whole whatever happens next. It
+never holds your text or captions.
+
+On a computer, **Settings › About › Show the log** opens it. On an Android phone,
+**Settings › About › Share the log** sends this run's log and the one before it in two taps.
+
+## Faster
+
+Titles, shapes and photos are now read once for an export and kept ready, not read again for
+every frame. We measured it before and after on the same Mac with Apple's M5 chip: a 60 second
+1080p export with a cut every 6.7 seconds and a title every 6 seconds.
+
+| What Concat does                         | Before | After  | Faster   |
+| ---------------------------------------- | ------ | ------ | -------- |
+| Draw every frame of the 60 second export | 5.5 s  | 4.1 s  | **1.3x** |
+| Read and draw one frame                  | 4.1 ms | 3.6 ms | **1.1x** |
+
+An emoji's picture is decoded once and kept, so a title full of emoji paints as it should. A
+speed curve is prepared once, so playing and exporting a clip with one costs almost nothing extra.
+
+## Smaller things that got better
+
+- On Windows and Linux, the window can be minimised, maximised and moved while Export, Settings
+  or another full-window page is up. Close is dimmed during an export, so one click in the corner
+  cannot cancel it.
+- **Show in folder** and **Remove** on a recent project's card stay under the pointer.
+- Duplicate is one undo step, for one clip or many.
+- A cut on a step of a speed curve keeps the jump.
+- Emoji drawn in layers and gradients show in colour in titles.
+- Captions on an Intel Mac are generated on the processor.
+- On a phone, the row of tabs in Settings sits evenly.
+- 25 languages are level with English: 3,288 strings translated.
+
+## For scripts and agents
+
+- A finished export reports every frame as rendered.
+- A speed curve sent through the API is stored in order and in range.
+
+The [developer docs](/docs) cover every method and edit command.
+
+## Get it
+
+[Download Concat 0.2.11](https://github.com/jub0t/Concat/releases/tag/v0.2.11) for Windows,
+macOS, Linux, Android and iOS, or pick your system on the [download page](/#download). If you
+already have Concat on a computer, **Settings › Version** offers the update.
