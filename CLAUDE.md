@@ -136,8 +136,8 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../timeline` or `CONCAT_
   and "More from the blog"; `src/pages/blog/index.astro` lists posts newest first, the newest as a large
   card (`PostCard`); `src/pages/blog/rss.xml.ts` is the feed, written by hand; `src/lib/blog.ts` sorts
   and dates them. Linked from the Learn menu, the footer and the HTML sitemap; Pagefind indexes posts
-  (`kind:Blog`). Posts follow the guides' rules (no em dashes, no emoji, no other products' or
-  technologies' names) and every number in one is measured, with the machine named.
+  (`kind:Blog`). Posts follow the guides' rules (no em dashes, no emoji, no technologies' names; another
+  product only as the naming rule below allows) and every number in one is measured, with the machine named.
 - `src/layouts/Page.astro` standalone long-form page without a sidebar, the `layout` for MDX pages under
   `src/pages/`: `privacy.mdx` (the roadmap page was removed on 2026-11-02, and nothing links to it)
 - `src/pages/privacy.mdx` the privacy policy, linked from the footer. AdSense requires it. It states what the
@@ -243,9 +243,11 @@ Path alias: `@/` maps to `src/`.
   follow the same rule as every guide: Concat claims come from the README and the existing guides
   (never main-only behaviour such as linkage), and general video knowledge is stated plainly.
   They link the free tools, and the tools' explainers link back.
-- Never use another product's name to sell Concat: no "X alternative" or "X replacement", no
-  "as in X", no "coming from X" pages, titles or search titles. The footer's "Not affiliated with CapCut
-  or ByteDance" is the one mention.
+- Another product may be named (CapCut, DaVinci Resolve and the rest: comparisons, "X alternative",
+  "coming from X" guides; lifted by Jareer 2026-11-19), on three conditions: every claim about it is
+  true and checked against its own current pages or measured by us, with the date and machine named;
+  its name in plain text only, never its logo, colours or look; and the page says Concat is not
+  affiliated with it. The footer keeps "Not affiliated with CapCut or ByteDance".
 - Links between pages are site-relative (`/docs/api/methods#projectopen`). Use `> [!NOTE]`, `[!TIP]`,
   `[!IMPORTANT]`, `[!WARNING]` or `[!CAUTION]` for callouts. No emoji, including status ticks in tables.
 - Markdown runs on the unified processor from `@astrojs/markdown-remark` (set as `markdown.processor` in
