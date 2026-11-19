@@ -13,7 +13,15 @@ jsDelivr by `npm run assets:prepare` (a local clone at `../timeline` or `CONCAT_
   text animations", which the README dropped on 2026-10-15), multi-track and multi-timeline editing, titles,
   one-switch voice cleanup, export in H.264, HEVC and AV1 up to 4K 60 10-bit, 26 languages, and a
   built-in MCP server for AI agents.
-- The current release is 0.2.11 (tag v0.2.11, commit 6584d349, published 2026-11-13), a release of fixes
+- The current release is 0.2.12 (tag v0.2.12, commit 995b2054, published 2026-11-19): Beats (a song's
+  beats and bars marked on its clips, snapping, Cut on beats), keyed width and height, sound treatments
+  as switches on the clip, phone exports that finish, exports on Windows' software renderer, graphics
+  memory placed where there is room, and nothing lost on the way out (settings, voiceover takes, parts
+  of a project this version cannot read). Its curated notes are `notes/release-notes-0.2.12.md` in the
+  app repo; the manifest, the API schema and the version lines were synced from the release on
+  2026-11-20. Describe what a tag ships, checked with `git show v0.2.12:<path>` in the app repo, never
+  what is only on its main branch (the clip's "Applying…" state and Retry are on main only).
+- 0.2.11 (tag v0.2.11, commit 6584d349, published 2026-11-13) was a release of fixes
   on top of 0.2.10: clips cut between frames meet on the frame grid and can be merged; the preview steps
   down to the processor (without effects, the monitor says so once) when no graphics device lasts; a
   rewritten log (Settings › About › Show the log; Share the log on Android); stills read once per

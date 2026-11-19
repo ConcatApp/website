@@ -1,0 +1,73 @@
+---
+title: What's new in Concat 0.2.12
+description: Concat hears the beat of your music, phone exports finish, Windows PCs without a graphics driver export, and nothing you make is lost on the way out.
+date: 2026-11-19
+icon: update
+---
+
+Concat 0.2.12 is out. It hears the beat of your music, exports finish on phones and on Windows
+PCs without a graphics driver, and nothing you make is lost on the way out. Here is what you get
+when you update.
+
+## Beats
+
+Switch on **Beats** under **Audio › Sound** and Concat listens to your song and marks every beat
+along its clips, with the first beat of each bar standing out. It all happens on your own device,
+and your music never leaves it.
+
+- The song's tempo is shown in the section.
+- Clips you move snap to the beats.
+- **Cut on beats** splits a clip on every beat or every bar in one step, and one undo puts it
+  back.
+- A video's soundtrack gets its beats too, and every file keeps its own.
+
+It is quick. On a Mac with Apple's M5 chip, a three-minute song is heard in 1.5 seconds.
+
+## Exports finish everywhere
+
+On Android, an export runs to the end with the window answering all the way through, and the app
+closes cleanly when it is done.
+
+On a Windows PC without a graphics driver, Concat draws with Windows' own renderer and the export
+finishes. Plain frames are drawn by Concat's own processor renderer there, which we measured on
+the same machine with the same build:
+
+| What Concat does                                  | Before  | After    | Faster   |
+| ------------------------------------------------- | ------- | -------- | -------- |
+| Export a 1080p clip on Windows' built-in renderer | 3.6 fps | 31.1 fps | **8.6x** |
+
+Laptops whose graphics card shares a small window of memory with the system keep their preview,
+with the card's memory used where there is room.
+
+## Nothing is lost
+
+- A settings file is never saved over when it cannot be read.
+- A voiceover still recording when you close the project is kept.
+- Opening a project never drops anything from the file.
+- A clip whose sound runs past its picture holds its last frame at the join.
+
+## Treatments on the clip
+
+The three sound treatments are switches under **Basic › Treatments** on the clip itself. While a
+treatment is applied, the clip plays the sound it had until the new one is ready.
+
+## Smaller things that got better
+
+- A clip's width and height can be keyed, as its scale is.
+- Notices are cards that wrap and stay up while you read them. A preview of a missing file names
+  the file.
+- On a phone, effects and transitions drop on the timeline with nothing selected.
+- A mouse wheel or trackpad scrolls on Android.
+- Captions hear the whole clip.
+- A clip with its speed changed keeps its sound on computers that write decimals with a comma.
+- A song's cover art stays out of the video.
+- A quiet track's waveform keeps its shape when turned up.
+- The inspector's tabs take a click during playback.
+- Saves and the preview go ahead of long jobs.
+- Spanish is complete, and every language has the new lines.
+
+## Get it
+
+[Download Concat 0.2.12](https://github.com/jub0t/Concat/releases/tag/v0.2.12) for Windows,
+macOS, Linux, Android and iOS, or pick your system on the [download page](/#download). If you
+already have Concat on a computer, **Settings › Version** offers the update.

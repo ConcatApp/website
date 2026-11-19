@@ -214,6 +214,31 @@
         }
       ]
     },
+    "BeatMarks": {
+      "description": "Which of a file's beats are marked along its clips, and where Cut on\nbeats cuts; see [`MediaItem::beats`].",
+      "oneOf": [
+        {
+          "const": "zoom",
+          "description": "As many as the zoom has room for: every beat, or the first of each\nbar, or every fourth bar. Cut on beats cuts at every beat.",
+          "type": "string"
+        },
+        {
+          "const": "every",
+          "description": "Every beat.",
+          "type": "string"
+        },
+        {
+          "const": "second",
+          "description": "Every second beat, counted from each bar's first.",
+          "type": "string"
+        },
+        {
+          "const": "bar",
+          "description": "The first beat of each bar.",
+          "type": "string"
+        }
+      ]
+    },
     "BrushTool": {
       "description": "The four brushes of a custom cutout.",
       "oneOf": [
@@ -2282,7 +2307,7 @@
           "type": "object"
         },
         {
-          "description": "Sizes a picture to the frame in one step: fitted whole inside it,\nor covering it, centred either way and unstretched (see\n[`crate::model::framing_scale`]; a turned picture is sized as turned).\nA scale or a position with keys gets a key at `at` rather than a new\nconstant, the way every edit of a keyed property lands, so the rest\nof the ride is left as it was. A no-op for a clip that is not a video\nor a still, or whose media's size is unknown.",
+          "description": "Sizes a picture to the frame in one step: fitted whole inside it,\nor covering it, centred either way and unstretched (see\n[`crate::model::framing_scale`]; a turned picture is sized as turned).\nA scale, a position or a stretch with keys gets a key at `at` rather\nthan a new constant, the way every edit of a keyed property lands, so\nthe rest of the ride is left as it was. A no-op for a clip that is\nnot a video or a still, or whose media's size is unknown.",
           "properties": {
             "at": {
               "default": 0,
@@ -2660,6 +2685,35 @@
                 }
               ],
               "description": "`limited` or `full`, or None to go back to reading the file's\nown tag."
+            }
+          },
+          "required": [
+            "op",
+            "mediaId"
+          ],
+          "type": "object"
+        },
+        {
+          "description": "Asks for a media file's beats - listened to, marked along every\nclip of it on every timeline at the beats `marks` names, snapped to\nwhen the timeline snaps - or, with None, stops asking. A file of\nits own, not the app's: one song cut to, another only underneath.\nAn unknown id is a no-op.",
+          "properties": {
+            "marks": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/BeatMarks"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Which beats, or None for none."
+            },
+            "mediaId": {
+              "description": "The bin item.",
+              "type": "string"
+            },
+            "op": {
+              "const": "setMediaBeats",
+              "type": "string"
             }
           },
           "required": [
@@ -3239,7 +3293,7 @@
       "type": "array"
     },
     "KeyProperty": {
-      "description": "Which property a user-set key belongs to.\n\nFive of the first six are the picture's placement and the sixth is the\nmix's; the seven after them are the mask's numbers. They are one\nenum because a key is a key - the panel that sets them, the commands that\ncarry them and the document that stores them do not care which side of\nthe clip a value ends up on, and only the thing that finally reads them\ndoes.",
+      "description": "Which property a user-set key belongs to.\n\nSix of the eight are the picture's placement, opacity is how much of it\nshows, and the level is the mix's. They are one enum because a key is a\nkey - the panel that sets them, the commands that carry them and the\ndocument that stores them do not care which side of the clip a value\nends up on, and only the thing that finally reads them does. A mask's\nnumbers are keyed too, but on the mask, by name; see `Mask::keys`.",
       "oneOf": [
         {
           "const": "scale",
@@ -3259,6 +3313,16 @@
         {
           "const": "rotation",
           "description": "`Clip::rotation`.",
+          "type": "string"
+        },
+        {
+          "const": "stretchX",
+          "description": "`Clip::stretch_x`: the picture's width beyond its scale.",
+          "type": "string"
+        },
+        {
+          "const": "stretchY",
+          "description": "`Clip::stretch_y`: the picture's height beyond its scale.",
           "type": "string"
         },
         {
@@ -3509,6 +3573,17 @@
             "$ref": "#/$defs/AudioTrack"
           },
           "type": "array"
+        },
+        "beats": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BeatMarks"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The file's beats are wanted: its sound is listened to for them,\nthey are marked along its clips at the beats named, and a dragged\nedge, a split or the playhead snaps to them when the timeline\nsnaps. Absent, and left out of the document, for a file whose beats\nnobody asked for - most of them, so none is listened to unasked.\nSet with `Command::SetMediaBeats`."
         },
         "colorRange": {
           "anyOf": [
@@ -5885,7 +5960,7 @@
   "$id": "https://concat.standalones.org/concat-api.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "apiVersion": "0.2",
-  "concat": "0.2.11",
+  "concat": "0.2.12",
   "error": {
     "$ref": "#/$defs/ApiError"
   },
